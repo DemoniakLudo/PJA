@@ -10,7 +10,7 @@ namespace ConvImgCpc {
 		const int SEUIL_LUM_1 = 0x55;
 		const int SEUIL_LUM_2 = 0xAA;
 
-		public delegate void DlgCalcDiff(int diff, int Pct, int decalMasque);
+		public delegate void DlgCalcDiff(int diff, int decalMasque);
 		static DlgCalcDiff fctCalcDiff = CalcDiffNone;
 
 		static int[] Coul = new int[4096];
@@ -19,7 +19,7 @@ namespace ConvImgCpc {
 		static LockBitmap bitmap;
 		static int xPix, yPix;
 		static private RvbColor[] tabCol = new RvbColor[27];
-
+		static private int k;
 		public enum SizeMode { Fit, KeepSmaller, KeepLarger };
 
 		static int MinMax(int value, int min, int max) {
@@ -66,39 +66,10 @@ namespace ConvImgCpc {
 			return choix;
 		}
 
-		//
-		// Effectue la moyenne des couleurs sur un groupe de pixels représentant
-		// un point dans le mode CPC désiré (utilisé si lissage demandé)
-		//
-		//static void Passe0(int Tx) {
-		//	int i, r, v, b, cnt;
-		//	Color s = new Color(0);
-		//	for (int y = 0; y < tailleY; y += 2)
-		//		for (int x = 0; x < tailleX; x += Tx) {
-		//			cnt = r = v = b = 0;
-		//			for (i = 0; i < Tx; i++) {
-		//				Color p1 = new Color(bitmap.GetPixel(x, y));
-		//				Color p2 = new Color(bitmap.GetPixel(x, y + 1));
-		//				r += p1.r + p2.r;
-		//				v += p1.v + p2.v;
-		//				b += p1.b + p2.b;
-		//				cnt += 2;
-		//			}
-		//			s.r = (byte)(r / cnt);
-		//			s.v = (byte)(v / cnt);
-		//			s.b = (byte)(b / cnt);
-		//			for (i = 0; i < Tx; i++) {
-		//				bitmap.SetPixel(x, y, s.GetColor);
-		//				bitmap.SetPixel(x, y + 1, s.GetColor);
-		//			}
-		//		}
-		//}
-
-		static void CalcDiffNone(int diff, int Pct, int decalMasque) {
+		static void CalcDiffNone(int diff, int decalMasque) {
 		}
 
-		static void CalcDiffMethode1Mat2(int diff, int Pct, int decalMasque) {
-			int k = 16000 / Pct;
+		static void CalcDiffMethode1Mat2(int diff, int decalMasque) {
 			corr[0] = (diff * 70) / k;
 			corr[1] = (diff * 30) / k;
 			corr[2] = (diff * 50) / k;
@@ -106,8 +77,7 @@ namespace ConvImgCpc {
 			AddPixelCorMat2(decalMasque);
 		}
 
-		static void CalcDiffMethode2Mat2(int diff, int Pct, int decalMasque) {
-			int k = 7500 / Pct;
+		static void CalcDiffMethode2Mat2(int diff, int decalMasque) {
 			corr[0] = (diff * 40) / k;
 			corr[1] = (diff * 20) / k;
 			corr[2] = (diff * 10) / k;
@@ -115,16 +85,14 @@ namespace ConvImgCpc {
 			AddPixelCorMat2(decalMasque);
 		}
 
-		static void CalcDiffMethode3Mat2(int diff, int Pct, int decalMasque) {
-			int k = 8000 / Pct;
+		static void CalcDiffMethode3Mat2(int diff, int decalMasque) {
 			corr[0] = corr[1] = (diff * 30) / k;
 			corr[2] = (diff * 20) / k;
 			corr[3] = 0;
 			AddPixelCorMat2(decalMasque);
 		}
 
-		static void CalcDiffMethode1Mat3(int diff, int Pct, int decalMasque) {
-			int k = 48000 / Pct;
+		static void CalcDiffMethode1Mat3(int diff, int decalMasque) {
 			corr[0] = corr[4] = (diff * 70) / k;
 			corr[1] = corr[9] = corr[3] = corr[5] = (diff * 50) / k;
 			corr[2] = corr[6] = corr[8] = corr[10] = (diff * 30) / k;
@@ -132,8 +100,7 @@ namespace ConvImgCpc {
 			AddPixelCorMat3(decalMasque);
 		}
 
-		static void CalcDiffMethode2Mat3(int diff, int Pct, int decalMasque) {
-			int k = 32000 / Pct;
+		static void CalcDiffMethode2Mat3(int diff, int decalMasque) {
 			corr[0] = corr[4] = (diff * 80) / k;
 			corr[1] = corr[3] = corr[5] = (diff * 40) / k;
 			corr[2] = corr[6] = (diff * 20) / k;
@@ -141,8 +108,7 @@ namespace ConvImgCpc {
 			AddPixelCorMat3(decalMasque);
 		}
 
-		static void CalcDiffMethode3Mat3(int diff, int Pct, int decalMasque) {
-			int k = 16000 / Pct;
+		static void CalcDiffMethode3Mat3(int diff, int decalMasque) {
 			corr[0] = (diff * 40) / k;
 			corr[1] = corr[4] = (diff * 30) / k;
 			corr[2] = corr[6] = (diff * 10) / k;
@@ -201,14 +167,17 @@ namespace ConvImgCpc {
 						switch (Methode) {
 							case 1:
 								fctCalcDiff = CalcDiffMethode1Mat2;
+								k = 16000 / Pct;
 								break;
 
 							case 2:
 								fctCalcDiff = CalcDiffMethode2Mat2;
+								k = 7500 / Pct;
 								break;
 
 							case 3:
 								fctCalcDiff = CalcDiffMethode3Mat2;
+								k = 8000 / Pct;
 								break;
 						}
 						break;
@@ -216,14 +185,17 @@ namespace ConvImgCpc {
 						switch (Methode) {
 							case 1:
 								fctCalcDiff = CalcDiffMethode1Mat3;
+								k = 48000 / Pct;
 								break;
 
 							case 2:
 								fctCalcDiff = CalcDiffMethode2Mat3;
+								k = 32000 / Pct;
 								break;
 
 							case 3:
 								fctCalcDiff = CalcDiffMethode3Mat3;
+								k = 16000 / Pct;
 								break;
 						}
 						break;
@@ -238,13 +210,13 @@ namespace ConvImgCpc {
 					RvbColor p2 = RechercheProche(p1, cpcPlus, newMethode);
 
 					// Modifie composante Rouge
-					fctCalcDiff(p1.r - p2.r, Pct, 0);
+					fctCalcDiff(p1.r - p2.r, 0);
 
 					// Modifie composante Verte
-					fctCalcDiff(p1.v - p2.v, Pct, 1);
+					fctCalcDiff(p1.v - p2.v, 1);
 
 					// Modifie composante Bleue
-					fctCalcDiff(p1.b - p2.b, Pct, 2);
+					fctCalcDiff(p1.b - p2.b, 2);
 
 					// Convertir en noir & blanc ?
 					if (Nb) {
@@ -371,23 +343,6 @@ namespace ConvImgCpc {
 							CChoix[y] = tmp;
 						}
 		}
-
-		//static void SetPixCol(int x, int y, ImageCPC dest, int[] CChoix, bool CpcPlus) {
-		//	int oldDist = 0x7FFFFFFF;
-		//	Color pix = new Color(bitmap.GetPixel(x, y));
-		//	int choix = dest.GetPixelCPC(x, y);
-		//	for (int i = 0; i < MaxCol; i++) {
-		//		Color s = dest.GetRgbCol(CChoix[i]);
-		//		int Dist = Math.Abs(s.r - pix.r) * K_R + Math.Abs(s.v - pix.v) * K_V + Math.Abs(s.b - pix.b) * K_B;
-		//		if (Dist < oldDist) {
-		//			choix = i;
-		//			oldDist = Dist;
-		//			if (Dist == 0)
-		//				break;
-		//		}
-		//	}
-		//	dest.SetPixelCPC(x, y, choix);
-		//}
 
 		static void SetPixCol0(BitmapCPC dest, int[] CChoix, bool CpcPlus, bool nb) {
 			for (int y = 0; y < tailleY; y += 2)
@@ -717,9 +672,6 @@ namespace ConvImgCpc {
 			Passe2(dest, CChoix, cpcPlus, pixMode, nb);
 			for (int i = 0; i < 16; i++)
 				dest.SetPalette(i, CChoix[i]);
-
-
 		}
 	}
-
 }
