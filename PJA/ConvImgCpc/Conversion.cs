@@ -18,6 +18,7 @@ namespace ConvImgCpc {
 		static int tailleX, tailleY, Tx, MaxCol;
 		static LockBitmap bitmap;
 		static int xPix, yPix;
+		static private RvbColor[] tabCol = new RvbColor[27];
 
 		public enum SizeMode { Fit, KeepSmaller, KeepLarger };
 
@@ -392,11 +393,13 @@ namespace ConvImgCpc {
 			for (int y = 0; y < tailleY; y += 2)
 				for (int x = 0; x < tailleX; x += Tx) {
 					int oldDist = 0x7FFFFFFF;
-					RvbColor pix = bitmap.GetPixelColor(x, y);
+					int pix = bitmap.GetPixel(x, y);
+					int r = pix & 0xFF;
+					int v = (pix >> 8) & 0xFF;
+					int b = (pix >> 16) & 0xFF;
 					int choix = dest.GetPixelCpc(x, y);
 					for (int i = 0; i < MaxCol; i++) {
-						RvbColor s = GetRgbCol(CChoix[i], CpcPlus, nb);
-						int Dist = Math.Abs(s.r - pix.r) * K_R + Math.Abs(s.v - pix.v) * K_V + Math.Abs(s.b - pix.b) * K_B;
+						int Dist = Math.Abs(tabCol[i].r - r) * K_R + Math.Abs(tabCol[i].v - v) * K_V + Math.Abs(tabCol[i].b - b) * K_B;
 						if (Dist < oldDist) {
 							choix = i;
 							oldDist = Dist;
@@ -419,8 +422,7 @@ namespace ConvImgCpc {
 					int totV = pix0.v + pix1.v;
 					int totB = pix0.b + pix1.b;
 					for (int i = 0; i < MaxCol; i++) {
-						RvbColor s = GetRgbCol(CChoix[i], CpcPlus, nb);
-						int Dist = Math.Abs(2 * s.r - totR) * K_R + Math.Abs(2 * s.v - totV) * K_V + Math.Abs(2 * s.b - totB) * K_B;
+						int Dist = Math.Abs(2 * tabCol[i].r - totR) * K_R + Math.Abs(2 * tabCol[i].v - totV) * K_V + Math.Abs(2 * tabCol[i].b - totB) * K_B;
 						if (Dist < oldDist) {
 							choix = i;
 							oldDist = Dist;
@@ -448,12 +450,10 @@ namespace ConvImgCpc {
 					int totV = pix0.v + pix1.v + pix2.v + pix3.v;
 					int totB = pix0.b + pix1.b + pix2.b + pix3.b;
 					for (int i1 = 0; i1 < MaxCol; i1++) {
-						RvbColor s0 = GetRgbCol(CChoix[i1], CpcPlus, nb);
 						for (int i2 = 0; i2 < MaxCol; i2++) {
-							RvbColor s1 = GetRgbCol(CChoix[i2], CpcPlus, nb);
-							int sr = s0.r + s1.r;
-							int sv = s0.v + s1.v;
-							int sb = s0.b + s1.b;
+							int sr = tabCol[i1].r + tabCol[i2].r;
+							int sv = tabCol[i1].v + tabCol[i2].v;
+							int sb = tabCol[i1].b + tabCol[i2].b;
 							int Dist = Math.Abs(2 * sr - totR) * K_R + Math.Abs(2 * sv - totV) * K_V + Math.Abs(2 * sb - totB) * K_B;
 							if (Dist < OldDist) {
 								choix0 = i1;
@@ -488,16 +488,12 @@ namespace ConvImgCpc {
 					int totV = pix0.v + pix1.v + pix2.v + pix3.v;
 					int totB = pix0.b + pix1.b + pix2.b + pix3.b;
 					for (int i1 = 0; i1 < MaxCol; i1++) {
-						RvbColor s0 = GetRgbCol(CChoix[i1], CpcPlus, nb);
 						for (int i2 = 0; i2 < MaxCol; i2++) {
-							RvbColor s1 = GetRgbCol(CChoix[i2], CpcPlus, nb);
 							for (int i3 = 0; i3 < MaxCol; i3++) {
-								RvbColor s2 = GetRgbCol(CChoix[i3], CpcPlus, nb);
 								for (int i4 = 0; i4 < MaxCol; i4++) {
-									RvbColor s3 = GetRgbCol(CChoix[i4], CpcPlus, nb);
-									int sr = s0.r + s1.r + s2.r + s3.r;
-									int sv = s0.v + s1.v + s2.v + s3.v;
-									int sb = s0.b + s1.b + s2.b + s3.b;
+									int sr = tabCol[i1].r + tabCol[i2].r + tabCol[i3].r + tabCol[i4].r;
+									int sv = tabCol[i1].v + tabCol[i2].v + tabCol[i3].v + tabCol[i4].v;
+									int sb = tabCol[i1].b + tabCol[i2].b + tabCol[i3].b + tabCol[i4].b;
 									int Dist = Math.Abs(sr - totR) * K_R + Math.Abs(sv - totV) * K_V + Math.Abs(sb - totB) * K_B;
 									if (Dist < OldDist) {
 										choix0 = i1;
@@ -524,6 +520,9 @@ namespace ConvImgCpc {
 		// Passe 2 : réduit l'image à MaxCol couleurs.
 		//
 		static void Passe2(BitmapCPC dest, int[] CChoix, bool CpcPlus, int PixMode, bool nb) {
+			for (int i = 0; i < MaxCol; i++)
+				tabCol[i] = GetRgbCol(CChoix[i], CpcPlus, nb);
+
 			switch (PixMode) {
 				case 1:
 					SetPixCol1(dest, CChoix, CpcPlus, nb);
