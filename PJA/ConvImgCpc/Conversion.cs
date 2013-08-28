@@ -220,10 +220,11 @@ namespace ConvImgCpc {
 
 					// Convertir en noir & blanc ?
 					if (Nb) {
-						int l = (K_R * p1.r + K_V * p1.v + K_B * p1.b) >> 15;
-						p2.r = p2.v = p2.b = (byte)l;
+						int l = (K_R * p2.r + K_V * p2.v + K_B * p2.b) >> 15;
+						bitmap.SetPixel(xPix, yPix, l + (l << 8) + (l << 16));
 					}
-					bitmap.SetPixel(xPix, yPix, p2.GetColor);
+					else
+						bitmap.SetPixel(xPix, yPix, p2.GetColor);
 				}
 		}
 
@@ -500,7 +501,7 @@ namespace ConvImgCpc {
 		static private void TraiteLumiSatCtrst(int pctLumi, int pctSat, int contrast) {
 			float lumi = pctLumi / 100.0F;
 			float satur = pctSat / 100.0F;
-			byte[] contrast_lookup = new byte[256];
+			byte[] tblContrast = new byte[256];
 			double c = contrast / 100.0;
 			for (int i = 0; i < 256; i++) {
 				double newValue = (double)i;
@@ -509,14 +510,14 @@ namespace ConvImgCpc {
 				newValue *= c;
 				newValue += 0.5;
 				newValue *= 255;
-				contrast_lookup[i] = (byte)MinMax((int)newValue, 0, 255);
+				tblContrast[i] = (byte)MinMax((int)newValue, 0, 255);
 			}
 			for (int y = 0; y < bitmap.Height; y++) {
 				for (int x = 0; x < bitmap.Width; x++) {
 					int color = bitmap.GetPixel(x, y);
-					float r = contrast_lookup[color & 255];
-					float v = contrast_lookup[(color >> 8) & 255];
-					float b = contrast_lookup[(color >> 16) & 255];
+					float r = tblContrast[color & 255];
+					float v = tblContrast[(color >> 8) & 255];
+					float b = tblContrast[(color >> 16) & 255];
 					if ((color & 0xFFFFFF) > 0) {
 						float min = Math.Min(r, Math.Min(v, b));
 						float max = Math.Max(r, Math.Max(v, b));
