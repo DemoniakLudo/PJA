@@ -36,12 +36,12 @@ namespace ConvImgCpc {
 
 		public int GetPixel(int pixelX, int pixelY) {
 			int adr = ((pixelY * Width) + pixelX) << 2;
-			return Pixels[adr] + (Pixels[adr + 1] << 8) + (Pixels[adr + 2] << 16) + (255 << 24);
+			return Pixels[adr] + (Pixels[adr + 1] << 8) + (Pixels[adr + 2] << 16);
 		}
 
 		public RvbColor GetPixelColor(int pixelX, int pixelY) {
 			int adr = ((pixelY * Width) + pixelX) << 2;
-			return new RvbColor(Pixels[adr] + (Pixels[adr + 1] << 8) + (Pixels[adr + 2] << 16) + (255 << 24));
+			return new RvbColor(Pixels[adr] + (Pixels[adr + 1] << 8) + (Pixels[adr + 2] << 16));
 		}
 
 		public void SetPixel(int pixelX, int pixelY, int color) {
@@ -59,7 +59,7 @@ namespace ConvImgCpc {
 				Pixels[adrd++] = Pixels[adr];
 				Pixels[adrd++] = Pixels[adr + 1];
 				Pixels[adrd++] = Pixels[adr + 2];
-				Pixels[adrd++] = Pixels[adr + 3];
+				Pixels[adrd++] = 255;
 			}
 		}
 	}
@@ -79,6 +79,7 @@ namespace ConvImgCpc {
 			b = (byte)(value >> 16);
 		}
 
-		public int GetColor { get { return (int)(r + (v << 8) + (b << 16) + 0xFF000000); } }
+		public int GetColor { get { return (int)(r + (v << 8) + (b << 16)); } }
+		public int GetColorARGB { get { return GetColor + (255 << 24); } }
 	}
 }

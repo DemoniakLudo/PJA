@@ -20,7 +20,7 @@ public partial class EditColor: Form {
 				colors[i].Location = new Point(4 + x * 48, 80 + y * 40);
 				colors[i].Size = new Size(40, 32);
 				colors[i].Tag = i;
-				colors[i].BackColor = Color.FromArgb(ConvImgCpc.BitmapCPC.RgbCPC[i].GetColor);
+				colors[i].BackColor = Color.FromArgb(ConvImgCpc.BitmapCPC.RgbCPC[i].GetColorARGB);
 				colors[i].Click += ClickColor;
 				Controls.Add(colors[i]);
 				i++;

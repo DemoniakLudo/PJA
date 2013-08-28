@@ -66,7 +66,7 @@ namespace PJA {
 		void ClickColor(object sender, System.EventArgs e) {
 			Label colorClick = sender as Label;
 			int numCol = colorClick.Tag != null ? (int)colorClick.Tag : 0;
-			EditColor ed = new EditColor(numCol, bitmapCPC.Palette[numCol], bitmapCPC.GetPaletteColor(numCol).GetColor);
+			EditColor ed = new EditColor(numCol, bitmapCPC.Palette[numCol], bitmapCPC.GetPaletteColor(numCol).GetColorARGB);
 			ed.ShowDialog(this);
 			if (ed.isValide) {
 				bitmapCPC.SetPalette(numCol, ed.ValColor);
@@ -79,7 +79,7 @@ namespace PJA {
 
 		public void UpdatePalette() {
 			for (int i = 0; i < 16; i++) {
-				colors[i].BackColor = Color.FromArgb(bitmapCPC.GetPaletteColor(i).GetColor);
+				colors[i].BackColor = Color.FromArgb(bitmapCPC.GetPaletteColor(i).GetColorARGB);
 				colors[i].Refresh();
 			}
 		}
