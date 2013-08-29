@@ -154,10 +154,15 @@ namespace ConvImgCpc {
 		//
 		// Passe 1 : Réduit la palette aux x couleurs de la palette du CPC.
 		// Effectue également un traitement de l'erreur (tramage) si demandé.
+		// Calcule le nombre de couleurs utilisées dans l'image, et
+		// remplit un tableau avec ces couleurs
 		//
-		static private void ConvertPasse1(int xdest, int ydest, int Methode, int Matrice, int Pct, bool cpcPlus, bool newMethode, bool Nb) {
+		static private int ConvertPasse1(int xdest, int ydest, int Methode, int Matrice, int Pct, bool cpcPlus, bool newMethode, bool Nb, int Mode, bool CpcPlus, bool ReductPal1, bool ReductPal2, bool ModeReduct) {
 			if (cpcPlus)
 				Pct <<= 2;
+
+			for (int i = 0; i < Coul.Length; i++)
+				Coul[i] = 0;
 
 			fctCalcDiff = CalcDiffNone;
 			if (Pct > 0)
@@ -200,8 +205,8 @@ namespace ConvImgCpc {
 						break;
 				}
 
-			for (xPix = 0; xPix < xdest; xPix++)
-				for (yPix = 0; yPix < ydest; yPix++) {
+			for (xPix = 0; xPix < xdest; xPix += Tx)
+				for (yPix = 0; yPix < ydest; yPix += 2) {
 					// Lecture de la couleur du point au coordonnées (x,y)
 					RvbColor p1 = bitmap.GetPixelColor(xPix, yPix);
 
@@ -217,44 +222,24 @@ namespace ConvImgCpc {
 					// Modifie composante Bleue
 					fctCalcDiff(p1.b - p2.b, 2);
 
-					// Convertir en noir & blanc ?
-					if (Nb) {
-						int l = (K_R * p2.r + K_V * p2.v + K_B * p2.b) >> 15;
-						bitmap.SetPixel(xPix, yPix, l + (l << 8) + (l << 16));
+					bitmap.SetPixel(xPix, yPix, p2.GetColor);
+					if (CpcPlus) {
 					}
-					else
-						bitmap.SetPixel(xPix, yPix, p2.GetColor);
+					else {
+						int c = bitmap.GetPixel(xPix, yPix);
+						for (int i = 0; i < 27; i++)
+							if (c == BitmapCPC.RgbCPC[i].GetColor)
+								Coul[i]++;
+					}
 				}
-		}
-
-		//
-		// Calcule le nombre de couleurs utilisées dans l'image, et
-		// remplit un tableau avec ces couleurs
-		//
-		static int CalcNbCoul(int Mode, bool CpcPlus, bool ReductPal1, bool ReductPal2, bool ModeReduct) {
-			int i, NbCol = 0;
-
-			for (i = 0; i < Coul.Length; i++)
-				Coul[i] = 0;
-
 			if (CpcPlus) {
-				for (int y = 0; y < tailleY; y += 2)
-					for (int x = 0; x < tailleX; x += Tx) {
-						RvbColor c = bitmap.GetPixelColor(x, y);
-						i = ((c.b >> 4) << 0) + ((c.r >> 4) << 4) + ((c.v >> 4) << 8);
-						Coul[i]++;
-					}
-				for (i = 0; i < 4096; i++)
-					if (Coul[i] > 0)
-						NbCol++;
-
 				//
 				// Réduction du nombre de couleurs pour éviter les couleurs
 				// trop proches
 				//
 				if (Mode < 3) {
 					// Masquer 1 bit par composante
-					for (i = 0; i < 4096; i++) {
+					for (int i = 0; i < Coul.Length; i++) {
 						int c1 = (i & 0xC00) * 0xFFF / 0xC00;
 						int c2 = (i & 0xC0) * 0xFF / 0xC0;
 						int c3 = (i & 0x0C) * 0x0F / 0x0C;
@@ -269,28 +254,14 @@ namespace ConvImgCpc {
 								Coul[(c1 & 0xC00) + (c2 & 0xC0) + (c3 & 0x0C)] += t;
 						}
 					}
-					NbCol = 0;
-					for (i = 0; i < 4096; i++)
-						if (Coul[i] > 0)
-							NbCol++;
 				}
 			}
-			else {
-				//
-				// Cas CPC "OLD"
-				//
-				for (int y = 0; y < tailleY; y += 2)
-					for (int x = 0; x < tailleX; x += Tx) {
-						int c = bitmap.GetPixel(x, y);
-						for (i = 0; i < 27; i++)
-							if (c == BitmapCPC.RgbCPC[i].GetColor)
-								Coul[i]++;
-					}
-				for (i = 0; i < 27; i++)
-					if (Coul[i] > 0)
-						NbCol++;
-			}
-			return (NbCol);
+			int NbCol = 0;
+			for (int i = 0; i < Coul.Length; i++)
+				if (Coul[i] > 0)
+					NbCol++;
+
+			return NbCol;
 		}
 
 		static private RvbColor GetRgbCol(int Col, bool CpcPlus, bool nb) {
@@ -662,12 +633,18 @@ namespace ConvImgCpc {
 			if (pctLumi != 100 || pctSat != 100 || pctContrast != 100)
 				TraiteLumiSatCtrst(pctLumi, pctSat, pctContrast);
 
-			ConvertPasse1(tailleX, tailleY, methode, matrice, pct, cpcPlus, newMethode, nb);
-			int nbCol = CalcNbCoul(dest.ModeCPC, cpcPlus, reductPal1, reductPal1, newReduct);
+			long t0 = System.Environment.TickCount;
+			int nbCol = ConvertPasse1(tailleX, tailleY, methode, matrice, pct, cpcPlus, newMethode, nb, dest.ModeCPC, cpcPlus, reductPal1, reductPal1, newReduct);
+			long t1 = System.Environment.TickCount;
+			//int nbCol = CalcNbCoul(dest.ModeCPC, cpcPlus, reductPal1, reductPal1, newReduct);
+			long t2 = System.Environment.TickCount;
 			RechercheCMax(CChoix, lockState, cpcPlus, sortPal);
+			long t3 = System.Environment.TickCount;
 			Passe2(dest, CChoix, cpcPlus, pixMode, nb);
+			long t4 = System.Environment.TickCount;
 			for (int i = 0; i < 16; i++)
 				dest.SetPalette(i, CChoix[i]);
+			long t5 = t4 - t0;
 		}
 	}
 }
