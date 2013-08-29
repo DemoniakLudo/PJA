@@ -10,17 +10,17 @@ namespace ConvImgCpc {
 		const int SEUIL_LUM_1 = 0x55;
 		const int SEUIL_LUM_2 = 0xAA;
 
-		public delegate void DlgCalcDiff(int diff, int decalMasque);
-		static DlgCalcDiff fctCalcDiff = CalcDiffNone;
-
-		static int[] Coul = new int[4096];
-		static int[] corr = new int[12];
-		static int tailleX, tailleY, Tx, MaxCol;
-		static LockBitmap bitmap;
-		static int xPix, yPix;
-		static private RvbColor[] tabCol = new RvbColor[27];
-		static private int k;
 		public enum SizeMode { Fit, KeepSmaller, KeepLarger };
+
+		public delegate void DlgCalcDiff(int diff, int decalMasque);
+		static private DlgCalcDiff fctCalcDiff = CalcDiffNone;
+		static private int[] Coul = new int[4096];
+		static private int[] corr = new int[12];
+		static private int tailleX, tailleY, Tx, MaxCol;
+		static private LockBitmap bitmap;
+		static private int xPix, yPix;
+		static private RvbColor[] tabCol = new RvbColor[16];
+		static private int coeffMat;
 
 		static int MinMax(int value, int min, int max) {
 			if (value <= max) {
@@ -70,58 +70,57 @@ namespace ConvImgCpc {
 		}
 
 		static void CalcDiffMethode1Mat2(int diff, int decalMasque) {
-			corr[0] = (diff * 70) / k;
-			corr[1] = (diff * 30) / k;
-			corr[2] = (diff * 50) / k;
-			corr[3] = (diff * 10) / k;
+			corr[0] = (diff * 70) / coeffMat;
+			corr[1] = (diff * 30) / coeffMat;
+			corr[2] = (diff * 50) / coeffMat;
+			corr[3] = (diff * 10) / coeffMat;
 			AddPixelCorMat2(decalMasque);
 		}
 
 		static void CalcDiffMethode2Mat2(int diff, int decalMasque) {
-			corr[0] = (diff * 40) / k;
-			corr[1] = (diff * 20) / k;
-			corr[2] = (diff * 10) / k;
-			corr[3] = (diff * 5) / k;
+			corr[0] = (diff * 40) / coeffMat;
+			corr[1] = (diff * 20) / coeffMat;
+			corr[2] = (diff * 10) / coeffMat;
+			corr[3] = (diff * 5) / coeffMat;
 			AddPixelCorMat2(decalMasque);
 		}
 
 		static void CalcDiffMethode3Mat2(int diff, int decalMasque) {
-			corr[0] = corr[1] = (diff * 30) / k;
-			corr[2] = (diff * 20) / k;
+			corr[0] = corr[1] = (diff * 30) / coeffMat;
+			corr[2] = (diff * 20) / coeffMat;
 			corr[3] = 0;
 			AddPixelCorMat2(decalMasque);
 		}
 
 		static void CalcDiffMethode1Mat3(int diff, int decalMasque) {
-			corr[0] = corr[4] = (diff * 70) / k;
-			corr[1] = corr[9] = corr[3] = corr[5] = (diff * 50) / k;
-			corr[2] = corr[6] = corr[8] = corr[10] = (diff * 30) / k;
-			corr[7] = corr[11] = (diff * 10) / k;
+			corr[0] = corr[4] = (diff * 70) / coeffMat;
+			corr[1] = corr[9] = corr[3] = corr[5] = (diff * 50) / coeffMat;
+			corr[2] = corr[6] = corr[8] = corr[10] = (diff * 30) / coeffMat;
+			corr[7] = corr[11] = (diff * 10) / coeffMat;
 			AddPixelCorMat3(decalMasque);
 		}
 
 		static void CalcDiffMethode2Mat3(int diff, int decalMasque) {
-			corr[0] = corr[4] = (diff * 80) / k;
-			corr[1] = corr[3] = corr[5] = (diff * 40) / k;
-			corr[2] = corr[6] = (diff * 20) / k;
+			corr[0] = corr[4] = (diff * 80) / coeffMat;
+			corr[1] = corr[3] = corr[5] = (diff * 40) / coeffMat;
+			corr[2] = corr[6] = (diff * 20) / coeffMat;
 			corr[7] = corr[8] = corr[9] = corr[10] = corr[11] = 0;
 			AddPixelCorMat3(decalMasque);
 		}
 
 		static void CalcDiffMethode3Mat3(int diff, int decalMasque) {
-			corr[0] = (diff * 40) / k;
-			corr[1] = corr[4] = (diff * 30) / k;
-			corr[2] = corr[6] = (diff * 10) / k;
-			corr[3] = corr[5] = (diff * 20) / k;
+			corr[0] = (diff * 40) / coeffMat;
+			corr[1] = corr[4] = (diff * 30) / coeffMat;
+			corr[2] = corr[6] = (diff * 10) / coeffMat;
+			corr[3] = corr[5] = (diff * 20) / coeffMat;
 			corr[7] = corr[8] = corr[9] = corr[10] = corr[11] = 0;
 			AddPixelCorMat3(decalMasque);
 		}
 
 		static private void AddPixel(int x, int y, int corr, int decalMasque) {
-			if (x < tailleX && y < tailleY && x >= 0) {
-				int adr = 4 * ((y * bitmap.Width) + x) + decalMasque;
+			int adr = (((y * bitmap.Width) + x) << 2) + decalMasque;
+			if (adr < bitmap.Pixels.Length)
 				bitmap.Pixels[adr] = (byte)MinMax(bitmap.Pixels[adr] + corr, 0, 255);
-			}
 		}
 
 		//
@@ -167,17 +166,17 @@ namespace ConvImgCpc {
 						switch (Methode) {
 							case 1:
 								fctCalcDiff = CalcDiffMethode1Mat2;
-								k = 16000 / Pct;
+								coeffMat = 16000 / Pct;
 								break;
 
 							case 2:
 								fctCalcDiff = CalcDiffMethode2Mat2;
-								k = 7500 / Pct;
+								coeffMat = 7500 / Pct;
 								break;
 
 							case 3:
 								fctCalcDiff = CalcDiffMethode3Mat2;
-								k = 8000 / Pct;
+								coeffMat = 8000 / Pct;
 								break;
 						}
 						break;
@@ -185,17 +184,17 @@ namespace ConvImgCpc {
 						switch (Methode) {
 							case 1:
 								fctCalcDiff = CalcDiffMethode1Mat3;
-								k = 48000 / Pct;
+								coeffMat = 48000 / Pct;
 								break;
 
 							case 2:
 								fctCalcDiff = CalcDiffMethode2Mat3;
-								k = 32000 / Pct;
+								coeffMat = 32000 / Pct;
 								break;
 
 							case 3:
 								fctCalcDiff = CalcDiffMethode3Mat3;
-								k = 16000 / Pct;
+								coeffMat = 16000 / Pct;
 								break;
 						}
 						break;
@@ -353,7 +352,7 @@ namespace ConvImgCpc {
 					int r = pix & 0xFF;
 					int v = (pix >> 8) & 0xFF;
 					int b = (pix >> 16) & 0xFF;
-					int choix = dest.GetPixelCpc(x, y);
+					int choix = 0;
 					for (int i = 0; i < MaxCol; i++) {
 						int Dist = Math.Abs(tabCol[i].r - r) * K_R + Math.Abs(tabCol[i].v - v) * K_V + Math.Abs(tabCol[i].b - b) * K_B;
 						if (Dist < oldDist) {
@@ -368,10 +367,10 @@ namespace ConvImgCpc {
 		}
 
 		static void SetPixCol1(BitmapCPC dest, int[] CChoix, bool CpcPlus, bool nb) {
+			int choix = 0;
 			for (int y = 0; y < tailleY; y += 2)
 				for (int x = 0; x < tailleX; x += Tx) {
 					int oldDist = 0x7FFFFFFF;
-					int choix = dest.GetPixelCpc(x, y);
 					int pix0 = bitmap.GetPixel(x, y);
 					int pix1 = bitmap.GetPixel(x, y + 1);
 					int totR = ((pix0 & 0xFF) + (pix1 & 0xFF)) >> 1;
@@ -391,13 +390,12 @@ namespace ConvImgCpc {
 		}
 
 		static void SetPixCol2(BitmapCPC dest, int[] CChoix, bool CpcPlus, bool nb) {
+			int choix0 = 0, choix1 = 0;
 			for (int y = 0; y < tailleY; y += 4) {
 				int ynorm = y + 2 < tailleY ? y + 2 : y + 1;
 				for (int x = 0; x < tailleX; x += Tx * 2) {
 					int xnorm = x + Tx < tailleX ? x + Tx : x + 1;
 					int OldDist = 0x7FFFFFFF;
-					int choix0 = dest.GetPixelCpc(x, y);
-					int choix1 = dest.GetPixelCpc(xnorm, ynorm);
 					int pix0 = bitmap.GetPixel(x, y);
 					int pix2 = bitmap.GetPixel(x, ynorm);
 					int pix3 = bitmap.GetPixel(xnorm, y);
@@ -427,15 +425,12 @@ namespace ConvImgCpc {
 		}
 
 		static void SetPixCol3(BitmapCPC dest, int[] CChoix, bool CpcPlus, bool nb) {
+			int choix0 = 0, choix2 = 0, choix3 = 0, choix1 = 0;
 			for (int y = 0; y < tailleY; y += 4) {
 				int ynorm = y + 2 < tailleY ? y + 2 : y + 1;
 				for (int x = 0; x < tailleX; x += Tx * 2) {
 					int xnorm = x + Tx < tailleX ? x + Tx : x + 1;
 					int OldDist = 0x7FFFFFFF;
-					int choix0 = dest.GetPixelCpc(x, y);
-					int choix2 = dest.GetPixelCpc(x, ynorm);
-					int choix3 = dest.GetPixelCpc(xnorm, y);
-					int choix1 = dest.GetPixelCpc(xnorm, ynorm);
 					int pix0 = bitmap.GetPixel(x, y);
 					int pix2 = bitmap.GetPixel(x, ynorm);
 					int pix3 = bitmap.GetPixel(xnorm, y);
