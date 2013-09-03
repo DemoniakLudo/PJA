@@ -21,6 +21,7 @@ namespace ConvImgCpc {
 		static private int xPix, yPix;
 		static private RvbColor[] tabCol = new RvbColor[16];
 		static private int coeffMat;
+		static private byte[] tblContrast = new byte[256];
 
 		static int MinMax(int value, int min, int max) {
 			if (value <= max) {
@@ -36,7 +37,7 @@ namespace ConvImgCpc {
 		//
 		// Retourne la couleur CPC la plus proche du pixel passé en paramètre
 		//
-		static private RvbColor RechercheProche(RvbColor p, bool cpcPlus, bool newMethode) {
+		static private RvbColor RechercheProche(RvbColor p, bool cpcPlus, bool newMethode, ref int indexChoix) {
 			RvbColor choix = new RvbColor(0);
 			if (cpcPlus) {
 				choix.b = (byte)((p.b >> 4) * 17);
@@ -48,10 +49,11 @@ namespace ConvImgCpc {
 					int OldDist1 = 0x7FFFFFFF;
 					for (int i = 0; i < 27; i++) {
 						RvbColor s = BitmapCPC.RgbCPC[i];
-						int Dist1 = Math.Abs(s.r - p.r) * K_R + Math.Abs(s.v - p.v) * K_V + Math.Abs(s.b - p.b) * K_B;
+						int Dist1 = CalcDist(s, p);
 						if (Dist1 < OldDist1) {
 							OldDist1 = Dist1;
 							choix = s;
+							indexChoix = i;
 							if (Dist1 == 0)
 								break;
 						}
@@ -151,19 +153,104 @@ namespace ConvImgCpc {
 			AddPixel(xPix + 2 * Tx, yPix + 4, corr[11], decalMasque);
 		}
 
+		// Modification luminosité / saturation
+		static private void SetLumiSat(float lumi, float satur, ref float r, ref float v, ref float b) {
+			float min = Math.Min(r, Math.Min(v, b));
+			float max = Math.Max(r, Math.Max(v, b));
+			float dif = max - min;
+			float hue = 0;
+			if (max > min) {
+				if (v == max) {
+					hue = (b - r) / dif * 60f + 120f;
+				}
+				else
+					if (b == max) {
+						hue = (r - v) / dif * 60f + 240f;
+					}
+					else
+						if (b > v) {
+							hue = (v - b) / dif * 60f + 360f;
+						}
+						else {
+							hue = (v - b) / dif * 60f;
+						}
+				if (hue < 0)
+					hue = hue + 360f;
+			}
+			hue *= 255f / 360f;
+			float sat = satur * (dif / max) * 255f;
+			float bri = lumi * max;
+			r = v = b = bri;
+			if (sat != 0) {
+				max = bri;
+				dif = bri * sat / 255f;
+				min = bri - dif;
+				float h = hue * 360f / 255f;
+				if (h < 60f) {
+					r = max;
+					v = h * dif / 60f + min;
+					b = min;
+				}
+				else
+					if (h < 120f) {
+						r = -(h - 120f) * dif / 60f + min;
+						v = max;
+						b = min;
+					}
+					else
+						if (h < 180f) {
+							r = min;
+							v = max;
+							b = (h - 120f) * dif / 60f + min;
+						}
+						else
+							if (h < 240f) {
+								r = min;
+								v = -(h - 240f) * dif / 60f + min;
+								b = max;
+							}
+							else
+								if (h < 300f) {
+									r = (h - 240f) * dif / 60f + min;
+									v = min;
+									b = max;
+								}
+								else
+									if (h <= 360f) {
+										r = max;
+										v = min;
+										b = -(h - 360f) * dif / 60 + min;
+									}
+									else
+										r = v = b = 0;
+			}
+		}
+
 		//
 		// Passe 1 : Réduit la palette aux x couleurs de la palette du CPC.
 		// Effectue également un traitement de l'erreur (tramage) si demandé.
 		// Calcule le nombre de couleurs utilisées dans l'image, et
 		// remplit un tableau avec ces couleurs
 		//
-		static private int ConvertPasse1(int xdest, int ydest, int Methode, int Matrice, int Pct, bool cpcPlus, bool newMethode, bool Nb, int Mode, bool CpcPlus, bool ReductPal1, bool ReductPal2, bool ModeReduct) {
+		static private int ConvertPasse1(int xdest, int ydest, int Methode, int Matrice, int Pct, bool cpcPlus, bool newMethode, bool Nb, int Mode, bool CpcPlus, bool ReductPal1, bool ReductPal2, bool ModeReduct, int pctLumi, int pctSat, int pctContrast) {
 			if (cpcPlus)
 				Pct <<= 2;
 
 			for (int i = 0; i < Coul.Length; i++)
 				Coul[i] = 0;
 
+			float lumi = pctLumi / 100.0F;
+			float satur = pctSat / 100.0F;
+			double c = pctContrast / 100.0;
+			for (int i = 0; i < 256; i++) {
+				double newValue = (double)i;
+				newValue /= 255.0;
+				newValue -= 0.5;
+				newValue *= c;
+				newValue += 0.5;
+				newValue *= 255;
+				tblContrast[i] = (byte)MinMax((int)newValue, 0, 255);
+			}
 			fctCalcDiff = CalcDiffNone;
 			if (Pct > 0)
 				switch (Matrice) {
@@ -209,9 +296,19 @@ namespace ConvImgCpc {
 				for (yPix = 0; yPix < ydest; yPix += 2) {
 					// Lecture de la couleur du point au coordonnées (x,y)
 					RvbColor p1 = bitmap.GetPixelColor(xPix, yPix);
+					if (p1.r != 0 && p1.v != 0 && p1.b != 0) {
+						float r = tblContrast[p1.r];
+						float v = tblContrast[p1.v];
+						float b = tblContrast[p1.b];
+						SetLumiSat(lumi, satur, ref r, ref v, ref b);
+						p1.r = (byte)MinMax((int)r, 0, 255);
+						p1.v = (byte)MinMax((int)v, 0, 255);
+						p1.b = (byte)MinMax((int)b, 0, 255);
+					}
 
 					// Recherche le point dans la couleur cpc la plus proche
-					RvbColor p2 = RechercheProche(p1, cpcPlus, newMethode);
+					int indexChoix = 0;
+					RvbColor p2 = RechercheProche(p1, cpcPlus, newMethode, ref indexChoix);
 
 					// Modifie composante Rouge
 					fctCalcDiff(p1.r - p2.r, 0);
@@ -223,13 +320,15 @@ namespace ConvImgCpc {
 					fctCalcDiff(p1.b - p2.b, 2);
 
 					bitmap.SetPixel(xPix, yPix, p2.GetColor);
-					if (CpcPlus) {
-					}
-					else {
-						int c = bitmap.GetPixel(xPix, yPix);
-						for (int i = 0; i < 27; i++)
-							if (c == BitmapCPC.RgbCPC[i].GetColor)
-								Coul[i]++;
+					if (!CpcPlus) {
+						if (newMethode)
+							Coul[indexChoix]++;
+						else {
+							int col = bitmap.GetPixel(xPix, yPix);
+							for (int i = 0; i < 27; i++)
+								if (col == BitmapCPC.RgbCPC[i].GetColor)
+									Coul[i]++;
+						}
 					}
 				}
 			if (CpcPlus) {
@@ -315,6 +414,18 @@ namespace ConvImgCpc {
 						}
 		}
 
+		static int CalcDist(int r1, int v1, int b1, int r, int v, int b) {
+			return Math.Abs(r1 - r) * K_R + Math.Abs(v1 - v) * K_V + Math.Abs(b1 - b) * K_B;
+		}
+
+		static int CalcDist(RvbColor col, int r, int v, int b) {
+			return CalcDist(col.r, col.v, col.b, r, v, b);
+		}
+
+		static int CalcDist(RvbColor c1, RvbColor c2) {
+			return CalcDist(c1.r, c1.v, c1.b, c2.r, c2.v, c2.b);
+		}
+
 		static void SetPixCol0(BitmapCPC dest, int[] CChoix, bool CpcPlus, bool nb) {
 			for (int y = 0; y < tailleY; y += 2)
 				for (int x = 0; x < tailleX; x += Tx) {
@@ -325,7 +436,7 @@ namespace ConvImgCpc {
 					int b = (pix >> 16) & 0xFF;
 					int choix = 0;
 					for (int i = 0; i < MaxCol; i++) {
-						int Dist = Math.Abs(tabCol[i].r - r) * K_R + Math.Abs(tabCol[i].v - v) * K_V + Math.Abs(tabCol[i].b - b) * K_B;
+						int Dist = CalcDist(tabCol[i], r, v, b);
 						if (Dist < oldDist) {
 							choix = i;
 							oldDist = Dist;
@@ -348,7 +459,7 @@ namespace ConvImgCpc {
 					int totV = ((pix0 & 0xFF00) + (pix1 & 0xFF00)) >> 9;
 					int totB = ((pix0 & 0xFF0000) + (pix1 & 0xFF0000)) >> 17;
 					for (int i = 0; i < MaxCol; i++) {
-						int Dist = Math.Abs(tabCol[i].r - totR) * K_R + Math.Abs(tabCol[i].v - totV) * K_V + Math.Abs(tabCol[i].b - totB) * K_B;
+						int Dist = CalcDist(tabCol[i], totR, totV, totB);
 						if (Dist < oldDist) {
 							choix = i;
 							oldDist = Dist;
@@ -379,7 +490,7 @@ namespace ConvImgCpc {
 							int sr = tabCol[i1].r + tabCol[i2].r;
 							int sv = tabCol[i1].v + tabCol[i2].v;
 							int sb = tabCol[i1].b + tabCol[i2].b;
-							int Dist = Math.Abs(sr - totR) * K_R + Math.Abs(sv - totV) * K_V + Math.Abs(sb - totB) * K_B;
+							int Dist = CalcDist(sr, sv, sb, totR, totV, totB);
 							if (Dist < OldDist) {
 								choix0 = i1;
 								choix1 = i2;
@@ -416,7 +527,7 @@ namespace ConvImgCpc {
 									int sr = tabCol[i1].r + tabCol[i2].r + tabCol[i3].r + tabCol[i4].r;
 									int sv = tabCol[i1].v + tabCol[i2].v + tabCol[i3].v + tabCol[i4].v;
 									int sb = tabCol[i1].b + tabCol[i2].b + tabCol[i3].b + tabCol[i4].b;
-									int Dist = Math.Abs(sr - totR) * K_R + Math.Abs(sv - totV) * K_V + Math.Abs(sb - totB) * K_B;
+									int Dist = CalcDist(sr, sv, sb, totR, totV, totB);
 									if (Dist < OldDist) {
 										choix0 = i1;
 										choix1 = i2;
@@ -461,113 +572,6 @@ namespace ConvImgCpc {
 				default:
 					SetPixCol0(dest, CChoix, CpcPlus, nb);
 					break;
-			}
-		}
-
-		static private void TraiteLumiSatCtrst(int pctLumi, int pctSat, int contrast) {
-			float lumi = pctLumi / 100.0F;
-			float satur = pctSat / 100.0F;
-			byte[] tblContrast = new byte[256];
-			double c = contrast / 100.0;
-			for (int i = 0; i < 256; i++) {
-				double newValue = (double)i;
-				newValue /= 255.0;
-				newValue -= 0.5;
-				newValue *= c;
-				newValue += 0.5;
-				newValue *= 255;
-				tblContrast[i] = (byte)MinMax((int)newValue, 0, 255);
-			}
-			for (int y = 0; y < bitmap.Height; y++) {
-				for (int x = 0; x < bitmap.Width; x++) {
-					int color = bitmap.GetPixel(x, y);
-					float r = tblContrast[color & 255];
-					float v = tblContrast[(color >> 8) & 255];
-					float b = tblContrast[(color >> 16) & 255];
-					if ((color & 0xFFFFFF) > 0) {
-						float min = Math.Min(r, Math.Min(v, b));
-						float max = Math.Max(r, Math.Max(v, b));
-						float dif = max - min;
-						float hue = 0;
-						if (max > min) {
-							if (v == max) {
-								hue = (b - r) / dif * 60f + 120f;
-							}
-							else
-								if (b == max) {
-									hue = (r - v) / dif * 60f + 240f;
-								}
-								else
-									if (b > v) {
-										hue = (v - b) / dif * 60f + 360f;
-									}
-									else {
-										hue = (v - b) / dif * 60f;
-									}
-							if (hue < 0)
-								hue = hue + 360f;
-						}
-						else
-							hue = 0;
-
-						hue *= 255f / 360f;
-						float sat = satur * (dif / max) * 255f;
-						float bri = lumi * max;
-						r = bri;
-						v = bri;
-						b = bri;
-						if (sat != 0) {
-							max = bri;
-							dif = bri * sat / 255f;
-							min = bri - dif;
-							float h = hue * 360f / 255f;
-							if (h < 60f) {
-								r = max;
-								v = h * dif / 60f + min;
-								b = min;
-							}
-							else
-								if (h < 120f) {
-									r = -(h - 120f) * dif / 60f + min;
-									v = max;
-									b = min;
-								}
-								else
-									if (h < 180f) {
-										r = min;
-										v = max;
-										b = (h - 120f) * dif / 60f + min;
-									}
-									else
-										if (h < 240f) {
-											r = min;
-											v = -(h - 240f) * dif / 60f + min;
-											b = max;
-										}
-										else
-											if (h < 300f) {
-												r = (h - 240f) * dif / 60f + min;
-												v = min;
-												b = max;
-											}
-											else
-												if (h <= 360f) {
-													r = max;
-													v = min;
-													b = -(h - 360f) * dif / 60 + min;
-												}
-												else {
-													r = 0;
-													v = 0;
-													b = 0;
-												}
-						}
-					}
-					color = MinMax((int)r, 0, 255) +
-							(MinMax((int)v, 0, 255) << 8) +
-							(MinMax((int)b, 0, 255) << 16);
-					bitmap.SetPixel(x, y, color);
-				}
 			}
 		}
 
@@ -630,11 +634,12 @@ namespace ConvImgCpc {
 					break;
 			}
 			bitmap.LockBits();
-			if (pctLumi != 100 || pctSat != 100 || pctContrast != 100)
-				TraiteLumiSatCtrst(pctLumi, pctSat, pctContrast);
+			if (pctLumi != 100 || pctSat != 100 || pctContrast != 100) {
+				//TraiteLumiSatCtrst(pctLumi, pctSat, pctContrast);
+			}
 
 			long t0 = System.Environment.TickCount;
-			int nbCol = ConvertPasse1(tailleX, tailleY, methode, matrice, pct, cpcPlus, newMethode, nb, dest.ModeCPC, cpcPlus, reductPal1, reductPal1, newReduct);
+			int nbCol = ConvertPasse1(tailleX, tailleY, methode, matrice, pct, cpcPlus, newMethode, nb, dest.ModeCPC, cpcPlus, reductPal1, reductPal1, newReduct, pctLumi, pctSat, pctContrast);
 			long t1 = System.Environment.TickCount;
 			//int nbCol = CalcNbCoul(dest.ModeCPC, cpcPlus, reductPal1, reductPal1, newReduct);
 			long t2 = System.Environment.TickCount;
