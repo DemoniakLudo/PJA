@@ -65,7 +65,7 @@ namespace PJA {
 		// Chargement projet
 		//
 		public bool Load(string name) {
-			bool ret = true;
+			bool ret = false;
 			StreamReader rd = new StreamReader(name);
 			string line = rd.ReadLine();
 			if (line != null) {
@@ -79,18 +79,9 @@ namespace PJA {
 							cy = int.Parse(line.Substring(15));
 							ret = dataMap.Load(rd) && dataImage.Load(rd);
 						}
-						else
-							ret = false;
 					}
-					else
-						ret = false;
 				}
-				else
-					ret = false;
 			}
-			else
-				ret = false;
-
 			rd.Close();
 			return ret;
 		}
@@ -99,12 +90,11 @@ namespace PJA {
 		// Lecture projet
 		//
 		public bool Save(string name) {
-			bool ret = true;
 			StreamWriter wr = new StreamWriter(name);
 			wr.WriteLine("#PROJET_MODE\t" + mode);
 			wr.WriteLine("#PROJET_RESO_X\t" + cx);
 			wr.WriteLine("#PROJET_RESO_Y\t" + cy);
-			ret = dataMap.Save(wr) && dataImage.Save(wr);
+			bool ret = dataMap.Save(wr) && dataImage.Save(wr);
 			wr.Close();
 			return ret;
 		}

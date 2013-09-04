@@ -14,8 +14,7 @@ namespace PJA {
 		public byte valDef;		// valeur par défaut variable de salle
 
 		public override bool Load(StreamReader rd) {
-			string line;
-			line = rd.ReadLine();
+			string line = rd.ReadLine();
 			if (line.StartsWith("#MAP_TYPE")) {
 				map = (DataMap.typeCase)int.Parse(line.Substring(10));
 				line = rd.ReadLine();

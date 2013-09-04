@@ -426,14 +426,12 @@ namespace ConvImgCpc {
 			return CalcDist(c1.r, c1.v, c1.b, c2.r, c2.v, c2.b);
 		}
 
-		static void SetPixCol0(BitmapCPC dest, int[] CChoix, bool CpcPlus, bool nb) {
+		static void SetPixCol0(BitmapCPC dest) {
+			int r = 0, v = 0, b = 0;
 			for (int y = 0; y < tailleY; y += 2)
 				for (int x = 0; x < tailleX; x += Tx) {
 					int oldDist = 0x7FFFFFFF;
-					int pix = bitmap.GetPixel(x, y);
-					int r = pix & 0xFF;
-					int v = (pix >> 8) & 0xFF;
-					int b = (pix >> 16) & 0xFF;
+					bitmap.GetPixel(x, y, ref r, ref v, ref b);
 					int choix = 0;
 					for (int i = 0; i < MaxCol; i++) {
 						int Dist = CalcDist(tabCol[i], r, v, b);
@@ -448,16 +446,17 @@ namespace ConvImgCpc {
 				}
 		}
 
-		static void SetPixCol1(BitmapCPC dest, int[] CChoix, bool CpcPlus, bool nb) {
+		static void SetPixCol1(BitmapCPC dest) {
 			int choix = 0;
 			for (int y = 0; y < tailleY; y += 2)
 				for (int x = 0; x < tailleX; x += Tx) {
 					int oldDist = 0x7FFFFFFF;
-					int pix0 = bitmap.GetPixel(x, y);
-					int pix1 = bitmap.GetPixel(x, y + 1);
-					int totR = ((pix0 & 0xFF) + (pix1 & 0xFF)) >> 1;
-					int totV = ((pix0 & 0xFF00) + (pix1 & 0xFF00)) >> 9;
-					int totB = ((pix0 & 0xFF0000) + (pix1 & 0xFF0000)) >> 17;
+					int totR = 0, totV = 0, totB = 0;
+					bitmap.AddGetPixel(x, y, ref totR, ref totV, ref totB);
+					bitmap.AddGetPixel(x, y + 1, ref totR, ref totV, ref totB);
+					totR >>= 1;
+					totV >>= 1;
+					totB >>= 1;
 					for (int i = 0; i < MaxCol; i++) {
 						int Dist = CalcDist(tabCol[i], totR, totV, totB);
 						if (Dist < oldDist) {
@@ -471,20 +470,21 @@ namespace ConvImgCpc {
 				}
 		}
 
-		static void SetPixCol2(BitmapCPC dest, int[] CChoix, bool CpcPlus, bool nb) {
+		static void SetPixCol2(BitmapCPC dest) {
 			int choix0 = 0, choix1 = 0;
 			for (int y = 0; y < tailleY; y += 4) {
 				int ynorm = y + 2 < tailleY ? y + 2 : y + 1;
 				for (int x = 0; x < tailleX; x += Tx * 2) {
 					int xnorm = x + Tx < tailleX ? x + Tx : x + 1;
 					int OldDist = 0x7FFFFFFF;
-					int pix0 = bitmap.GetPixel(x, y);
-					int pix2 = bitmap.GetPixel(x, ynorm);
-					int pix3 = bitmap.GetPixel(xnorm, y);
-					int pix1 = bitmap.GetPixel(xnorm, ynorm);
-					int totR = ((pix0 & 0xFF) + (pix1 & 0xFF) + (pix2 & 0xFF) + (pix3 & 0xFF)) >> 1;
-					int totV = ((pix0 & 0xFF00) + (pix1 & 0xFF00) + (pix2 & 0xFF00) + (pix3 & 0xFF00)) >> 9;
-					int totB = ((pix0 & 0xFF0000) + (pix1 & 0xFF0000) + (pix2 & 0xFF0000) + (pix3 & 0xFF0000)) >> 17;
+					int totR = 0, totV = 0, totB = 0;
+					bitmap.AddGetPixel(x, y, ref totR, ref totV, ref totB);
+					bitmap.AddGetPixel(x, ynorm, ref totR, ref totV, ref totB);
+					bitmap.AddGetPixel(xnorm, y, ref totR, ref totV, ref totB);
+					bitmap.AddGetPixel(xnorm, ynorm, ref totR, ref totV, ref totB);
+					totR >>= 1;
+					totV >>= 1;
+					totB >>= 1;
 					for (int i1 = 0; i1 < MaxCol; i1++) {
 						for (int i2 = 0; i2 < MaxCol; i2++) {
 							int sr = tabCol[i1].r + tabCol[i2].r;
@@ -501,25 +501,25 @@ namespace ConvImgCpc {
 						}
 					}
 					dest.SetPixelCpc(x, y, choix0);
-					dest.SetPixelCpc(xnorm, ynorm, choix1);
+					dest.SetPixelCpc(xnorm, y, choix1);
+					dest.SetPixelCpc(x, ynorm, choix1);
+					dest.SetPixelCpc(xnorm, ynorm, choix0);
 				}
 			}
 		}
 
-		static void SetPixCol3(BitmapCPC dest, int[] CChoix, bool CpcPlus, bool nb) {
+		static void SetPixCol3(BitmapCPC dest) {
 			int choix0 = 0, choix2 = 0, choix3 = 0, choix1 = 0;
 			for (int y = 0; y < tailleY; y += 4) {
 				int ynorm = y + 2 < tailleY ? y + 2 : y + 1;
 				for (int x = 0; x < tailleX; x += Tx * 2) {
 					int xnorm = x + Tx < tailleX ? x + Tx : x + 1;
 					int OldDist = 0x7FFFFFFF;
-					int pix0 = bitmap.GetPixel(x, y);
-					int pix2 = bitmap.GetPixel(x, ynorm);
-					int pix3 = bitmap.GetPixel(xnorm, y);
-					int pix1 = bitmap.GetPixel(xnorm, ynorm);
-					int totR = ((pix0 & 0xFF) + (pix1 & 0xFF) + (pix2 & 0xFF) + (pix3 & 0xFF));
-					int totV = ((pix0 & 0xFF00) + (pix1 & 0xFF00) + (pix2 & 0xFF00) + (pix3 & 0xFF00)) >> 8;
-					int totB = ((pix0 & 0xFF0000) + (pix1 & 0xFF0000) + (pix2 & 0xFF0000) + (pix3 & 0xFF0000)) >> 16;
+					int totR = 0, totV = 0, totB = 0;
+					bitmap.AddGetPixel(x, y, ref totR, ref totV, ref totB);
+					bitmap.AddGetPixel(x, ynorm, ref totR, ref totV, ref totB);
+					bitmap.AddGetPixel(xnorm, y, ref totR, ref totV, ref totB);
+					bitmap.AddGetPixel(xnorm, ynorm, ref totR, ref totV, ref totB);
 					for (int i1 = 0; i1 < MaxCol; i1++) {
 						for (int i2 = 0; i2 < MaxCol; i2++) {
 							for (int i3 = 0; i3 < MaxCol; i3++) {
@@ -558,19 +558,19 @@ namespace ConvImgCpc {
 
 			switch (PixMode) {
 				case 1:
-					SetPixCol1(dest, CChoix, CpcPlus, nb);
+					SetPixCol1(dest);
 					break;
 
 				case 2:
-					SetPixCol2(dest, CChoix, CpcPlus, nb);
+					SetPixCol2(dest);
 					break;
 
 				case 3:
-					SetPixCol3(dest, CChoix, CpcPlus, nb);
+					SetPixCol3(dest);
 					break;
 
 				default:
-					SetPixCol0(dest, CChoix, CpcPlus, nb);
+					SetPixCol0(dest);
 					break;
 			}
 		}
@@ -634,22 +634,11 @@ namespace ConvImgCpc {
 					break;
 			}
 			bitmap.LockBits();
-			if (pctLumi != 100 || pctSat != 100 || pctContrast != 100) {
-				//TraiteLumiSatCtrst(pctLumi, pctSat, pctContrast);
-			}
-
-			long t0 = System.Environment.TickCount;
-			int nbCol = ConvertPasse1(tailleX, tailleY, methode, matrice, pct, cpcPlus, newMethode, nb, dest.ModeCPC, cpcPlus, reductPal1, reductPal1, newReduct, pctLumi, pctSat, pctContrast);
-			long t1 = System.Environment.TickCount;
-			//int nbCol = CalcNbCoul(dest.ModeCPC, cpcPlus, reductPal1, reductPal1, newReduct);
-			long t2 = System.Environment.TickCount;
+			int nbCol = ConvertPasse1(tailleX, tailleY, methode, matrice, pct, cpcPlus, newMethode, nb, dest.ModeCPC, cpcPlus, reductPal1, reductPal2, newReduct, pctLumi, pctSat, pctContrast);
 			RechercheCMax(CChoix, lockState, cpcPlus, sortPal);
-			long t3 = System.Environment.TickCount;
 			Passe2(dest, CChoix, cpcPlus, pixMode, nb);
-			long t4 = System.Environment.TickCount;
 			for (int i = 0; i < 16; i++)
 				dest.SetPalette(i, CChoix[i]);
-			long t5 = t4 - t0;
 		}
 	}
 }

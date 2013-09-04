@@ -27,10 +27,7 @@ namespace PJA {
 		}
 
 		public int GetPalette(int ind) {
-			if (ind < 17)
-				return (palette[2 * ind] << 8) + palette[2 * ind + 1];
-
-			return 0;
+			return ind < 17 ? (palette[2 * ind] << 8) + palette[2 * ind + 1] : 0;
 		}
 
 		public void SetPalette(int ind, int val) {

@@ -13,7 +13,7 @@ namespace PJA {
 			modif = true;
 		}
 
-		public void RenameImage(Image i, string nom) {
+		static public void RenameImage(Image i, string nom) {
 			i.nom = nom;
 		}
 
