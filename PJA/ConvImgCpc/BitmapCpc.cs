@@ -1,6 +1,6 @@
 ﻿namespace ConvImgCpc {
 	public class BitmapCPC {
-		public byte[] BmpCpc = new byte[0x10000];
+		public byte[] BmpCpc = new byte[0x8000];
 		//private byte[] BufTmp = new byte[0x10000];
 		public int[] Palette = new int[17];
 		static private int[] PaletteStandardCPC = { 1, 24, 20, 6, 26, 0, 2, 7, 10, 12, 14, 16, 18, 22, 1, 14 };

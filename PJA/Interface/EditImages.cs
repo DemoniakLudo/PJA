@@ -131,7 +131,7 @@ namespace PJA {
 		private void bpEdit_Click(object sender, System.EventArgs e) {
 			Image img = listImage.SelectedItem as Image;
 			if (img != null && imageName.Text.Length > 0) {
-				dataImage.RenameImage(img, imageName.Text);
+				DataImage.RenameImage(img, imageName.Text);
 				UpdateListe(listImage.SelectedIndex);
 			}
 		}
@@ -193,7 +193,7 @@ namespace PJA {
 				for (int i = 0; i < 16; i++)
 					bitmapCPC.SetPalette(i, img.GetPalette(i));
 
-				for (int i = 0; i < 0x4000; i++)
+				for (int i = 0; i < img.data.Length; i++)
 					bitmapCPC.BmpCpc[i] = img.data[i];
 
 				Render();
