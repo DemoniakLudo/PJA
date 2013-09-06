@@ -154,50 +154,54 @@
 			return RgbCPC[c < 27 ? c : 0].GetColor;
 		}
 
-		public LockBitmap Render(LockBitmap bmp, int Mode, bool GetPalMode) {
+		public LockBitmap Render(LockBitmap bmp, int Mode, int zoomLevel, bool GetPalMode) {
 			bmp.LockBits();
 			//if (GetPalMode)
 			//	InitDatas(out Mode);
 
 			for (int y = 0; y < NbLig << 1; y += 2) {
-				GetAdrCpc(y);
+				GetAdrCpc(y / zoomLevel);
 				int xBitmap = 0;
-				for (int x = 0; x < NbCol; x++) {
-					byte Octet = BmpCpc[AdrCPC + x];
+				for (int x = 0; x < NbCol; x += zoomLevel) {
+					byte Octet = BmpCpc[AdrCPC++];
 					switch (Mode) {
 						case 0:
 							bmp.SetPixel(xBitmap, y, GetPalCPC(Palette[(Octet >> 7) + ((Octet & 0x20) >> 3) + ((Octet & 0x08) >> 2) + ((Octet & 0x02) << 2)]));
-							bmp.SetPixel(xBitmap + 4, y, GetPalCPC(Palette[((Octet & 0x40) >> 6) + ((Octet & 0x10) >> 2) + ((Octet & 0x04) >> 1) + ((Octet & 0x01) << 3)]));
-							xBitmap += 8;
+							bmp.SetPixel(xBitmap + 4 * zoomLevel, y, GetPalCPC(Palette[((Octet & 0x40) >> 6) + ((Octet & 0x10) >> 2) + ((Octet & 0x04) >> 1) + ((Octet & 0x01) << 3)]));
+							xBitmap += 8 * zoomLevel;
 							break;
 
 						case 1:
 						case 3:
 							bmp.SetPixel(xBitmap, y, GetPalCPC(Palette[((Octet >> 7) & 1) + ((Octet >> 2) & 2)]));
-							bmp.SetPixel(xBitmap + 2, y, GetPalCPC(Palette[((Octet >> 6) & 1) + ((Octet >> 1) & 2)]));
-							bmp.SetPixel(xBitmap + 4, y, GetPalCPC(Palette[((Octet >> 5) & 1) + ((Octet >> 0) & 2)]));
-							bmp.SetPixel(xBitmap + 6, y, GetPalCPC(Palette[((Octet >> 4) & 1) + ((Octet << 1) & 2)]));
-							xBitmap += 8;
+							bmp.SetPixel(xBitmap + 2 * zoomLevel, y, GetPalCPC(Palette[((Octet >> 6) & 1) + ((Octet >> 1) & 2)]));
+							bmp.SetPixel(xBitmap + 4 * zoomLevel, y, GetPalCPC(Palette[((Octet >> 5) & 1) + ((Octet >> 0) & 2)]));
+							bmp.SetPixel(xBitmap + 6 * zoomLevel, y, GetPalCPC(Palette[((Octet >> 4) & 1) + ((Octet << 1) & 2)]));
+							xBitmap += 8 * zoomLevel;
 							break;
 
 						case 2:
-							for (int i = 8; i-- > 0; )
-								bmp.SetPixel(xBitmap++, y, GetPalCPC(Palette[(Octet >> i) & 1]));
+							for (int i = 8; i-- > 0; ) {
+								bmp.SetPixel(xBitmap, y, GetPalCPC(Palette[(Octet >> i) & 1]));
+								xBitmap += zoomLevel;
+							}
 							break;
 					}
 				}
 			}
-			LisseBitmap(bmp, NbCol << 3, NbLig << 1);
+			LisseBitmap(bmp, NbCol << 3, NbLig << 1, zoomLevel);
 			bmp.UnlockBits();
 			return bmp;
 		}
 
-		private void LisseBitmap(LockBitmap bmp, int tailleX, int tailleY) {
-			int Tx = 4 >> (ModeCPC == 3 ? 1 : ModeCPC);
-			for (int y = 0; y < tailleY; y += 2)
+		private void LisseBitmap(LockBitmap bmp, int tailleX, int tailleY, int zoomLevel) {
+			int Tx = (4 >> (ModeCPC == 3 ? 1 : ModeCPC)) * zoomLevel;
+			for (int y = 0; y < tailleY; y += 2 * zoomLevel)
 				for (int x = 0; x < tailleX; x += Tx) {
-					bmp.CopyPixel(x, y, x + 1, y, Tx - 1);
-					bmp.CopyPixel(x, y, x, y + 1, Tx);
+					for (int yy = 1; yy < 2 * zoomLevel; yy++) {
+						bmp.CopyPixel(x, y, x + 1, y, Tx - 1);
+						bmp.CopyPixel(x, y, x, y + yy, Tx);
+					}
 				}
 		}
 		/*

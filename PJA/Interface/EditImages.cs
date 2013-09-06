@@ -85,7 +85,7 @@ namespace PJA {
 		}
 
 		public void Render() {
-			bitmapCPC.Render(bmpLock, bitmapCPC.ModeCPC, false);
+			bitmapCPC.Render(bmpLock, bitmapCPC.ModeCPC, 1, false);
 			pictureBox.Refresh();
 			UpdatePalette();
 		}
@@ -328,12 +328,13 @@ namespace PJA {
 		}
 
 		private void EditImages_FormClosed(object sender, FormClosedEventArgs e) {
-			//Valid = false;
+			Valid = false;
 		}
 
 		private void bpPixel_Click(object sender, System.EventArgs e) {
 			PixelImage pxl = new PixelImage(bitmapCPC, pictureBox.Image.Size);
 			pxl.ShowDialog(this);
+			Render();
 		}
 
 		/*

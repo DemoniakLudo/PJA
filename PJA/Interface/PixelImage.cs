@@ -9,6 +9,8 @@ namespace PJA {
 		public BitmapCPC bitmapCPC;
 		private Label[] colors = new Label[16];
 		public bool Valid = false;
+		private int zoom;
+		private int numCol;
 
 		public PixelImage(BitmapCPC cpc, Size s) {
 			InitializeComponent();
@@ -26,19 +28,14 @@ namespace PJA {
 				colors[i].Click += ClickColor;
 				Controls.Add(colors[i]);
 			}
-			Render();
+			zoomLevel.SelectedIndex = 0;
 			Valid = true;
 		}
 
-		// Changement de la palette
+		// Sélection couleur
 		void ClickColor(object sender, System.EventArgs e) {
 			Label colorClick = sender as Label;
-			int numCol = colorClick.Tag != null ? (int)colorClick.Tag : 0;
-			EditColor ed = new EditColor(numCol, bitmapCPC.Palette[numCol], bitmapCPC.GetPaletteColor(numCol).GetColorARGB);
-			ed.ShowDialog(this);
-			if (ed.isValide) {
-				bitmapCPC.SetPalette(numCol, ed.ValColor);
-			}
+			numCol = colorClick.Tag != null ? (int)colorClick.Tag : 0;
 		}
 
 		public void UpdatePalette() {
@@ -49,9 +46,27 @@ namespace PJA {
 		}
 
 		public void Render() {
-			bitmapCPC.Render(bmpLock, bitmapCPC.ModeCPC, false);
+			bitmapCPC.Render(bmpLock, bitmapCPC.ModeCPC, zoom, false);
 			pictureBox.Refresh();
 			UpdatePalette();
+		}
+
+		private void zoomLevel_SelectedIndexChanged(object sender, System.EventArgs e) {
+			zoom = int.Parse(zoomLevel.SelectedItem.ToString());
+			Render();
+		}
+
+		private void pictureBox_MouseDown(object sender, MouseEventArgs e) {
+				int x = e.X / zoom;
+				int y = e.Y / zoom;
+				bitmapCPC.SetPixelCpc(x, y, numCol);
+				Render();
+		}
+
+		private void pictureBox_MouseMove(object sender, MouseEventArgs e) {
+			if (e.Button == MouseButtons.Left) {
+				pictureBox_MouseDown(sender, e);
+			}
 		}
 	}
 }
