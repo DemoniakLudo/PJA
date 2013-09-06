@@ -64,6 +64,7 @@
 			this.nb = new System.Windows.Forms.CheckBox();
 			this.bpPredefPal = new System.Windows.Forms.Button();
 			this.lblTps = new System.Windows.Forms.Label();
+			this.bpPixel = new System.Windows.Forms.Button();
 			this.tramage.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pctTrame)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
@@ -509,11 +510,22 @@
 			this.lblTps.TabIndex = 28;
 			this.lblTps.Text = "0 ms";
 			// 
+			// bpPixel
+			// 
+			this.bpPixel.Location = new System.Drawing.Point(776, 534);
+			this.bpPixel.Name = "bpPixel";
+			this.bpPixel.Size = new System.Drawing.Size(86, 35);
+			this.bpPixel.TabIndex = 29;
+			this.bpPixel.Text = "Editer";
+			this.bpPixel.UseVisualStyleBackColor = true;
+			this.bpPixel.Click += new System.EventHandler(this.bpPixel_Click);
+			// 
 			// EditImages
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1056, 758);
+			this.Controls.Add(this.bpPixel);
 			this.Controls.Add(this.lblTps);
 			this.Controls.Add(this.nb);
 			this.Controls.Add(this.newMethode);
@@ -551,7 +563,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "EditImages";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Editeur d\'images";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.EditImages_FormClosed);
 			this.tramage.ResumeLayout(false);
@@ -609,6 +621,7 @@
 		private System.Windows.Forms.CheckBox nb;
 		private System.Windows.Forms.Button bpPredefPal;
 		private System.Windows.Forms.Label lblTps;
+		private System.Windows.Forms.Button bpPixel;
 
 	}
 }
