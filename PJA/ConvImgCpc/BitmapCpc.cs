@@ -154,13 +154,14 @@
 			return RgbCPC[c < 27 ? c : 0].GetColor;
 		}
 
-		public LockBitmap Render(LockBitmap bmp, int Mode, int zoomLevel, bool GetPalMode) {
+		public LockBitmap Render(LockBitmap bmp, int Mode, int zoomLevel, int offsetX, int offsetY, bool GetPalMode) {
 			bmp.LockBits();
 			//if (GetPalMode)
 			//	InitDatas(out Mode);
 
 			for (int y = 0; y < NbLig << 1; y += 2) {
-				GetAdrCpc(y / zoomLevel);
+				GetAdrCpc(offsetY + y / zoomLevel);
+				AdrCPC += offsetX >> 3;
 				int xBitmap = 0;
 				for (int x = 0; x < NbCol; x += zoomLevel) {
 					byte Octet = BmpCpc[AdrCPC++];

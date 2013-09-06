@@ -76,7 +76,7 @@
 			// lockAllPal
 			// 
 			this.lockAllPal.AutoSize = true;
-			this.lockAllPal.Location = new System.Drawing.Point(784, 586);
+			this.lockAllPal.Location = new System.Drawing.Point(784, 600);
 			this.lockAllPal.Name = "lockAllPal";
 			this.lockAllPal.Size = new System.Drawing.Size(93, 17);
 			this.lockAllPal.TabIndex = 1;
@@ -392,7 +392,7 @@
 			// sortPal
 			// 
 			this.sortPal.AutoSize = true;
-			this.sortPal.Location = new System.Drawing.Point(894, 586);
+			this.sortPal.Location = new System.Drawing.Point(894, 600);
 			this.sortPal.Name = "sortPal";
 			this.sortPal.Size = new System.Drawing.Size(47, 17);
 			this.sortPal.TabIndex = 24;

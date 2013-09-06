@@ -25,6 +25,8 @@
 		private void InitializeComponent() {
 			this.pictureBox = new System.Windows.Forms.PictureBox();
 			this.zoomLevel = new System.Windows.Forms.ComboBox();
+			this.hScrollBar = new System.Windows.Forms.HScrollBar();
+			this.vScrollBar = new System.Windows.Forms.VScrollBar();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -53,11 +55,33 @@
 			this.zoomLevel.TabIndex = 1;
 			this.zoomLevel.SelectedIndexChanged += new System.EventHandler(this.zoomLevel_SelectedIndexChanged);
 			// 
+			// hScrollBar
+			// 
+			this.hScrollBar.LargeChange = 32;
+			this.hScrollBar.Location = new System.Drawing.Point(0, 547);
+			this.hScrollBar.Name = "hScrollBar";
+			this.hScrollBar.Size = new System.Drawing.Size(768, 16);
+			this.hScrollBar.SmallChange = 8;
+			this.hScrollBar.TabIndex = 2;
+			this.hScrollBar.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBar_Scroll);
+			// 
+			// vScrollBar
+			// 
+			this.vScrollBar.LargeChange = 32;
+			this.vScrollBar.Location = new System.Drawing.Point(771, 0);
+			this.vScrollBar.Name = "vScrollBar";
+			this.vScrollBar.Size = new System.Drawing.Size(16, 544);
+			this.vScrollBar.SmallChange = 8;
+			this.vScrollBar.TabIndex = 3;
+			this.vScrollBar.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrollBar_Scroll);
+			// 
 			// PixelImage
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1056, 758);
+			this.Controls.Add(this.vScrollBar);
+			this.Controls.Add(this.hScrollBar);
 			this.Controls.Add(this.zoomLevel);
 			this.Controls.Add(this.pictureBox);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -75,6 +99,8 @@
 
 		private System.Windows.Forms.PictureBox pictureBox;
 		private System.Windows.Forms.ComboBox zoomLevel;
+		private System.Windows.Forms.HScrollBar hScrollBar;
+		private System.Windows.Forms.VScrollBar vScrollBar;
 
 	}
 }
