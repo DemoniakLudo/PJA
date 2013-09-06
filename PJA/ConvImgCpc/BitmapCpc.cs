@@ -10,6 +10,7 @@
 		static private int[] tabOctetMode01 = { 0x00, 0x80, 0x08, 0x88, 0x20, 0xA0, 0x28, 0xA8, 0x02, 0x82, 0x0A, 0x8A, 0x22, 0xA2, 0x2A, 0xAA };
 		const int MaxColsCpc = 128;
 		const int maxLignesCpc = 272;
+		private int oldY = -1, AdrCPC = -1;
 
 		public const int LUM0 = 0x00;
 		public const int LUM1 = 0x66;
@@ -42,7 +43,7 @@
 							new RvbColor( LUM2, LUM2, LUM1),
 							new RvbColor( LUM0, LUM2, LUM2),
 							new RvbColor( LUM1, LUM2, LUM2),
-							new RvbColor( LUM2, LUM2, LUM2 )
+							new RvbColor( LUM2, LUM2, LUM2)
 							};
 
 		public int NbCol = 80;
@@ -87,42 +88,39 @@
 			return RgbCPC[Palette[col] < 27 ? Palette[col] : 0];
 		}
 
-		public void SetPixelCpc(int x, int y, int col) {
-			int AdrCPC = (y >> 4) * NbCol + (y & 14) * 0x400;
-			if (y * NbCol > 0x7CFF)
-				AdrCPC += 0x3800;
+		private void GetAdrCpc(int y) {
+			if (y != oldY) {
+				oldY = y;
+				AdrCPC = (y >> 4) * NbCol + (y & 14) * 0x400;
+				if (y * NbCol > 0x7CFF)
+					AdrCPC += 0x3800;
+			}
+		}
 
-			AdrCPC += x >> 3;
-			byte octet = BmpCpc[AdrCPC];
+		public void SetPixelCpc(int x, int y, int col) {
+			GetAdrCpc(y);
+			byte octet = BmpCpc[AdrCPC + (x >> 3)];
 			switch (ModeCPC) {
 				case 0:
-					octet = (byte)(octet & ~tabMasqueMode0[(x >> 2) & 1]);
-					octet = (byte)(octet | (tabOctetMode01[col & 15] >> ((x >> 2) & 1)));
+					octet = (byte)((octet & ~tabMasqueMode0[(x >> 2) & 1]) | (tabOctetMode01[col & 15] >> ((x >> 2) & 1)));
 					break;
 
 				case 1:
 				case 3:
-					octet = (byte)(octet & ~tabMasqueMode1[(x >> 1) & 3]);
-					octet = (byte)(octet | (tabOctetMode01[col & 3] >> ((x >> 1) & 3)));
+					octet = (byte)((octet & ~tabMasqueMode1[(x >> 1) & 3]) | (tabOctetMode01[col & 3] >> ((x >> 1) & 3)));
 					break;
-				case 2:
-					if ((col & 1) == 1)
-						octet = (byte)(octet | tabMasqueMode2[x & 7]);
-					else
-						octet = (byte)(octet & ~tabMasqueMode2[x & 7]);
 
+				case 2:
+					octet = ((col & 1) == 1) ? (byte)(octet | tabMasqueMode2[x & 7]) : (byte)(octet & ~tabMasqueMode2[x & 7]);
 					break;
 			}
-			BmpCpc[AdrCPC] = octet;
+			BmpCpc[AdrCPC + (x >> 3)] = octet;
 		}
 
+		/*
 		public int GetPixelCpc(int x, int y) {
-			int AdrCPC = (y >> 4) * NbCol + (y & 14) * 0x400;
-			if (y * NbCol > 0x7CFF)
-				AdrCPC += 0x3800;
-
-			AdrCPC += x >> 3;
-			byte octet = BmpCpc[AdrCPC];
+			GetAdrCpc(y);
+			byte octet = BmpCpc[AdrCPC + (x >> 3)];
 			switch (ModeCPC) {
 				case 0:
 					octet = (byte)((octet & tabMasqueMode0[(x >> 2) & 1]) << ((x >> 2) & 1));
@@ -144,6 +142,7 @@
 
 			return 0;
 		}
+		*/
 
 		public int GetPalCPC(int c) {
 			if (cpcPlus) {
@@ -152,51 +151,37 @@
 				byte v = (byte)(((c & 0xF00) >> 8) * 17);
 				return (int)(r + (v << 8) + (b << 16) + 0xFF000000);
 			}
-			if (c < 0 || c > 26)
-				c = 0;
-
-			return RgbCPC[c].GetColor;
+			return RgbCPC[c < 27 ? c : 0].GetColor;
 		}
 
 		public LockBitmap Render(LockBitmap bmp, int Mode, bool GetPalMode) {
-			int i, p0, p1, p2, p3;
-
 			bmp.LockBits();
-			if (GetPalMode)
-				InitDatas(out Mode);
+			//if (GetPalMode)
+			//	InitDatas(out Mode);
 
 			for (int y = 0; y < NbLig << 1; y += 2) {
-				int AdrCPC = (y >> 4) * NbCol + (y & 14) * 0x400;
-				if (y * NbCol > 0x7CFF)
-					AdrCPC += 0x3800;
-
+				GetAdrCpc(y);
 				int xBitmap = 0;
 				for (int x = 0; x < NbCol; x++) {
 					byte Octet = BmpCpc[AdrCPC + x];
 					switch (Mode) {
 						case 0:
-							p0 = (Octet >> 7) + ((Octet & 0x20) >> 3) + ((Octet & 0x08) >> 2) + ((Octet & 0x02) << 2);
-							p1 = ((Octet & 0x40) >> 6) + ((Octet & 0x10) >> 2) + ((Octet & 0x04) >> 1) + ((Octet & 0x01) << 3);
-							bmp.SetPixel(xBitmap, y, GetPalCPC(Palette[p0]));
-							bmp.SetPixel(xBitmap + 4, y, GetPalCPC(Palette[p1]));
+							bmp.SetPixel(xBitmap, y, GetPalCPC(Palette[(Octet >> 7) + ((Octet & 0x20) >> 3) + ((Octet & 0x08) >> 2) + ((Octet & 0x02) << 2)]));
+							bmp.SetPixel(xBitmap + 4, y, GetPalCPC(Palette[((Octet & 0x40) >> 6) + ((Octet & 0x10) >> 2) + ((Octet & 0x04) >> 1) + ((Octet & 0x01) << 3)]));
 							xBitmap += 8;
 							break;
 
 						case 1:
 						case 3:
-							p0 = ((Octet >> 7) & 1) + ((Octet >> 2) & 2);
-							p1 = ((Octet >> 6) & 1) + ((Octet >> 1) & 2);
-							p2 = ((Octet >> 5) & 1) + ((Octet >> 0) & 2);
-							p3 = ((Octet >> 4) & 1) + ((Octet << 1) & 2);
-							bmp.SetPixel(xBitmap, y, GetPalCPC(Palette[p0]));
-							bmp.SetPixel(xBitmap + 2, y, GetPalCPC(Palette[p1]));
-							bmp.SetPixel(xBitmap + 4, y, GetPalCPC(Palette[p2]));
-							bmp.SetPixel(xBitmap + 6, y, GetPalCPC(Palette[p3]));
+							bmp.SetPixel(xBitmap, y, GetPalCPC(Palette[((Octet >> 7) & 1) + ((Octet >> 2) & 2)]));
+							bmp.SetPixel(xBitmap + 2, y, GetPalCPC(Palette[((Octet >> 6) & 1) + ((Octet >> 1) & 2)]));
+							bmp.SetPixel(xBitmap + 4, y, GetPalCPC(Palette[((Octet >> 5) & 1) + ((Octet >> 0) & 2)]));
+							bmp.SetPixel(xBitmap + 6, y, GetPalCPC(Palette[((Octet >> 4) & 1) + ((Octet << 1) & 2)]));
 							xBitmap += 8;
 							break;
 
 						case 2:
-							for (i = 8; i-- > 0; )
+							for (int i = 8; i-- > 0; )
 								bmp.SetPixel(xBitmap++, y, GetPalCPC(Palette[(Octet >> i) & 1]));
 							break;
 					}
@@ -211,7 +196,7 @@
 			int Tx = 4 >> (ModeCPC == 3 ? 1 : ModeCPC);
 			for (int y = 0; y < tailleY; y += 2)
 				for (int x = 0; x < tailleX; x += Tx) {
-					bmp.CopyPixel(x, y, x, y, Tx);
+					bmp.CopyPixel(x, y, x + 1, y, Tx - 1);
 					bmp.CopyPixel(x, y, x, y + 1, Tx);
 				}
 		}
@@ -321,7 +306,6 @@
 					br.Close();
 					return (Ret);
 				}
-		*/
 
 		private bool InitDatas(out int Mode) {
 			bool Ret = false;
@@ -331,10 +315,7 @@
 			NbCol = 80;
 			NbLig = 200;
 
-			/*
-			Si sauvegardé avec ConvImgCpc, alors la palette se trouve
-			dans l'image...
-			*/
+			// Si sauvegardé avec ConvImgCpc, alors la palette se trouve dans l'image...
 			if (BmpCpc[0x7D0] == 0x3A && BmpCpc[0x7D1] == 0xD0 && BmpCpc[0x7D2] == 0xD7 && BmpCpc[0x7D3] == 0xCD) {
 				// CPC OLD, écran standard
 				SetPalette(BmpCpc, 0x17D0, cpcPlus);
@@ -379,5 +360,6 @@
 			for (int i = 0; i < 16; i++)
 				Palette[i] = Plus ? PalStart[startAdr + 1 + i << 1] + PalStart[startAdr + 2 + i << 1] << 8 : PalStart[i + 1];
 		}
+		 */
 	}
 }

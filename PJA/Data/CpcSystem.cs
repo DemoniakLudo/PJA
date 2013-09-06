@@ -62,7 +62,7 @@ namespace PJA {
 
 
 	}
-
+	/*
 	class CpcAmsdos {
 		//
 		// Structure d'une entrée AMSDOS
@@ -82,5 +82,5 @@ namespace PJA {
 		public byte BigLength;					// Longueur réelle (3 octets)
 		public short CheckSum;					// CheckSum Amsdos
 		public byte[] Unused2 = new byte[0x3B];
-	}
+	}*/
 }
