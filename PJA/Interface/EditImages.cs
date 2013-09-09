@@ -12,6 +12,9 @@ namespace PJA {
 		private CheckBox[] lockColors = new CheckBox[16];
 		public int[] lockState = new int[16];
 		private DataImage dataImage;
+		private int zoom = 1;
+		private int numCol = 0;
+		private int offsetX = 0, offsetY = 0;
 		public bool Valid = false;
 		//private OcpPal Pal = new OcpPal();
 		//static private char[] CpcVGA = new char[27] { 'T', 'D', 'U', '\\', 'X', ']', 'L', 'E', 'M', 'V', 'F', 'W', '^', '@', '_', 'N', 'G', 'O', 'R', 'B', 'S', 'Z', 'Y', '[', 'J', 'C', 'K' };
@@ -24,6 +27,11 @@ namespace PJA {
 			int tx = pictureBox.Width = projet.Cx * 8;
 			int ty = pictureBox.Height = projet.Cy * 16;
 			bmp = new Bitmap(tx, ty);
+			pictureBox.Image = bmp;
+			vScrollBar.Height = ty;
+			vScrollBar.Left = tx + 3;
+			hScrollBar.Width = tx;
+			hScrollBar.Top = ty + 3;
 			pictureBox.Image = bmp;
 			bmpLock = new LockBitmap(bmp);
 			bitmapCPC = new BitmapCPC(tx, ty, projet.Mode);
@@ -48,7 +56,8 @@ namespace PJA {
 			methode.SelectedIndex = 0;
 			matrice.SelectedIndex = 0;
 			renderMode.SelectedIndex = 0;
-			Render();
+			zoomLevel.SelectedIndex = 0;
+			bpEditMode_CheckedChanged(null,null);
 			UpdateListe(-1);
 			Valid = true;
 			dlgImportImage.Filter = "Images (*.bmp, *.gif, *.png, *.jpg)|*.bmp;*.gif;*.png;*.jpg";
@@ -65,15 +74,17 @@ namespace PJA {
 		// Changement de la palette
 		void ClickColor(object sender, System.EventArgs e) {
 			Label colorClick = sender as Label;
-			int numCol = colorClick.Tag != null ? (int)colorClick.Tag : 0;
-			EditColor ed = new EditColor(numCol, bitmapCPC.Palette[numCol], bitmapCPC.GetPaletteColor(numCol).GetColorARGB);
-			ed.ShowDialog(this);
-			if (ed.isValide) {
-				bitmapCPC.SetPalette(numCol, ed.ValColor);
-				if (autoRecalc.Checked)
-					bpRecalc_Click(sender, e);
-				else
-					Render();
+			numCol = colorClick.Tag != null ? (int)colorClick.Tag : 0;
+			if (!bpEditMode.Checked) {
+				EditColor ed = new EditColor(numCol, bitmapCPC.Palette[numCol], bitmapCPC.GetPaletteColor(numCol).GetColorARGB);
+				ed.ShowDialog(this);
+				if (ed.isValide) {
+					bitmapCPC.SetPalette(numCol, ed.ValColor);
+					if (autoRecalc.Checked)
+						bpRecalc_Click(sender, e);
+					else
+						Render();
+				}
 			}
 		}
 
@@ -85,7 +96,7 @@ namespace PJA {
 		}
 
 		public void Render() {
-			bitmapCPC.Render(bmpLock, bitmapCPC.ModeCPC, 1, 0, 0, false);
+			bitmapCPC.Render(bmpLock, bitmapCPC.ModeCPC, zoom, offsetX, offsetY, false);
 			pictureBox.Refresh();
 			UpdatePalette();
 		}
@@ -327,14 +338,44 @@ namespace PJA {
 			}
 		}
 
-		private void EditImages_FormClosed(object sender, FormClosedEventArgs e) {
-			Valid = false;
+		private void bpEditMode_CheckedChanged(object sender, System.EventArgs e) {
+			zoomLevel.Enabled = bpEditMode.Checked;
+			if (!bpEditMode.Checked)
+				zoomLevel.SelectedIndex = 0;
 		}
 
-		private void bpPixel_Click(object sender, System.EventArgs e) {
-			PixelImage pxl = new PixelImage(bitmapCPC, pictureBox.Image.Size);
-			pxl.ShowDialog(this);
+		private void pictureBox_MouseDown(object sender, MouseEventArgs e) {
+			bitmapCPC.SetPixelCpc(offsetX + (e.X / zoom), offsetY + (e.Y / zoom), numCol);
 			Render();
+		}
+
+		private void pictureBox_MouseMove(object sender, MouseEventArgs e) {
+			if (e.Button == MouseButtons.Left)
+				pictureBox_MouseDown(sender, e);
+		}
+
+		private void vScrollBar_Scroll(object sender, ScrollEventArgs e) {
+			offsetY = (vScrollBar.Value >> 1) << 1;
+			Render();
+		}
+
+		private void hScrollBar_Scroll(object sender, ScrollEventArgs e) {
+			offsetX = (hScrollBar.Value >> 3) << 3;
+			Render();
+		}
+
+		private void zoomLevel_SelectedIndexChanged(object sender, System.EventArgs e) {
+			zoom = int.Parse(zoomLevel.SelectedItem.ToString());
+			vScrollBar.Enabled = hScrollBar.Enabled = zoom > 1;
+			hScrollBar.Maximum = hScrollBar.LargeChange + bmp.Width - (bmp.Width / zoom);
+			vScrollBar.Maximum = vScrollBar.LargeChange + bmp.Height - (bmp.Height / zoom);
+			hScrollBar.Value = offsetX = (bmp.Width - bmp.Width / zoom) / 2;
+			vScrollBar.Value = offsetY = (bmp.Height - bmp.Height / zoom) / 2;
+			Render();
+		}
+
+		private void EditImages_FormClosed(object sender, FormClosedEventArgs e) {
+			Valid = false;
 		}
 
 		/*

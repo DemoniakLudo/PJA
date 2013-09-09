@@ -41,10 +41,6 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.imageName = new System.Windows.Forms.TextBox();
 			this.bpRecalc = new System.Windows.Forms.Button();
-			this.bpEdit = new System.Windows.Forms.Button();
-			this.bpSuppr = new System.Windows.Forms.Button();
-			this.bpAdd = new System.Windows.Forms.Button();
-			this.pictureBox = new System.Windows.Forms.PictureBox();
 			this.bpRazSat = new System.Windows.Forms.Button();
 			this.bpRazLumi = new System.Windows.Forms.Button();
 			this.label9 = new System.Windows.Forms.Label();
@@ -64,13 +60,21 @@
 			this.nb = new System.Windows.Forms.CheckBox();
 			this.bpPredefPal = new System.Windows.Forms.Button();
 			this.lblTps = new System.Windows.Forms.Label();
-			this.bpPixel = new System.Windows.Forms.Button();
+			this.bpEdit = new System.Windows.Forms.Button();
+			this.bpSuppr = new System.Windows.Forms.Button();
+			this.bpAdd = new System.Windows.Forms.Button();
+			this.pictureBox = new System.Windows.Forms.PictureBox();
+			this.vScrollBar = new System.Windows.Forms.VScrollBar();
+			this.hScrollBar = new System.Windows.Forms.HScrollBar();
+			this.label3 = new System.Windows.Forms.Label();
+			this.zoomLevel = new System.Windows.Forms.ComboBox();
+			this.bpEditMode = new System.Windows.Forms.CheckBox();
 			this.tramage.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pctTrame)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.sat)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.lumi)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.contrast)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// lockAllPal
@@ -86,7 +90,7 @@
 			// 
 			// bpImport
 			// 
-			this.bpImport.Location = new System.Drawing.Point(784, 0);
+			this.bpImport.Location = new System.Drawing.Point(795, 0);
 			this.bpImport.Name = "bpImport";
 			this.bpImport.Size = new System.Drawing.Size(93, 23);
 			this.bpImport.TabIndex = 2;
@@ -97,7 +101,7 @@
 			// radioFit
 			// 
 			this.radioFit.AutoSize = true;
-			this.radioFit.Location = new System.Drawing.Point(784, 29);
+			this.radioFit.Location = new System.Drawing.Point(796, 29);
 			this.radioFit.Name = "radioFit";
 			this.radioFit.Size = new System.Drawing.Size(36, 17);
 			this.radioFit.TabIndex = 3;
@@ -109,7 +113,7 @@
 			// radioKeepSmaller
 			// 
 			this.radioKeepSmaller.AutoSize = true;
-			this.radioKeepSmaller.Location = new System.Drawing.Point(784, 52);
+			this.radioKeepSmaller.Location = new System.Drawing.Point(796, 52);
 			this.radioKeepSmaller.Name = "radioKeepSmaller";
 			this.radioKeepSmaller.Size = new System.Drawing.Size(84, 17);
 			this.radioKeepSmaller.TabIndex = 3;
@@ -121,7 +125,7 @@
 			// radioKeepLarger
 			// 
 			this.radioKeepLarger.AutoSize = true;
-			this.radioKeepLarger.Location = new System.Drawing.Point(784, 75);
+			this.radioKeepLarger.Location = new System.Drawing.Point(796, 75);
 			this.radioKeepLarger.Name = "radioKeepLarger";
 			this.radioKeepLarger.Size = new System.Drawing.Size(80, 17);
 			this.radioKeepLarger.TabIndex = 3;
@@ -140,9 +144,9 @@
 			this.tramage.Controls.Add(this.pctTrame);
 			this.tramage.Controls.Add(this.label4);
 			this.tramage.Controls.Add(this.renderMode);
-			this.tramage.Location = new System.Drawing.Point(784, 111);
+			this.tramage.Location = new System.Drawing.Point(795, 111);
 			this.tramage.Name = "tramage";
-			this.tramage.Size = new System.Drawing.Size(203, 129);
+			this.tramage.Size = new System.Drawing.Size(197, 103);
 			this.tramage.TabIndex = 12;
 			this.tramage.TabStop = false;
 			this.tramage.Text = "Tramage";
@@ -150,7 +154,7 @@
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(173, 48);
+			this.label6.Location = new System.Drawing.Point(177, 22);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(15, 13);
 			this.label6.TabIndex = 12;
@@ -161,20 +165,20 @@
 			this.methode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.methode.FormattingEnabled = true;
 			this.methode.Items.AddRange(new object[] {
-            "Pas de tramage",
+            "Aucun",
             "Méthode 1",
             "Méthode 2",
             "Méthode 3"});
-			this.methode.Location = new System.Drawing.Point(92, 19);
+			this.methode.Location = new System.Drawing.Point(43, 19);
 			this.methode.Name = "methode";
-			this.methode.Size = new System.Drawing.Size(97, 21);
+			this.methode.Size = new System.Drawing.Size(72, 21);
 			this.methode.TabIndex = 8;
 			this.methode.SelectedIndexChanged += new System.EventHandler(this.methode_SelectedIndexChanged);
 			// 
 			// label7
 			// 
 			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(9, 104);
+			this.label7.Location = new System.Drawing.Point(6, 76);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(83, 13);
 			this.label7.TabIndex = 12;
@@ -187,7 +191,7 @@
 			this.matrice.Items.AddRange(new object[] {
             "Matrice 2x2",
             "Matrice 3x3"});
-			this.matrice.Location = new System.Drawing.Point(92, 72);
+			this.matrice.Location = new System.Drawing.Point(57, 46);
 			this.matrice.Name = "matrice";
 			this.matrice.Size = new System.Drawing.Size(97, 21);
 			this.matrice.TabIndex = 8;
@@ -196,7 +200,7 @@
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(50, 75);
+			this.label5.Location = new System.Drawing.Point(9, 49);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(42, 13);
 			this.label5.TabIndex = 12;
@@ -204,21 +208,21 @@
 			// 
 			// pctTrame
 			// 
-			this.pctTrame.Location = new System.Drawing.Point(92, 46);
+			this.pctTrame.Location = new System.Drawing.Point(119, 20);
 			this.pctTrame.Maximum = new decimal(new int[] {
             400,
             0,
             0,
             0});
 			this.pctTrame.Name = "pctTrame";
-			this.pctTrame.Size = new System.Drawing.Size(70, 20);
+			this.pctTrame.Size = new System.Drawing.Size(50, 20);
 			this.pctTrame.TabIndex = 9;
 			this.pctTrame.ValueChanged += new System.EventHandler(this.pctTrame_ValueChanged);
 			// 
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(50, 22);
+			this.label4.Location = new System.Drawing.Point(6, 22);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(31, 13);
 			this.label4.TabIndex = 12;
@@ -233,7 +237,7 @@
             "Niveau 1",
             "Niveau 2",
             "Niveau 3"});
-			this.renderMode.Location = new System.Drawing.Point(92, 101);
+			this.renderMode.Location = new System.Drawing.Point(90, 73);
 			this.renderMode.Name = "renderMode";
 			this.renderMode.Size = new System.Drawing.Size(97, 21);
 			this.renderMode.TabIndex = 10;
@@ -242,16 +246,16 @@
 			// listImage
 			// 
 			this.listImage.FormattingEnabled = true;
-			this.listImage.Location = new System.Drawing.Point(784, 246);
+			this.listImage.Location = new System.Drawing.Point(795, 218);
 			this.listImage.Name = "listImage";
-			this.listImage.Size = new System.Drawing.Size(242, 212);
+			this.listImage.Size = new System.Drawing.Size(231, 212);
 			this.listImage.TabIndex = 13;
 			this.listImage.SelectedIndexChanged += new System.EventHandler(this.listImage_SelectedIndexChanged);
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(781, 467);
+			this.label1.Location = new System.Drawing.Point(793, 439);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(32, 13);
 			this.label1.TabIndex = 15;
@@ -259,9 +263,9 @@
 			// 
 			// imageName
 			// 
-			this.imageName.Location = new System.Drawing.Point(819, 464);
+			this.imageName.Location = new System.Drawing.Point(829, 436);
 			this.imageName.Name = "imageName";
-			this.imageName.Size = new System.Drawing.Size(225, 20);
+			this.imageName.Size = new System.Drawing.Size(215, 20);
 			this.imageName.TabIndex = 16;
 			// 
 			// bpRecalc
@@ -274,56 +278,9 @@
 			this.bpRecalc.UseVisualStyleBackColor = true;
 			this.bpRecalc.Click += new System.EventHandler(this.bpRecalc_Click);
 			// 
-			// bpEdit
-			// 
-			this.bpEdit.Image = global::PJA.Properties.Resources.Edit;
-			this.bpEdit.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.bpEdit.Location = new System.Drawing.Point(868, 495);
-			this.bpEdit.Name = "bpEdit";
-			this.bpEdit.Size = new System.Drawing.Size(86, 33);
-			this.bpEdit.TabIndex = 14;
-			this.bpEdit.Text = "Renommer";
-			this.bpEdit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.bpEdit.UseVisualStyleBackColor = true;
-			this.bpEdit.Click += new System.EventHandler(this.bpEdit_Click);
-			// 
-			// bpSuppr
-			// 
-			this.bpSuppr.Image = global::PJA.Properties.Resources.Del;
-			this.bpSuppr.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.bpSuppr.Location = new System.Drawing.Point(960, 495);
-			this.bpSuppr.Name = "bpSuppr";
-			this.bpSuppr.Size = new System.Drawing.Size(86, 33);
-			this.bpSuppr.TabIndex = 14;
-			this.bpSuppr.Text = "Supprimer";
-			this.bpSuppr.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.bpSuppr.UseVisualStyleBackColor = true;
-			this.bpSuppr.Click += new System.EventHandler(this.bpSuppr_Click);
-			// 
-			// bpAdd
-			// 
-			this.bpAdd.Image = global::PJA.Properties.Resources.Add;
-			this.bpAdd.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.bpAdd.Location = new System.Drawing.Point(776, 495);
-			this.bpAdd.Name = "bpAdd";
-			this.bpAdd.Size = new System.Drawing.Size(86, 33);
-			this.bpAdd.TabIndex = 14;
-			this.bpAdd.Text = "Ajouter";
-			this.bpAdd.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.bpAdd.UseVisualStyleBackColor = true;
-			this.bpAdd.Click += new System.EventHandler(this.bpAdd_Click);
-			// 
-			// pictureBox
-			// 
-			this.pictureBox.Location = new System.Drawing.Point(0, 0);
-			this.pictureBox.Name = "pictureBox";
-			this.pictureBox.Size = new System.Drawing.Size(768, 544);
-			this.pictureBox.TabIndex = 0;
-			this.pictureBox.TabStop = false;
-			// 
 			// bpRazSat
 			// 
-			this.bpRazSat.Location = new System.Drawing.Point(1000, 670);
+			this.bpRazSat.Location = new System.Drawing.Point(1000, 682);
 			this.bpRazSat.Name = "bpRazSat";
 			this.bpRazSat.Size = new System.Drawing.Size(35, 23);
 			this.bpRazSat.TabIndex = 21;
@@ -333,7 +290,7 @@
 			// 
 			// bpRazLumi
 			// 
-			this.bpRazLumi.Location = new System.Drawing.Point(1000, 634);
+			this.bpRazLumi.Location = new System.Drawing.Point(1000, 646);
 			this.bpRazLumi.Name = "bpRazLumi";
 			this.bpRazLumi.Size = new System.Drawing.Size(35, 23);
 			this.bpRazLumi.TabIndex = 22;
@@ -344,7 +301,7 @@
 			// label9
 			// 
 			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(14, 670);
+			this.label9.Location = new System.Drawing.Point(14, 682);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(55, 13);
 			this.label9.TabIndex = 19;
@@ -353,7 +310,7 @@
 			// label8
 			// 
 			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(12, 634);
+			this.label8.Location = new System.Drawing.Point(12, 646);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(57, 13);
 			this.label8.TabIndex = 20;
@@ -361,7 +318,7 @@
 			// 
 			// sat
 			// 
-			this.sat.Location = new System.Drawing.Point(66, 660);
+			this.sat.Location = new System.Drawing.Point(66, 672);
 			this.sat.Maximum = 200;
 			this.sat.Name = "sat";
 			this.sat.Size = new System.Drawing.Size(928, 42);
@@ -371,7 +328,7 @@
 			// 
 			// lumi
 			// 
-			this.lumi.Location = new System.Drawing.Point(66, 622);
+			this.lumi.Location = new System.Drawing.Point(66, 634);
 			this.lumi.Maximum = 200;
 			this.lumi.Name = "lumi";
 			this.lumi.Size = new System.Drawing.Size(928, 42);
@@ -402,7 +359,7 @@
 			// 
 			// contrast
 			// 
-			this.contrast.Location = new System.Drawing.Point(66, 704);
+			this.contrast.Location = new System.Drawing.Point(66, 716);
 			this.contrast.Maximum = 200;
 			this.contrast.Name = "contrast";
 			this.contrast.Size = new System.Drawing.Size(928, 42);
@@ -413,7 +370,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(14, 714);
+			this.label2.Location = new System.Drawing.Point(14, 726);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(52, 13);
 			this.label2.TabIndex = 19;
@@ -421,7 +378,7 @@
 			// 
 			// bpRazContrast
 			// 
-			this.bpRazContrast.Location = new System.Drawing.Point(1000, 714);
+			this.bpRazContrast.Location = new System.Drawing.Point(1000, 726);
 			this.bpRazContrast.Name = "bpRazContrast";
 			this.bpRazContrast.Size = new System.Drawing.Size(35, 23);
 			this.bpRazContrast.TabIndex = 21;
@@ -431,7 +388,7 @@
 			// 
 			// bpDn
 			// 
-			this.bpDn.Location = new System.Drawing.Point(1032, 435);
+			this.bpDn.Location = new System.Drawing.Point(1032, 407);
 			this.bpDn.Name = "bpDn";
 			this.bpDn.Size = new System.Drawing.Size(24, 23);
 			this.bpDn.TabIndex = 25;
@@ -441,7 +398,7 @@
 			// 
 			// bpUp
 			// 
-			this.bpUp.Location = new System.Drawing.Point(1032, 260);
+			this.bpUp.Location = new System.Drawing.Point(1032, 232);
 			this.bpUp.Name = "bpUp";
 			this.bpUp.Size = new System.Drawing.Size(24, 23);
 			this.bpUp.TabIndex = 25;
@@ -510,22 +467,120 @@
 			this.lblTps.TabIndex = 28;
 			this.lblTps.Text = "0 ms";
 			// 
-			// bpPixel
+			// bpEdit
 			// 
-			this.bpPixel.Location = new System.Drawing.Point(776, 534);
-			this.bpPixel.Name = "bpPixel";
-			this.bpPixel.Size = new System.Drawing.Size(86, 35);
-			this.bpPixel.TabIndex = 29;
-			this.bpPixel.Text = "Editer";
-			this.bpPixel.UseVisualStyleBackColor = true;
-			this.bpPixel.Click += new System.EventHandler(this.bpPixel_Click);
+			this.bpEdit.Image = global::PJA.Properties.Resources.Edit;
+			this.bpEdit.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.bpEdit.Location = new System.Drawing.Point(878, 460);
+			this.bpEdit.Name = "bpEdit";
+			this.bpEdit.Size = new System.Drawing.Size(86, 33);
+			this.bpEdit.TabIndex = 14;
+			this.bpEdit.Text = "Renommer";
+			this.bpEdit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.bpEdit.UseVisualStyleBackColor = true;
+			this.bpEdit.Click += new System.EventHandler(this.bpEdit_Click);
+			// 
+			// bpSuppr
+			// 
+			this.bpSuppr.Image = global::PJA.Properties.Resources.Del;
+			this.bpSuppr.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.bpSuppr.Location = new System.Drawing.Point(970, 460);
+			this.bpSuppr.Name = "bpSuppr";
+			this.bpSuppr.Size = new System.Drawing.Size(86, 33);
+			this.bpSuppr.TabIndex = 14;
+			this.bpSuppr.Text = "Supprimer";
+			this.bpSuppr.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.bpSuppr.UseVisualStyleBackColor = true;
+			this.bpSuppr.Click += new System.EventHandler(this.bpSuppr_Click);
+			// 
+			// bpAdd
+			// 
+			this.bpAdd.Image = global::PJA.Properties.Resources.Add;
+			this.bpAdd.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.bpAdd.Location = new System.Drawing.Point(798, 460);
+			this.bpAdd.Name = "bpAdd";
+			this.bpAdd.Size = new System.Drawing.Size(74, 33);
+			this.bpAdd.TabIndex = 14;
+			this.bpAdd.Text = "Ajouter";
+			this.bpAdd.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.bpAdd.UseVisualStyleBackColor = true;
+			this.bpAdd.Click += new System.EventHandler(this.bpAdd_Click);
+			// 
+			// pictureBox
+			// 
+			this.pictureBox.Location = new System.Drawing.Point(0, 0);
+			this.pictureBox.Name = "pictureBox";
+			this.pictureBox.Size = new System.Drawing.Size(768, 544);
+			this.pictureBox.TabIndex = 0;
+			this.pictureBox.TabStop = false;
+			this.pictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox_MouseDown);
+			this.pictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox_MouseMove);
+			// 
+			// vScrollBar
+			// 
+			this.vScrollBar.LargeChange = 32;
+			this.vScrollBar.Location = new System.Drawing.Point(771, 0);
+			this.vScrollBar.Name = "vScrollBar";
+			this.vScrollBar.Size = new System.Drawing.Size(16, 544);
+			this.vScrollBar.SmallChange = 8;
+			this.vScrollBar.TabIndex = 31;
+			this.vScrollBar.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrollBar_Scroll);
+			// 
+			// hScrollBar
+			// 
+			this.hScrollBar.LargeChange = 32;
+			this.hScrollBar.Location = new System.Drawing.Point(0, 547);
+			this.hScrollBar.Name = "hScrollBar";
+			this.hScrollBar.Size = new System.Drawing.Size(768, 16);
+			this.hScrollBar.SmallChange = 8;
+			this.hScrollBar.TabIndex = 30;
+			this.hScrollBar.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBar_Scroll);
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(952, 504);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(40, 13);
+			this.label3.TabIndex = 33;
+			this.label3.Text = "Zoom :";
+			// 
+			// zoomLevel
+			// 
+			this.zoomLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.zoomLevel.FormattingEnabled = true;
+			this.zoomLevel.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "4",
+            "8"});
+			this.zoomLevel.Location = new System.Drawing.Point(1000, 500);
+			this.zoomLevel.Name = "zoomLevel";
+			this.zoomLevel.Size = new System.Drawing.Size(56, 21);
+			this.zoomLevel.TabIndex = 32;
+			this.zoomLevel.SelectedIndexChanged += new System.EventHandler(this.zoomLevel_SelectedIndexChanged);
+			// 
+			// bpEditMode
+			// 
+			this.bpEditMode.AutoSize = true;
+			this.bpEditMode.Location = new System.Drawing.Point(797, 500);
+			this.bpEditMode.Name = "bpEditMode";
+			this.bpEditMode.Size = new System.Drawing.Size(87, 17);
+			this.bpEditMode.TabIndex = 34;
+			this.bpEditMode.Text = "Mode edition";
+			this.bpEditMode.UseVisualStyleBackColor = true;
+			this.bpEditMode.CheckedChanged += new System.EventHandler(this.bpEditMode_CheckedChanged);
 			// 
 			// EditImages
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1056, 758);
-			this.Controls.Add(this.bpPixel);
+			this.Controls.Add(this.bpEditMode);
+			this.Controls.Add(this.label3);
+			this.Controls.Add(this.zoomLevel);
+			this.Controls.Add(this.vScrollBar);
+			this.Controls.Add(this.hScrollBar);
 			this.Controls.Add(this.lblTps);
 			this.Controls.Add(this.nb);
 			this.Controls.Add(this.newMethode);
@@ -569,10 +624,10 @@
 			this.tramage.ResumeLayout(false);
 			this.tramage.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pctTrame)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.sat)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.lumi)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.contrast)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -621,7 +676,11 @@
 		private System.Windows.Forms.CheckBox nb;
 		private System.Windows.Forms.Button bpPredefPal;
 		private System.Windows.Forms.Label lblTps;
-		private System.Windows.Forms.Button bpPixel;
+		private System.Windows.Forms.VScrollBar vScrollBar;
+		private System.Windows.Forms.HScrollBar hScrollBar;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.ComboBox zoomLevel;
+		private System.Windows.Forms.CheckBox bpEditMode;
 
 	}
 }

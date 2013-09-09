@@ -16,7 +16,7 @@
 		public const int LUM1 = 0x66;
 		public const int LUM2 = 0xFF;
 
-		static public RvbColor[] RgbCPC = new RvbColor[27] { 
+		static public RvbColor[] RgbCPC = new RvbColor[27] {
 							new RvbColor( LUM0, LUM0, LUM0),
 							new RvbColor( LUM1, LUM0, LUM0),
 							new RvbColor( LUM2, LUM0, LUM0),
@@ -46,12 +46,12 @@
 							new RvbColor( LUM2, LUM2, LUM2)
 							};
 
-		public int NbCol = 80;
+		private int NbCol = 80;
 		public int TailleX {
 			get { return NbCol << 3; }
 			set { NbCol = value >> 3; }
 		}
-		public int NbLig = 200;
+		private int NbLig = 200;
 		public int TailleY {
 			get { return NbLig << 1; }
 			set { NbLig = value >> 1; }
@@ -159,7 +159,7 @@
 			//if (GetPalMode)
 			//	InitDatas(out Mode);
 
-			for (int y = 0; y < NbLig << 1; y += 2) {
+			for (int y = 0; y <TailleY; y += 2) {
 				GetAdrCpc(offsetY + y / zoomLevel);
 				AdrCPC += offsetX >> 3;
 				int xBitmap = 0;
@@ -190,7 +190,7 @@
 					}
 				}
 			}
-			LisseBitmap(bmp, NbCol << 3, NbLig << 1, zoomLevel);
+			LisseBitmap(bmp, TailleX, TailleY, zoomLevel);
 			bmp.UnlockBits();
 			return bmp;
 		}
