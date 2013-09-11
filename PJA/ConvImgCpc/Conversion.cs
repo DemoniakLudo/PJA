@@ -13,13 +13,14 @@ namespace ConvImgCpc {
 		public enum SizeMode { Fit, KeepSmaller, KeepLarger };
 
 		public delegate void DlgCalcDiff(int diff, int decalMasque);
-		static private DlgCalcDiff fctCalcDiff = CalcDiffNone;
+		static private DlgCalcDiff fctCalcDiff = null;
 		static private int[] Coul = new int[4096];
 		static private int[] corr = new int[12];
 		static private int tailleX, tailleY, Tx, MaxCol;
 		static private LockBitmap bitmap;
 		static private int xPix, yPix;
 		static private RvbColor[] tabCol = new RvbColor[16];
+		static private int[] tabColInt = new int[16];
 		static private int coeffMat;
 		static private byte[] tblContrast = new byte[256];
 
@@ -34,10 +35,26 @@ namespace ConvImgCpc {
 				return max;
 		}
 
+		static int CalcDist(int r1, int v1, int b1, int r2, int v2, int b2) {
+			return (r1 > r2 ? (r1 - r2) * K_R : (r2 - r1) * K_R) + (v1 > v2 ? (v1 - v2) * K_V : (v2 - v1) * K_V) + (b1 > b2 ? (b1 - b2) * K_B : (b2 - b1) * K_B);
+		}
+
+		static int CalcDist(int c1, int c2) {
+			return CalcDist(c1 & 0xFF, (c1 >> 8) & 0xFF, c1 >> 16, c2 & 0xFF, (c2 >> 8) & 0xFF, c2 >> 16);
+		}
+
+		static int CalcDist(RvbColor col, int r, int v, int b) {
+			return CalcDist(col.r, col.v, col.b, r, v, b);
+		}
+
+		static int CalcDist(RvbColor c1, RvbColor c2) {
+			return CalcDist(c1.r, c1.v, c1.b, c2.r, c2.v, c2.b);
+		}
+
 		//
 		// Retourne la couleur CPC la plus proche du pixel passé en paramètre
 		//
-		static private RvbColor RechercheProche(RvbColor p, bool cpcPlus, bool newMethode, ref int indexChoix) {
+		static private RvbColor RechercheProche(RvbColor p, bool cpcPlus, bool newMethode) {
 			RvbColor choix = new RvbColor(0);
 			if (cpcPlus) {
 				choix.b = (byte)((p.b >> 4) * 17);
@@ -45,6 +62,7 @@ namespace ConvImgCpc {
 				choix.r = (byte)((p.r >> 4) * 17);
 			}
 			else {
+				int indexChoix = 0;
 				if (newMethode) {
 					int OldDist1 = 0x7FFFFFFF;
 					for (int i = 0; i < 27; i++) {
@@ -60,15 +78,12 @@ namespace ConvImgCpc {
 					}
 				}
 				else {
-					choix.r = (byte)(p.r > SEUIL_LUM_2 ? BitmapCPC.LUM2 : p.r > SEUIL_LUM_1 ? BitmapCPC.LUM1 : BitmapCPC.LUM0);
-					choix.v = (byte)(p.v > SEUIL_LUM_2 ? BitmapCPC.LUM2 : p.v > SEUIL_LUM_1 ? BitmapCPC.LUM1 : BitmapCPC.LUM0);
-					choix.b = (byte)(p.b > SEUIL_LUM_2 ? BitmapCPC.LUM2 : p.b > SEUIL_LUM_1 ? BitmapCPC.LUM1 : BitmapCPC.LUM0);
+					indexChoix = (p.r > SEUIL_LUM_2 ? 2 : p.r > SEUIL_LUM_1 ? 1 : 0) + (p.b > SEUIL_LUM_2 ? 6 : p.b > SEUIL_LUM_1 ? 3 : 0) + (p.v > SEUIL_LUM_2 ? 18 : p.v > SEUIL_LUM_1 ? 9 : 0);
+					choix = BitmapCPC.RgbCPC[indexChoix];
 				}
+				Coul[indexChoix]++;
 			}
 			return choix;
-		}
-
-		static void CalcDiffNone(int diff, int decalMasque) {
 		}
 
 		static void CalcDiffMethode1Mat2(int diff, int decalMasque) {
@@ -251,7 +266,7 @@ namespace ConvImgCpc {
 				newValue *= 255;
 				tblContrast[i] = (byte)MinMax((int)newValue, 0, 255);
 			}
-			fctCalcDiff = CalcDiffNone;
+			fctCalcDiff = null;
 			if (Pct > 0)
 				switch (Matrice) {
 					case 2:
@@ -300,36 +315,28 @@ namespace ConvImgCpc {
 						float r = tblContrast[p1.r];
 						float v = tblContrast[p1.v];
 						float b = tblContrast[p1.b];
-						SetLumiSat(lumi, satur, ref r, ref v, ref b);
+						if (pctLumi != 100 || pctSat != 100)
+							SetLumiSat(lumi, satur, ref r, ref v, ref b);
+
 						p1.r = (byte)MinMax((int)r, 0, 255);
 						p1.v = (byte)MinMax((int)v, 0, 255);
 						p1.b = (byte)MinMax((int)b, 0, 255);
 					}
 
 					// Recherche le point dans la couleur cpc la plus proche
-					int indexChoix = 0;
-					RvbColor p2 = RechercheProche(p1, cpcPlus, newMethode, ref indexChoix);
+					RvbColor p2 = RechercheProche(p1, cpcPlus, newMethode);
 
-					// Modifie composante Rouge
-					fctCalcDiff(p1.r - p2.r, 0);
+					if (fctCalcDiff != null) {
+						// Modifie composante Rouge
+						fctCalcDiff(p1.r - p2.r, 0);
 
-					// Modifie composante Verte
-					fctCalcDiff(p1.v - p2.v, 1);
+						// Modifie composante Verte
+						fctCalcDiff(p1.v - p2.v, 1);
 
-					// Modifie composante Bleue
-					fctCalcDiff(p1.b - p2.b, 2);
-
-					bitmap.SetPixel(xPix, yPix, p2.GetColor);
-					if (!CpcPlus) {
-						if (newMethode)
-							Coul[indexChoix]++;
-						else {
-							int col = bitmap.GetPixel(xPix, yPix);
-							for (int i = 0; i < 27; i++)
-								if (col == BitmapCPC.RgbCPC[i].GetColor)
-									Coul[i]++;
-						}
+						// Modifie composante Bleue
+						fctCalcDiff(p1.b - p2.b, 2);
 					}
+					bitmap.SetPixel(xPix, yPix, p2.GetColor);
 				}
 			if (CpcPlus) {
 				//
@@ -414,27 +421,14 @@ namespace ConvImgCpc {
 						}
 		}
 
-		static int CalcDist(int r1, int v1, int b1, int r, int v, int b) {
-			return Math.Abs(r1 - r) * K_R + Math.Abs(v1 - v) * K_V + Math.Abs(b1 - b) * K_B;
-		}
-
-		static int CalcDist(RvbColor col, int r, int v, int b) {
-			return CalcDist(col.r, col.v, col.b, r, v, b);
-		}
-
-		static int CalcDist(RvbColor c1, RvbColor c2) {
-			return CalcDist(c1.r, c1.v, c1.b, c2.r, c2.v, c2.b);
-		}
-
 		static void SetPixCol0(BitmapCPC dest) {
-			int r = 0, v = 0, b = 0;
 			for (int y = 0; y < tailleY; y += 2)
 				for (int x = 0; x < tailleX; x += Tx) {
 					int oldDist = 0x7FFFFFFF;
-					bitmap.GetPixel(x, y, ref r, ref v, ref b);
+					int p = bitmap.GetPixel(x, y);
 					int choix = 0;
 					for (int i = 0; i < MaxCol; i++) {
-						int Dist = CalcDist(tabCol[i], r, v, b);
+						int Dist = CalcDist(tabColInt[i], p);
 						if (Dist < oldDist) {
 							choix = i;
 							oldDist = Dist;
@@ -553,8 +547,10 @@ namespace ConvImgCpc {
 		// Passe 2 : réduit l'image à MaxCol couleurs.
 		//
 		static void Passe2(BitmapCPC dest, int[] CChoix, bool CpcPlus, int PixMode, bool nb) {
-			for (int i = 0; i < MaxCol; i++)
+			for (int i = 0; i < MaxCol; i++) {
 				tabCol[i] = GetRgbCol(CChoix[i], CpcPlus, nb);
+				tabColInt[i] = tabCol[i].GetColor;
+			}
 
 			switch (PixMode) {
 				case 1:
