@@ -1,14 +1,16 @@
-﻿namespace ConvImgCpc {
+﻿using System.IO;
+
+namespace ConvImgCpc {
 	public class BitmapCPC {
-		public byte[] BmpCpc = new byte[0x8000];
-		//private byte[] BufTmp = new byte[0x10000];
+		public byte[] BmpCpc = new byte[0x10000];
+		private byte[] BufTmp = new byte[0x10000];
 		public int[] Palette = new int[17];
 		static private int[] PaletteStandardCPC = { 1, 24, 20, 6, 26, 0, 2, 7, 10, 12, 14, 16, 18, 22, 1, 14 };
 		static private int[] tabMasqueMode0 = { 0xAA, 0x55 };
 		static private int[] tabMasqueMode1 = { 0x88, 0x44, 0x22, 0x11 };
 		static private int[] tabMasqueMode2 = { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
 		static private int[] tabOctetMode01 = { 0x00, 0x80, 0x08, 0x88, 0x20, 0xA0, 0x28, 0xA8, 0x02, 0x82, 0x0A, 0x8A, 0x22, 0xA2, 0x2A, 0xAA };
-		const int MaxColsCpc = 128;
+		const int MaxColsCpc = 96;
 		const int maxLignesCpc = 272;
 		private int oldY = -1, AdrCPC = -1;
 
@@ -59,12 +61,6 @@
 		public int ModeCPC = 1;
 		public bool cpcPlus = false;
 
-
-		//public int GetCurMode() { return (ModeCPC); }
-		//public int GetNbCol() { return (NbCol); }
-		//public int GetNbLig() { return (NbLig); }
-
-
 		public BitmapCPC(int tx, int ty, int mode) {
 			TailleX = tx;
 			TailleY = ty;
@@ -77,15 +73,21 @@
 			Palette[entree] = valeur;
 		}
 
-		//public int GetColor(int entree) {
-		//	return Palette[entree];
-		//}
-
 		public RvbColor GetPaletteColor(int col) {
 			if (cpcPlus)
 				return new RvbColor((byte)(((Palette[col] & 0xF0) >> 4) * 17), (byte)(((Palette[col] & 0xF00) >> 8) * 17), (byte)((Palette[col] & 0x0F) * 17));
 
 			return RgbCPC[Palette[col] < 27 ? Palette[col] : 0];
+		}
+
+		private int GetPalCPC(int c) {
+			if (cpcPlus) {
+				byte b = (byte)((c & 0x0F) * 17);
+				byte r = (byte)(((c & 0xF0) >> 4) * 17);
+				byte v = (byte)(((c & 0xF00) >> 8) * 17);
+				return (int)(r + (v << 8) + (b << 16) + 0xFF000000);
+			}
+			return RgbCPC[c < 27 ? c : 0].GetColor;
 		}
 
 		private void GetAdrCpc(int y) {
@@ -144,22 +146,12 @@
 		}
 		*/
 
-		public int GetPalCPC(int c) {
-			if (cpcPlus) {
-				byte b = (byte)((c & 0x0F) * 17);
-				byte r = (byte)(((c & 0xF0) >> 4) * 17);
-				byte v = (byte)(((c & 0xF00) >> 8) * 17);
-				return (int)(r + (v << 8) + (b << 16) + 0xFF000000);
-			}
-			return RgbCPC[c < 27 ? c : 0].GetColor;
-		}
-
 		public LockBitmap Render(LockBitmap bmp, int Mode, int zoomLevel, int offsetX, int offsetY, bool GetPalMode) {
 			bmp.LockBits();
 			//if (GetPalMode)
 			//	InitDatas(out Mode);
 
-			for (int y = 0; y <TailleY; y += 2) {
+			for (int y = 0; y < TailleY; y += 2) {
 				GetAdrCpc(offsetY + y / zoomLevel);
 				AdrCPC += offsetX >> 3;
 				int xBitmap = 0;
@@ -205,124 +197,125 @@
 					}
 				}
 		}
-		/*
-				private void DepactOCP() {
-					int PosIn = 0, PosOut = 0;
-					int LgOut, CntBlock = 0;
 
-					BmpCpc.CopyTo(BufTmp, 0x8000);
-					while (PosOut < 0x4000) {
-						if (BufTmp[PosIn] == 'M' && BufTmp[PosIn + 1] == 'J' && BufTmp[PosIn + 2] == 'H') {
-							PosIn += 3;
-							LgOut = BufTmp[PosIn++];
-							LgOut += (BufTmp[PosIn++] << 8);
-							CntBlock = 0;
-							while (CntBlock < LgOut) {
-								if (BufTmp[PosIn] == 'M' && BufTmp[PosIn + 1] == 'J' && BufTmp[PosIn + 2] == 'H')
-									break;
+		private void DepactOCP() {
+			int PosIn = 0, PosOut = 0;
+			int LgOut, CntBlock = 0;
 
-								byte a = BufTmp[PosIn++];
-								if (a == 1) { // MARKER_OCP
-									int c = BufTmp[PosIn++];
-									a = BufTmp[PosIn++];
-									if (c == 0)
-										c = 0x100;
+			BmpCpc.CopyTo(BufTmp, 0x10000);
+			while (PosOut < 0x4000) {
+				if (BufTmp[PosIn] == 'M' && BufTmp[PosIn + 1] == 'J' && BufTmp[PosIn + 2] == 'H') {
+					PosIn += 3;
+					LgOut = BufTmp[PosIn++];
+					LgOut += (BufTmp[PosIn++] << 8);
+					CntBlock = 0;
+					while (CntBlock < LgOut) {
+						if (BufTmp[PosIn] == 'M' && BufTmp[PosIn + 1] == 'J' && BufTmp[PosIn + 2] == 'H')
+							break;
 
-									for (int i = 0; i < c && CntBlock < LgOut; i++) {
-										BmpCpc[PosOut++] = a;
-										CntBlock++;
-									}
-								}
-								else {
-									BmpCpc[PosOut++] = a;
-									CntBlock++;
-								}
+						byte a = BufTmp[PosIn++];
+						if (a == 1) { // MARKER_OCP
+							int c = BufTmp[PosIn++];
+							a = BufTmp[PosIn++];
+							if (c == 0)
+								c = 0x100;
+
+							for (int i = 0; i < c && CntBlock < LgOut; i++) {
+								BmpCpc[PosOut++] = a;
+								CntBlock++;
 							}
 						}
-						else
-							PosOut = 0x4000;
-					}
-				}
-
-				private void DepactPK() {
-					byte[] Palette = new byte[0x100];
-
-					// Valeurs par défaut
-					Plus = false;
-					NbCol = 80;
-					NbLig = 200;
-
-					//
-					//PKSL -> 320x200 STD
-					//PKS3 -> 320x200 Mode 3
-					//PKSP -> 320x200 PLUS
-					//PKVL -> Overscan STD
-					//PKVP -> Overscan PLUS
-					//
-
-					Plus = (BmpCpc[3] == 'P') || (BmpCpc[2] == 'O');
-					bool Overscan = (BmpCpc[2] == 'V') || (BmpCpc[3] == 'V');
-					bool Std = (BmpCpc[2] == 'S' && BmpCpc[3] == 'L');
-					if (Std)
-						for (int i = 0; i < 17; i++)
-							Palette[i] = BmpCpc[i + 4];
-
-					Depack(&BmpCpc[Std ? 21 : 4], BufTmp);
-					memcpy(BmpCpc, BufTmp, sizeof(BufTmp));
-					ConvertScreenColBuff(BmpCpc);
-					if (Overscan) {
-						NbCol = MaxColsCpc;
-						NbLig = maxLignesCpc;
-						SetPalette(BmpCpc, 0x600, Plus);
-					}
-					else {
-						if (Std)
-							SetPalette(Palette, 0, Plus);
-						else
-							SetPalette(BmpCpc, 0x17D0, Plus);
-					}
-				}
-
-				public bool CreateImageFile(string Nom) {
-					bool Ret = false;
-					byte[] Entete = new byte[0x80];
-					FileStream fs = new FileStream(Nom, FileMode.Open, FileAccess.Read);
-					BinaryReader br = new BinaryReader(fs);
-					br.Read(Entete, 0, 0x80);
-					if (FileCPC.CheckAmsdos(Entete)) {
-						br.Read(BmpCpc, 0, 0x8000);
-						if (!strncmp((char*)BmpCpc, "MJH", 3))
-							DepactOCP(BmpCpc);
-						else
-							if (!strncmp((char*)BmpCpc, "PKV", 3) || !strncmp((char*)BmpCpc, "PKS", 3) || !strncmp((char*)BmpCpc, "PKO", 3)) {
-								DepactPK(BmpCpc);
-								GetPalMode = 0;
-								memcpy(p, Palette, sizeof(Palette));
-							}
-
-						memcpy(Palette, p, sizeof(Palette));
-						if (GetPalMode) {
-							if (InitDatas(Mode))
-								memcpy(p, Palette, sizeof(Palette));
+						else {
+							BmpCpc[PosOut++] = a;
+							CntBlock++;
 						}
-
-						Ret = true;
 					}
-					br.Close();
-					return (Ret);
 				}
+				else
+					PosOut = 0x4000;
+			}
+		}
+
+		private void DepactPK() {
+			byte[] Palette = new byte[0x100];
+
+			// Valeurs par défaut
+			cpcPlus = false;
+			NbCol = 80;
+			NbLig = 200;
+
+			//
+			//PKSL -> 320x200 STD
+			//PKS3 -> 320x200 Mode 3
+			//PKSP -> 320x200 PLUS
+			//PKVL -> Overscan STD
+			//PKVP -> Overscan PLUS
+			//
+
+			cpcPlus = (BmpCpc[3] == 'P') || (BmpCpc[2] == 'O');
+			bool Overscan = (BmpCpc[2] == 'V') || (BmpCpc[3] == 'V');
+			bool Std = (BmpCpc[2] == 'S' && BmpCpc[3] == 'L');
+			if (Std)
+				for (int i = 0; i < 17; i++)
+					Palette[i] = BmpCpc[i + 4];
+
+			Pack.Depack(BmpCpc, Std ? 21 : 4, BufTmp);
+			System.Array.Copy(BufTmp, BmpCpc, 0x10000);
+			if (Overscan) {
+				NbCol = MaxColsCpc;
+				NbLig = maxLignesCpc;
+				SetPalette(BmpCpc, 0x600, cpcPlus);
+			}
+			else {
+				if (Std)
+					SetPalette(Palette, 0, cpcPlus);
+				else
+					SetPalette(BmpCpc, 0x17D0, cpcPlus);
+			}
+		}
+
+		public bool CreateImageFile(string Nom) {
+			bool Ret = false;
+			byte[] Entete = new byte[0x80];
+			FileStream fs = new FileStream(Nom, FileMode.Open, FileAccess.Read);
+			BinaryReader br = new BinaryReader(fs);
+			br.Read(Entete, 0, 0x80);
+			/*if (FileCPC.CheckAmsdos(Entete))*/
+			{
+				br.Read(BmpCpc, 0, 0x10000);
+				if (BmpCpc[0] == 'M' && BmpCpc[1] == 'J' && BmpCpc[2] == 'H')
+					DepactOCP();
+				else
+					if (BmpCpc[0] == 'P' && BmpCpc[1] == 'K' && (BmpCpc[2] == 'V' || BmpCpc[2] == 'S' || BmpCpc[2] == 'O')) {
+						DepactPK();
+						//GetPalMode = 0;
+						//memcpy(p, Palette, sizeof(Palette));
+					}
+					else
+						InitDatas(out ModeCPC);
+				//memcpy(Palette, p, sizeof(Palette));
+				//if (GetPalMode) {
+				//	if (InitDatas(out Mode))
+				//		memcpy(p, Palette, sizeof(Palette));
+				//}
+
+				Ret = true;
+			}
+			br.Close();
+			return (Ret);
+		}
 
 		private bool InitDatas(out int Mode) {
 			bool Ret = false;
 			// Valeurs par défaut
 			Mode = 1;
 			cpcPlus = false;
-			NbCol = 80;
-			NbLig = 200;
+			//			NbCol = 80;
+			//			NbLig = 200;
 
 			// Si sauvegardé avec ConvImgCpc, alors la palette se trouve dans l'image...
+			// CPC OLD, écran standard
 			if (BmpCpc[0x7D0] == 0x3A && BmpCpc[0x7D1] == 0xD0 && BmpCpc[0x7D2] == 0xD7 && BmpCpc[0x7D3] == 0xCD) {
-				// CPC OLD, écran standard
 				SetPalette(BmpCpc, 0x17D0, cpcPlus);
 				Mode = ModeCPC;
 				Ret = true;
@@ -331,8 +324,6 @@
 				// CPC +, écran standard
 				if (BmpCpc[0x7D0] == 0xF3 && BmpCpc[0x7D1] == 0x01 && BmpCpc[0x7D2] == 0x11 && BmpCpc[0x7D3] == 0xBC) {
 					cpcPlus = true;
-					NbCol = 80;
-					NbLig = 200;
 					SetPalette(BmpCpc, 0x17D0, cpcPlus);
 					Mode = ModeCPC;
 					Ret = true;
@@ -340,7 +331,6 @@
 				else
 					// CPC OLD, écran overscan
 					if (BmpCpc[0x611] == 0x21 && BmpCpc[0x612] == 0x47 && BmpCpc[0x613] == 0x08 && BmpCpc[0x614] == 0xCD) {
-						cpcPlus = false;
 						NbCol = MaxColsCpc;
 						NbLig = maxLignesCpc;
 						SetPalette(BmpCpc, 0x600, cpcPlus);
@@ -363,8 +353,7 @@
 		private void SetPalette(byte[] PalStart, int startAdr, bool Plus) {
 			ModeCPC = PalStart[startAdr] & 0x03;
 			for (int i = 0; i < 16; i++)
-				Palette[i] = Plus ? PalStart[startAdr + 1 + i << 1] + PalStart[startAdr + 2 + i << 1] << 8 : PalStart[i + 1];
+				Palette[i] = Plus ? PalStart[startAdr + 1 + i << 1] + PalStart[startAdr + 2 + i << 1] << 8 : PalStart[startAdr + i + 1];
 		}
-		 */
 	}
 }

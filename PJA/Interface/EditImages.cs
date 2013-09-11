@@ -60,7 +60,7 @@ namespace PJA {
 			bpEditMode_CheckedChanged(null,null);
 			UpdateListe(-1);
 			Valid = true;
-			dlgImportImage.Filter = "Images (*.bmp, *.gif, *.png, *.jpg)|*.bmp;*.gif;*.png;*.jpg";
+			dlgImportImage.Filter = "Images (*.scr, *.bmp, *.gif, *.png, *.jpg)|*.scr;*.bmp;*.gif;*.png;*.jpg";
 			dlgLoadPal.Filter = "Fichier palette (*.pal)|*.pal";
 		}
 
@@ -126,7 +126,14 @@ namespace PJA {
 			DialogResult result = dlgImportImage.ShowDialog();
 			if (result == DialogResult.OK) {
 				dlgImportImage.InitialDirectory = dlgImportImage.FileName.Substring(0, dlgImportImage.FileName.LastIndexOf("\\"));
-				image = new Bitmap(dlgImportImage.FileName);
+				try {
+					image = new Bitmap(dlgImportImage.FileName);
+				}
+				catch {
+					bitmapCPC.CreateImageFile(dlgImportImage.FileName);
+					Render();
+				}
+
 				bpRecalc_Click(sender, e);
 				imageName.Text = dlgImportImage.SafeFileName;
 			}
