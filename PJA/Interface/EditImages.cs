@@ -84,7 +84,7 @@ namespace PJA {
 			Label colorClick = sender as Label;
 			numCol = colorClick.Tag != null ? (int)colorClick.Tag : 0;
 			if (!bpEditMode.Checked) {
-				EditColor ed = new EditColor(numCol, bitmapCPC.Palette[numCol], bitmapCPC.GetPaletteColor(numCol).GetColorARGB);
+				EditColor ed = new EditColor(numCol, bitmapCPC.Palette[numCol], bitmapCPC.GetPaletteColor(numCol).GetColorARGB, cpcPlus.Checked);
 				ed.ShowDialog(this);
 				if (ed.isValide) {
 					bitmapCPC.SetPalette(numCol, ed.ValColor);

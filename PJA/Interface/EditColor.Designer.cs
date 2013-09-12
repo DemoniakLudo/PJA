@@ -24,7 +24,6 @@
 	private void InitializeComponent() {
 			this.selColor = new System.Windows.Forms.Label();
 			this.lblNumColor = new System.Windows.Forms.Label();
-			this.lblValColor = new System.Windows.Forms.Label();
 			this.bpValide = new System.Windows.Forms.Button();
 			this.bpAnnule = new System.Windows.Forms.Button();
 			this.SuspendLayout();
@@ -46,14 +45,6 @@
 			this.lblNumColor.TabIndex = 1;
 			this.lblNumColor.Text = "Couleur 00 :";
 			// 
-			// lblValColor
-			// 
-			this.lblValColor.AutoSize = true;
-			this.lblValColor.Location = new System.Drawing.Point(271, 34);
-			this.lblValColor.Name = "lblValColor";
-			this.lblValColor.Size = new System.Drawing.Size(19, 13);
-			this.lblValColor.TabIndex = 1;
-			this.lblValColor.Text = "=0";
 			// 
 			// bpValide
 			// 
@@ -83,7 +74,6 @@
 			this.ControlBox = false;
 			this.Controls.Add(this.bpAnnule);
 			this.Controls.Add(this.bpValide);
-			this.Controls.Add(this.lblValColor);
 			this.Controls.Add(this.lblNumColor);
 			this.Controls.Add(this.selColor);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -101,7 +91,6 @@
 
 	private System.Windows.Forms.Label selColor;
 	private System.Windows.Forms.Label lblNumColor;
-	private System.Windows.Forms.Label lblValColor;
 	private System.Windows.Forms.Button bpValide;
 	private System.Windows.Forms.Button bpAnnule;
 }
