@@ -23,18 +23,6 @@ namespace PJA {
 
 		public EditImages(Projet projet) {
 			InitializeComponent();
-			dataImage = projet.ImageData;
-			int tx = pictureBox.Width = projet.Cx * 8;
-			int ty = pictureBox.Height = projet.Cy * 16;
-			bmp = new Bitmap(tx, ty);
-			pictureBox.Image = bmp;
-			vScrollBar.Height = ty;
-			vScrollBar.Left = tx + 3;
-			hScrollBar.Width = tx;
-			hScrollBar.Top = ty + 3;
-			pictureBox.Image = bmp;
-			bmpLock = new LockBitmap(bmp);
-			bitmapCPC = new BitmapCPC(tx, ty, projet.Mode);
 			for (int i = 0; i < 16; i++) {
 				// Générer les contrôles de "couleurs"
 				colors[i] = new Label();
@@ -52,16 +40,36 @@ namespace PJA {
 				lockColors[i].Click += ClickLock;
 				Controls.Add(lockColors[i]);
 			}
+			dataImage = projet.ImageData;
+			MajProjet(projet);
 			radioFit.Checked = true;
 			methode.SelectedIndex = 0;
 			matrice.SelectedIndex = 0;
 			renderMode.SelectedIndex = 0;
 			zoomLevel.SelectedIndex = 0;
-			bpEditMode_CheckedChanged(null,null);
+			bpEditMode_CheckedChanged(null, null);
 			UpdateListe(-1);
 			Valid = true;
 			dlgImportImage.Filter = "Images (*.scr, *.bmp, *.gif, *.png, *.jpg)|*.scr;*.bmp;*.gif;*.png;*.jpg";
 			dlgLoadPal.Filter = "Fichier palette (*.pal)|*.pal";
+		}
+
+		public void MajProjet(Projet projet) {
+			int tx = pictureBox.Width = projet.Cx * 8;
+			int ty = pictureBox.Height = projet.Cy * 16;
+			bitmapCPC = new BitmapCPC(tx, ty, projet.Mode);
+			bmp = new Bitmap(tx, ty);
+			pictureBox.Image = bmp;
+			pictureBox.Image = bmp;
+			bmpLock = new LockBitmap(bmp);
+			vScrollBar.Height = ty;
+			vScrollBar.Left = tx + 3;
+			hScrollBar.Width = tx;
+			hScrollBar.Top = ty + 3;
+			if (autoRecalc.Checked)
+				bpRecalc_Click(this, null);
+			else
+				Render();
 		}
 
 		// Click sur un "lock"
@@ -96,6 +104,7 @@ namespace PJA {
 		}
 
 		public void Render() {
+			bitmapCPC.cpcPlus = cpcPlus.Checked;
 			bitmapCPC.Render(bmpLock, bitmapCPC.ModeCPC, zoom, offsetX, offsetY, false);
 			pictureBox.Refresh();
 			UpdatePalette();
@@ -187,11 +196,10 @@ namespace PJA {
 									(int)pctTrame.Value,
 									lockState,
 									(int)lumi.Value,
-									(int)sat.Value,
+									nb.Checked ? 0 : (int)sat.Value,
 									(int)contrast.Value,
-									false,
+									cpcPlus.Checked,
 									newMethode.Checked,
-									nb.Checked,
 									false,
 									false,
 									false,
@@ -266,9 +274,14 @@ namespace PJA {
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
+		private void cpcPlus_CheckedChanged(object sender, System.EventArgs e) {
+			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
+		}
+
 		private void nb_CheckedChanged(object sender, System.EventArgs e) {
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
+
 		private void bpUp_Click(object sender, System.EventArgs e) {
 			Image img = listImage.SelectedItem as Image;
 			if (img != null && listImage.SelectedIndex > 0) {

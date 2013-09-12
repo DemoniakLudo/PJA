@@ -69,6 +69,7 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.zoomLevel = new System.Windows.Forms.ComboBox();
 			this.bpEditMode = new System.Windows.Forms.CheckBox();
+			this.cpcPlus = new System.Windows.Forms.CheckBox();
 			this.tramage.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pctTrame)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.sat)).BeginInit();
@@ -571,11 +572,23 @@
 			this.bpEditMode.UseVisualStyleBackColor = true;
 			this.bpEditMode.CheckedChanged += new System.EventHandler(this.bpEditMode_CheckedChanged);
 			// 
+			// cpcPlus
+			// 
+			this.cpcPlus.AutoSize = true;
+			this.cpcPlus.Location = new System.Drawing.Point(784, 579);
+			this.cpcPlus.Name = "cpcPlus";
+			this.cpcPlus.Size = new System.Drawing.Size(70, 17);
+			this.cpcPlus.TabIndex = 35;
+			this.cpcPlus.Text = "CPC Plus";
+			this.cpcPlus.UseVisualStyleBackColor = true;
+			this.cpcPlus.CheckedChanged += new System.EventHandler(this.cpcPlus_CheckedChanged);
+			// 
 			// EditImages
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1056, 758);
+			this.Controls.Add(this.cpcPlus);
 			this.Controls.Add(this.bpEditMode);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.zoomLevel);
@@ -681,6 +694,7 @@
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.ComboBox zoomLevel;
 		private System.Windows.Forms.CheckBox bpEditMode;
+		private System.Windows.Forms.CheckBox cpcPlus;
 
 	}
 }

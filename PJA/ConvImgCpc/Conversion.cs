@@ -48,6 +48,8 @@ namespace ConvImgCpc {
 				choix.b = (byte)((p.b >> 4) * 17);
 				choix.v = (byte)((p.v >> 4) * 17);
 				choix.r = (byte)((p.r >> 4) * 17);
+				Coul[((choix.v << 4) & 0xF00) + ((choix.r) & 0xF0) + ((choix.b) >> 4)]++;
+				//Coul[((p.v >> 4) << 8) + ((p.r >> 4) << 4) + (p.b >> 4)]++;
 			}
 			else {
 				int indexChoix = 0;
@@ -218,7 +220,7 @@ namespace ConvImgCpc {
 		// Calcule le nombre de couleurs utilisées dans l'image, et
 		// remplit un tableau avec ces couleurs
 		//
-		static private int ConvertPasse1(int xdest, int ydest, int Methode, int Matrice, int Pct, bool cpcPlus, bool newMethode, bool Nb, int Mode, bool CpcPlus, bool ReductPal1, bool ReductPal2, bool ModeReduct, int pctLumi, int pctSat, int pctContrast) {
+		static private int ConvertPasse1(int xdest, int ydest, int Methode, int Matrice, int Pct, bool cpcPlus, bool newMethode, int Mode, bool CpcPlus, bool ReductPal1, bool ReductPal2, bool ModeReduct, int pctLumi, int pctSat, int pctContrast) {
 			if (cpcPlus)
 				Pct <<= 2;
 
@@ -334,17 +336,8 @@ namespace ConvImgCpc {
 			return NbCol;
 		}
 
-		static private RvbColor GetRgbCol(int Col, bool CpcPlus, bool nb) {
-			if (nb) {
-				if (CpcPlus) {
-					int v = ((((Col & 0xF0) >> 4) * 17) + (((Col & 0xF00) >> 8) * 17) + ((Col & 0x0F) * 17)) / 3;
-					return new RvbColor((byte)(v * 17), (byte)(v * 17), (byte)(v * 17));
-				}
-				RvbColor c = BitmapCPC.RgbCPC[Col];
-				int l = (K_R * c.r + K_V * c.v + K_B * c.b) >> 15;
-				return new RvbColor((byte)l, (byte)l, (byte)l);
-			}
-			return CpcPlus ? new RvbColor((byte)(((Col & 0xF0) >> 4) * 17), (byte)(((Col & 0xF00) >> 8) * 17), (byte)((Col & 0x0F) * 17)) : BitmapCPC.RgbCPC[Col];
+		static private RvbColor GetRgbCol(int Col, bool CpcPlus) {
+			return CpcPlus ? new RvbColor((byte)(((Col & 0xF0) >> 4) * 17), (byte)(((Col & 0xF00) >> 8) * 17), (byte)((Col & 0x0F) * 17)) : BitmapCPC.RgbCPC[Col < 27 ? Col : 0];
 		}
 
 		//
@@ -512,9 +505,9 @@ namespace ConvImgCpc {
 		//
 		// Passe 2 : réduit l'image à MaxCol couleurs.
 		//
-		static void Passe2(BitmapCPC dest, int[] CChoix, bool CpcPlus, int PixMode, bool nb) {
+		static void Passe2(BitmapCPC dest, int[] CChoix, bool CpcPlus, int PixMode) {
 			for (int i = 0; i < MaxCol; i++)
-				tabCol[i] = GetRgbCol(CChoix[i], CpcPlus, nb);
+				tabCol[i] = GetRgbCol(CChoix[i], CpcPlus);
 
 			switch (PixMode) {
 				case 1:
@@ -547,7 +540,6 @@ namespace ConvImgCpc {
 									int pctContrast,
 									bool cpcPlus,
 									bool newMethode,
-									bool nb,
 									bool reductPal1,
 									bool reductPal2,
 									bool newReduct,
@@ -594,9 +586,9 @@ namespace ConvImgCpc {
 					break;
 			}
 			bitmap.LockBits();
-			int nbCol = ConvertPasse1(tailleX, tailleY, methode, matrice, pct, cpcPlus, newMethode, nb, dest.ModeCPC, cpcPlus, reductPal1, reductPal2, newReduct, pctLumi, pctSat, pctContrast);
+			int nbCol = ConvertPasse1(tailleX, tailleY, methode, matrice, pct, cpcPlus, newMethode, dest.ModeCPC, cpcPlus, reductPal1, reductPal2, newReduct, pctLumi, pctSat, pctContrast);
 			RechercheCMax(CChoix, lockState, cpcPlus, sortPal);
-			Passe2(dest, CChoix, cpcPlus, pixMode, nb);
+			Passe2(dest, CChoix, cpcPlus, pixMode);
 			for (int i = 0; i < 16; i++)
 				dest.SetPalette(i, CChoix[i]);
 		}
