@@ -73,7 +73,7 @@ namespace ConvImgCpc {
 				Pixels[adrd++] = Pixels[adr];
 				Pixels[adrd++] = Pixels[adr + 1];
 				Pixels[adrd++] = Pixels[adr + 2];
-				Pixels[adrd++] = 255;
+				Pixels[adrd++] = 0xFF;
 			}
 		}
 	}
