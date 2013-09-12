@@ -1,7 +1,7 @@
 ﻿using System.IO;
 
 namespace PJA {
-	public class Map: Data {
+	public class Map: BaseData {
 		public DataMap.typeCase map;			// type de salle
 		public byte numCase;		// numéro de salle;
 		public byte nord;			// quelle salle connectée au nord

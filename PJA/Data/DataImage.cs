@@ -2,7 +2,7 @@
 using System.IO;
 
 namespace PJA {
-	public class DataImage: Data {
+	public class DataImage: BaseData {
 		public List<Image> listImg = new List<Image>();
 		public List<Palette> listPal = new List<Palette>();
 		private bool modif;

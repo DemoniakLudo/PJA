@@ -1,7 +1,7 @@
 ﻿using System.IO;
 
 namespace PJA {
-	public class Palette: Data {
+	public class Palette: BaseData {
 		public byte[] palette = new byte[34];
 		public string nom = "";
 

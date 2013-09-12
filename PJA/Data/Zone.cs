@@ -2,7 +2,7 @@
 using System.IO;
 
 namespace PJA {
-	class Zone: Data {
+	class Zone: BaseData {
 		public int xd, yd, xa, ya; // Coordonnées de la zone
 		public enum TypeZone { DEP_NORD, DEP_SUD, DEP_EST, DEP_OUEST, DEP_HAUT, DEP_BAS, RECHERCHE, ACTION, ACTION_CACHEE };
 

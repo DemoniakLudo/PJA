@@ -2,7 +2,7 @@
 using System.IO;
 
 namespace PJA {
-	class Vue: Data {
+	class Vue: BaseData {
 		private int indexImage;
 		private List<Zone> lstZone = new List<Zone>();
 

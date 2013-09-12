@@ -15,7 +15,6 @@ namespace ConvImgCpc {
 		public delegate void DlgCalcDiff(int diff, int decalMasque);
 		static private DlgCalcDiff fctCalcDiff = null;
 		static private int[] Coul = new int[4096];
-		static private int[] corr = new int[12];
 		static private int tailleX, tailleY, Tx, MaxCol;
 		static private LockBitmap bitmap;
 		static private int xPix, yPix;
@@ -313,12 +312,10 @@ namespace ConvImgCpc {
 				if (Mode < 3) {
 					// Masquer 1 bit par composante
 					for (int i = 0; i < Coul.Length; i++) {
-						int c1 = (i & 0xC00) * 0xFFF / 0xC00;
-						int c2 = (i & 0xC0) * 0xFF / 0xC0;
-						int c3 = (i & 0x0C) * 0x0F / 0x0C;
-						if (((i & 1) == 1 && ReductPal1)
-						   || ((i & 1) == 0 && ReductPal2)
-						   ) {
+						if (((i & 1) == 1 && ReductPal1) || ((i & 1) == 0 && ReductPal2)) {
+							int c1 = (i & 0xC00) * 0xFFF / 0xC00;
+							int c2 = (i & 0xC0) * 0xFF / 0xC0;
+							int c3 = (i & 0x0C) * 0x0F / 0x0C;
 							int t = Coul[i];
 							Coul[i] = 0;
 							if (ModeReduct)

@@ -45,7 +45,7 @@
     <Compile Include="ConvImgCpc\Pack.cs" />
     <Compile Include="Data\Action.cs" />
     <Compile Include="Data\CpcSystem.cs" />
-    <Compile Include="Data\Data.cs" />
+    <Compile Include="Data\BaseData.cs" />
     <Compile Include="Data\DataImage.cs" />
     <Compile Include="Data\DataMap.cs" />
     <Compile Include="Data\Image.cs" />

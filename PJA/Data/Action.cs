@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace PJA {
-	class Action:Data {
+	class Action:BaseData {
 		public override bool Load(System.IO.StreamReader rd) {
 			throw new NotImplementedException();
 		}

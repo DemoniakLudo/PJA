@@ -1,7 +1,7 @@
 ﻿using System.IO;
 
 namespace PJA {
-	public class DataMap: Data {
+	public class DataMap: BaseData {
 		public const int TAILLE_X = 32;
 		public const int TAILLE_Y = 32;
 		public const int TAILLE_Z = 10;

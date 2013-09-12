@@ -1,7 +1,7 @@
 ﻿using System.IO;
 
 namespace PJA {
-	public class Image: Data {
+	public class Image: BaseData {
 		public string nom;
 		public byte[] data = new byte[0x8000];
 		private Palette pal;
