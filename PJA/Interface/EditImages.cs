@@ -200,9 +200,9 @@ namespace PJA {
 									(int)contrast.Value,
 									cpcPlus.Checked,
 									newMethode.Checked,
-									false,
-									false,
-									false,
+									reducPal1.Checked,
+									reducPal2.Checked,
+									newReduc.Checked,
 									sortPal.Checked,
 									renderMode.SelectedIndex);
 				long t1 = System.Environment.TickCount;
@@ -275,10 +275,25 @@ namespace PJA {
 		}
 
 		private void cpcPlus_CheckedChanged(object sender, System.EventArgs e) {
+			reducPal1.Enabled = reducPal2.Enabled = cpcPlus.Checked;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
 		private void nb_CheckedChanged(object sender, System.EventArgs e) {
+			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
+		}
+
+		private void reducPal1_CheckedChanged(object sender, System.EventArgs e) {
+			newReduc.Enabled = reducPal1.Checked || reducPal2.Checked;
+			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
+		}
+
+		private void reducPal2_CheckedChanged(object sender, System.EventArgs e) {
+			newReduc.Enabled = reducPal1.Checked || reducPal2.Checked;
+			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
+		}
+
+		private void newReduc_CheckedChanged(object sender, System.EventArgs e) {
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
@@ -397,6 +412,7 @@ namespace PJA {
 		private void EditImages_FormClosed(object sender, FormClosedEventArgs e) {
 			Valid = false;
 		}
+
 
 		/*
 		private bool SauvePalette(string NomFic, int Mode, int[] Palette, bool CpcPlus) {

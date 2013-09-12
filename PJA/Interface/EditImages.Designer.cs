@@ -70,6 +70,9 @@
 			this.zoomLevel = new System.Windows.Forms.ComboBox();
 			this.bpEditMode = new System.Windows.Forms.CheckBox();
 			this.cpcPlus = new System.Windows.Forms.CheckBox();
+			this.reducPal1 = new System.Windows.Forms.CheckBox();
+			this.reducPal2 = new System.Windows.Forms.CheckBox();
+			this.newReduc = new System.Windows.Forms.CheckBox();
 			this.tramage.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pctTrame)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.sat)).BeginInit();
@@ -81,7 +84,7 @@
 			// lockAllPal
 			// 
 			this.lockAllPal.AutoSize = true;
-			this.lockAllPal.Location = new System.Drawing.Point(784, 600);
+			this.lockAllPal.Location = new System.Drawing.Point(791, 600);
 			this.lockAllPal.Name = "lockAllPal";
 			this.lockAllPal.Size = new System.Drawing.Size(93, 17);
 			this.lockAllPal.TabIndex = 1;
@@ -575,7 +578,7 @@
 			// cpcPlus
 			// 
 			this.cpcPlus.AutoSize = true;
-			this.cpcPlus.Location = new System.Drawing.Point(784, 579);
+			this.cpcPlus.Location = new System.Drawing.Point(792, 579);
 			this.cpcPlus.Name = "cpcPlus";
 			this.cpcPlus.Size = new System.Drawing.Size(70, 17);
 			this.cpcPlus.TabIndex = 35;
@@ -583,11 +586,50 @@
 			this.cpcPlus.UseVisualStyleBackColor = true;
 			this.cpcPlus.CheckedChanged += new System.EventHandler(this.cpcPlus_CheckedChanged);
 			// 
+			// reducPal1
+			// 
+			this.reducPal1.AutoSize = true;
+			this.reducPal1.Enabled = false;
+			this.reducPal1.Location = new System.Drawing.Point(792, 528);
+			this.reducPal1.Name = "reducPal1";
+			this.reducPal1.Size = new System.Drawing.Size(74, 17);
+			this.reducPal1.TabIndex = 36;
+			this.reducPal1.Text = "reducPal1";
+			this.reducPal1.UseVisualStyleBackColor = true;
+			this.reducPal1.CheckedChanged += new System.EventHandler(this.reducPal1_CheckedChanged);
+			// 
+			// reducPal2
+			// 
+			this.reducPal2.AutoSize = true;
+			this.reducPal2.Enabled = false;
+			this.reducPal2.Location = new System.Drawing.Point(792, 545);
+			this.reducPal2.Name = "reducPal2";
+			this.reducPal2.Size = new System.Drawing.Size(74, 17);
+			this.reducPal2.TabIndex = 37;
+			this.reducPal2.Text = "reducPal2";
+			this.reducPal2.UseVisualStyleBackColor = true;
+			this.reducPal2.CheckedChanged += new System.EventHandler(this.reducPal2_CheckedChanged);
+			// 
+			// newReduc
+			// 
+			this.newReduc.AutoSize = true;
+			this.newReduc.Enabled = false;
+			this.newReduc.Location = new System.Drawing.Point(792, 562);
+			this.newReduc.Name = "newReduc";
+			this.newReduc.Size = new System.Drawing.Size(78, 17);
+			this.newReduc.TabIndex = 38;
+			this.newReduc.Text = "newReduc";
+			this.newReduc.UseVisualStyleBackColor = true;
+			this.newReduc.CheckedChanged += new System.EventHandler(this.newReduc_CheckedChanged);
+			// 
 			// EditImages
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1056, 758);
+			this.Controls.Add(this.newReduc);
+			this.Controls.Add(this.reducPal2);
+			this.Controls.Add(this.reducPal1);
 			this.Controls.Add(this.cpcPlus);
 			this.Controls.Add(this.bpEditMode);
 			this.Controls.Add(this.label3);
@@ -695,6 +737,9 @@
 		private System.Windows.Forms.ComboBox zoomLevel;
 		private System.Windows.Forms.CheckBox bpEditMode;
 		private System.Windows.Forms.CheckBox cpcPlus;
+		private System.Windows.Forms.CheckBox reducPal1;
+		private System.Windows.Forms.CheckBox reducPal2;
+		private System.Windows.Forms.CheckBox newReduc;
 
 	}
 }
