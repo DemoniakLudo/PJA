@@ -10,6 +10,10 @@ namespace PJA {
 		public DataImage ImageData {
 			get { return dataImage; }
 		}
+		private DataVue dataVue;
+		public DataVue VueData {
+			get { return dataVue; }
+		}
 		private int mode;
 		public int Mode {
 			get { return mode; }
@@ -59,6 +63,7 @@ namespace PJA {
 			// Réinitialisation variables
 			dataMap = new DataMap();
 			dataImage = new DataImage();
+			dataVue = new DataVue();
 		}
 
 		//
@@ -77,7 +82,7 @@ namespace PJA {
 						line = rd.ReadLine();
 						if (line.StartsWith("#PROJET_RESO_Y")) {
 							cy = int.Parse(line.Substring(15));
-							ret = dataMap.Load(rd) && dataImage.Load(rd);
+							ret = dataMap.Load(rd) && dataImage.Load(rd) && dataVue.Load(rd);
 						}
 					}
 				}
@@ -94,7 +99,7 @@ namespace PJA {
 			wr.WriteLine("#PROJET_MODE\t" + mode);
 			wr.WriteLine("#PROJET_RESO_X\t" + cx);
 			wr.WriteLine("#PROJET_RESO_Y\t" + cy);
-			bool ret = dataMap.Save(wr) && dataImage.Save(wr);
+			bool ret = dataMap.Save(wr) && dataImage.Save(wr) && dataVue.Save(wr);
 			wr.Close();
 			return ret;
 		}

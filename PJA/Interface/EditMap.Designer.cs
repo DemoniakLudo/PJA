@@ -54,6 +54,7 @@
 			this.label9 = new System.Windows.Forms.Label();
 			this.bpFindSalle = new System.Windows.Forms.Button();
 			this.salleRech = new System.Windows.Forms.TextBox();
+			this.bpEditVues = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.pictureMap)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -349,11 +350,22 @@
 			this.salleRech.Size = new System.Drawing.Size(42, 20);
 			this.salleRech.TabIndex = 6;
 			// 
+			// bpEditVues
+			// 
+			this.bpEditVues.Location = new System.Drawing.Point(579, 386);
+			this.bpEditVues.Name = "bpEditVues";
+			this.bpEditVues.Size = new System.Drawing.Size(107, 23);
+			this.bpEditVues.TabIndex = 7;
+			this.bpEditVues.Text = "Editeur de vues";
+			this.bpEditVues.UseVisualStyleBackColor = true;
+			this.bpEditVues.Click += new System.EventHandler(this.bpEditVues_Click);
+			// 
 			// EditMap
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(876, 637);
+			this.Controls.Add(this.bpEditVues);
 			this.Controls.Add(this.salleRech);
 			this.Controls.Add(this.bpFindSalle);
 			this.Controls.Add(this.label7);
@@ -431,5 +443,6 @@
 		private System.Windows.Forms.Label label9;
 		private System.Windows.Forms.Button bpFindSalle;
 		private System.Windows.Forms.TextBox salleRech;
+		private System.Windows.Forms.Button bpEditVues;
 	}
 }

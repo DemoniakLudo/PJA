@@ -13,10 +13,12 @@ namespace PJA {
 		private Brush brushBlanc = new SolidBrush(Color.White);
 		private DataMap dataMap;
 		public bool Valid;
+		private Projet projet;
 
-		public EditMap(Projet projet) {
+		public EditMap(Projet prj) {
 			InitializeComponent();
-			dataMap = projet.MapData;
+			projet = prj;
+			dataMap = prj.MapData;
 			grilleX = pictureMap.Width;
 			grilleY = pictureMap.Height;
 			pictureMap.Image = new Bitmap(grilleX, grilleY);
@@ -158,28 +160,20 @@ namespace PJA {
 		private void bpFindSalle_Click(object sender, System.EventArgs e) {
 			int numSalle;
 			if (int.TryParse(salleRech.Text, out numSalle)) {
-				bool trouve = false;
 				int x = 0, y = 0, n = 0;
-				if (numSalle >= 0 && numSalle < DataMap.MAX_LIEU) {
-					if (dataMap.caseLibre[numSalle] > 0) {
-						for (n = 0; !trouve && n < DataMap.TAILLE_Z; n++) {
-							for (y = 0; !trouve && y < DataMap.TAILLE_Y; y++) {
-								for (x = 0; !trouve && x < DataMap.TAILLE_X; x++) {
-									Map m = dataMap.GetMap(x, y, n);
-									trouve = m.numCase == numSalle && m.map != DataMap.typeCase.CASE_VIDE;
-								}
-							}
-						}
-					}
-					if (trouve) {
-						int stepX = pictureMap.Left + Left - 4 + (x * grilleX / DataMap.TAILLE_X);
-						int stepY = pictureMap.Top + Top + 10 + (y * grilleY / DataMap.TAILLE_Y);
-						SetCursorPos(stepX, stepY);
-					}
+				if (dataMap.RechercheSalle(numSalle, ref x, ref y, ref n)) {
+					int stepX = pictureMap.Left + Left - 4 + (x * grilleX / DataMap.TAILLE_X);
+					int stepY = pictureMap.Top + Top + 10 + (y * grilleY / DataMap.TAILLE_Y);
+					SetCursorPos(stepX, stepY);
 				}
-				if (!trouve)
+				else
 					MessageBox.Show("Salle " + numSalle + " non trouvée.");
 			}
+		}
+
+		private void bpEditVues_Click(object sender, System.EventArgs e) {
+			EditVues dial = new EditVues(projet);
+			dial.ShowDialog(this);
 		}
 	}
 }

@@ -30,6 +30,11 @@ namespace PJA {
 			return ind < 17 ? (palette[2 * ind] << 8) + palette[2 * ind + 1] : 0;
 		}
 
+		public void SendPalette(int[] pal) {
+			for (int i = 0; i < 17; i++)
+				pal[i] = GetPalette(i);
+		}
+
 		public void SetPalette(int ind, int val) {
 			palette[2 * ind] = (byte)(val >> 8);
 			palette[2 * ind + 1] = (byte)val;

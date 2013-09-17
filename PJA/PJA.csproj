@@ -37,6 +37,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConvImgCpc\BitmapCpc.cs" />
@@ -48,6 +49,7 @@
     <Compile Include="Data\BaseData.cs" />
     <Compile Include="Data\DataImage.cs" />
     <Compile Include="Data\DataMap.cs" />
+    <Compile Include="Data\DataVue.cs" />
     <Compile Include="Data\Image.cs" />
     <Compile Include="Data\Palette.cs" />
     <Compile Include="Data\Resultat.cs" />
@@ -70,6 +72,12 @@
     </Compile>
     <Compile Include="Interface\EditMap.Designer.cs">
       <DependentUpon>EditMap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\EditVues.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\EditVues.Designer.cs">
+      <DependentUpon>EditVues.cs</DependentUpon>
     </Compile>
     <Compile Include="Interface\Main.cs">
       <SubType>Form</SubType>
@@ -95,6 +103,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Interface\EditMap.resx">
       <DependentUpon>EditMap.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\EditVues.resx">
+      <DependentUpon>EditVues.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Interface\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
@@ -139,6 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Infos.txt" />
+    <None Include="Properties\Affecte.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

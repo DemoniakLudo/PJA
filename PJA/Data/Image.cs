@@ -26,6 +26,10 @@ namespace PJA {
 			return pal.GetPalette(ind);
 		}
 
+		public void SendPalette(int[] p) {
+			pal.SendPalette(p);
+		}
+
 		public void SetPal(Palette p) {
 			pal = p;
 		}

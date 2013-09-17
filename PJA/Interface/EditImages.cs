@@ -15,13 +15,14 @@ namespace PJA {
 		private int zoom = 1;
 		private int numCol = 0;
 		private int offsetX = 0, offsetY = 0;
+		private Projet projet;
 		public bool Valid = false;
 		//private OcpPal Pal = new OcpPal();
 		//static private char[] CpcVGA = new char[27] { 'T', 'D', 'U', '\\', 'X', ']', 'L', 'E', 'M', 'V', 'F', 'W', '^', '@', '_', 'N', 'G', 'O', 'R', 'B', 'S', 'Z', 'Y', '[', 'J', 'C', 'K' };
 		private OpenFileDialog dlgLoadPal = new OpenFileDialog();
 		private OpenFileDialog dlgImportImage = new OpenFileDialog();
 
-		public EditImages(Projet projet) {
+		public EditImages(Projet prj) {
 			InitializeComponent();
 			for (int i = 0; i < 16; i++) {
 				// Générer les contrôles de "couleurs"
@@ -40,8 +41,9 @@ namespace PJA {
 				lockColors[i].Click += ClickLock;
 				Controls.Add(lockColors[i]);
 			}
-			dataImage = projet.ImageData;
-			MajProjet(projet);
+			dataImage = prj.ImageData;
+			MajProjet(prj, true);
+			projet = prj;
 			radioFit.Checked = true;
 			methode.SelectedIndex = 0;
 			matrice.SelectedIndex = 0;
@@ -54,12 +56,12 @@ namespace PJA {
 			dlgLoadPal.Filter = "Fichier palette (*.pal)|*.pal";
 		}
 
-		public void MajProjet(Projet projet) {
-			int tx = pictureBox.Width = projet.Cx * 8;
-			int ty = pictureBox.Height = projet.Cy * 16;
-			bitmapCPC = new BitmapCPC(tx, ty, projet.Mode);
+		public void MajProjet(Projet prj, bool newCpc) {
+			int tx = pictureBox.Width = prj.Cx * 8;
+			int ty = pictureBox.Height = prj.Cy * 16;
+			if (newCpc)
+				bitmapCPC = new BitmapCPC(tx, ty, prj.Mode);
 			bmp = new Bitmap(tx, ty);
-			pictureBox.Image = bmp;
 			pictureBox.Image = bmp;
 			bmpLock = new LockBitmap(bmp);
 			vScrollBar.Height = ty;
@@ -103,7 +105,7 @@ namespace PJA {
 			}
 		}
 
-		public void Render() {
+		private void Render() {
 			bitmapCPC.cpcPlus = cpcPlus.Checked;
 			bitmapCPC.Render(bmpLock, bitmapCPC.ModeCPC, zoom, offsetX, offsetY, false);
 			pictureBox.Refresh();
@@ -140,9 +142,12 @@ namespace PJA {
 				}
 				catch {
 					bitmapCPC.CreateImageFile(dlgImportImage.FileName);
-					Render();
+					cpcPlus.Checked = bitmapCPC.cpcPlus;
+					projet.Cx = bitmapCPC.TailleX >> 3;
+					projet.Cy = bitmapCPC.TailleY >> 4;
+					projet.Mode = bitmapCPC.ModeCPC;
+					MajProjet(projet, false);
 				}
-
 				bpRecalc_Click(sender, e);
 				imageName.Text = dlgImportImage.SafeFileName;
 			}
@@ -219,9 +224,7 @@ namespace PJA {
 				for (int i = 0; i < 16; i++)
 					bitmapCPC.SetPalette(i, img.GetPalette(i));
 
-				for (int i = 0; i < img.data.Length; i++)
-					bitmapCPC.BmpCpc[i] = img.data[i];
-
+				System.Array.Copy(img.data, bitmapCPC.BmpCpc, img.data.Length);
 				Render();
 			}
 		}
@@ -380,8 +383,10 @@ namespace PJA {
 		}
 
 		private void pictureBox_MouseDown(object sender, MouseEventArgs e) {
-			bitmapCPC.SetPixelCpc(offsetX + (e.X / zoom), offsetY + (e.Y / zoom), numCol);
-			Render();
+			if (bpEditMode.Checked) {
+				bitmapCPC.SetPixelCpc(offsetX + (e.X / zoom), offsetY + (e.Y / zoom), numCol);
+				Render();
+			}
 		}
 
 		private void pictureBox_MouseMove(object sender, MouseEventArgs e) {

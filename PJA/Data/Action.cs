@@ -1,13 +1,13 @@
-﻿using System;
+﻿using System.IO;
 
 namespace PJA {
 	class Action:BaseData {
-		public override bool Load(System.IO.StreamReader rd) {
-			throw new NotImplementedException();
+		public override bool Load(StreamReader rd) {
+			throw new System.NotImplementedException();
 		}
 
-		public override bool Save(System.IO.StreamWriter wr) {
-			throw new NotImplementedException();
+		public override bool Save(StreamWriter wr) {
+			throw new System.NotImplementedException();
 		}
 	}
 }

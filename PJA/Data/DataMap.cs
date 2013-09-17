@@ -21,7 +21,12 @@ namespace PJA {
 			set { niveau = value; }
 		}
 		private int nbSalles = 0;
-		public int NbSalles { get { return nbSalles; } }
+		public int NbSalles {
+			get {
+				GetCaseLibre();
+				return nbSalles;
+			}
+		}
 		private int curSalle = 0;
 		public int CurSalle { get { return curSalle; } }
 
@@ -234,6 +239,23 @@ namespace PJA {
 			}
 		}
 
+		public bool RechercheSalle(int numSalle, ref int x, ref int y, ref int n) {
+			if (numSalle >= 0 && numSalle < DataMap.MAX_LIEU) {
+				if (caseLibre[numSalle] > 0) {
+					for (n = 0; n < DataMap.TAILLE_Z; n++) {
+						for (y = 0; y < DataMap.TAILLE_Y; y++) {
+							for (x = 0; x < DataMap.TAILLE_X; x++) {
+								Map m = GetMap(x, y, n);
+								if (m.numCase == numSalle && m.map != DataMap.typeCase.CASE_VIDE)
+									return true;
+							}
+						}
+					}
+				}
+			}
+			return false;
+		}
+
 		public override bool Load(StreamReader rd) {
 			string line = rd.ReadLine();
 			if (line != null) {
@@ -274,8 +296,6 @@ namespace PJA {
 		}
 
 		public override bool Save(StreamWriter wr) {
-			// Compter le nombre de cases utilisées
-			GetCaseLibre();
 			wr.WriteLine("#MAP_NB_CASES\t" + nbSalles);
 			for (int n = 0; n < TAILLE_Z; n++)
 				for (int y = 0; y < TAILLE_Y; y++)
