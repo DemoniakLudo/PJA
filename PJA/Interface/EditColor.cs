@@ -75,6 +75,7 @@ public partial class EditColor: Form {
 		}
 		catch { }
 	}
+
 	private void track_Scroll(object sender, System.EventArgs e) {
 		int i = (int)((TrackBar)sender).Tag;
 		tabVal[i].Text = tabTrack[i].Value.ToString();

@@ -30,10 +30,6 @@ namespace PJA {
 			pal = p;
 		}
 
-		public void SetPalette(int ind, int val) {
-			pal.SetPalette(ind, val);
-		}
-
 		public override bool Load(StreamReader rd) {
 			string line = rd.ReadLine();
 			if (line.StartsWith("#IMAGE_NAME")) {

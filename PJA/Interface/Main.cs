@@ -36,7 +36,7 @@ namespace PJA {
 		private void mode_SelectedIndexChanged(object sender, EventArgs e) {
 			projet.Mode = mode.SelectedIndex;
 			if (editImages != null)
-				editImages.MajProjet(projet);
+				editImages.MajProjet(projet, true);
 		}
 
 		private void nbLignes_ValueChanged(object sender, EventArgs e) {
@@ -44,7 +44,7 @@ namespace PJA {
 			projet.Cx = (int)nbCols.Value;
 			projet.Cy = (int)nbLignes.Value;
 			if (editImages != null)
-				editImages.MajProjet(projet);
+				editImages.MajProjet(projet, true);
 		}
 
 		private void nbCols_ValueChanged(object sender, EventArgs e) {
@@ -52,7 +52,7 @@ namespace PJA {
 			projet.Cy = (int)nbLignes.Value;
 			projet.Cx = (int)nbCols.Value;
 			if (editImages != null)
-				editImages.MajProjet(projet);
+				editImages.MajProjet(projet, true);
 		}
 
 		private void bpNew_Click(object sender, EventArgs e) {
@@ -61,7 +61,7 @@ namespace PJA {
 			nbCols.Value = projet.Cx;
 			nbLignes.Value = projet.Cy;
 			if (editImages != null)
-				editImages.MajProjet(projet);
+				editImages.MajProjet(projet, true);
 		}
 
 		private void bpLoad_Click(object sender, EventArgs e) {

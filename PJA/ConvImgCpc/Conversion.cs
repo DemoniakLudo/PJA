@@ -31,49 +31,12 @@ namespace ConvImgCpc {
 			return (r1 > r2 ? (r1 - r2) * K_R : (r2 - r1) * K_R) + (v1 > v2 ? (v1 - v2) * K_V : (v2 - v1) * K_V) + (b1 > b2 ? (b1 - b2) * K_B : (b2 - b1) * K_B);
 		}
 
-		static int CalcDist(int c1, int c2) {
-			return CalcDist(c1 & 0xFF, (c1 >> 8) & 0xFF, c1 >> 16, c2 & 0xFF, (c2 >> 8) & 0xFF, c2 >> 16);
+		static int CalcDist(int a, int b) {
+			return ((a & 0xFF) > (b & 0xFF) ? ((a & 0xFF) - (b & 0xFF)) * K_R : ((b & 0xFF) - (a & 0xFF)) * K_R) + (((a >> 8) & 0xFF) > ((b >> 8) & 0xFF) ? (((a >> 8) & 0xFF) - ((b >> 8) & 0xFF)) * K_V : (((b >> 8) & 0xFF) - ((a >> 8) & 0xFF)) * K_V) + ((a >> 16) > (b >> 16) ? ((a - b) >> 16) * K_B : ((b - a) >> 16) * K_B);
 		}
 
-		static int CalcDist(RvbColor col, int r, int v, int b) {
-			return CalcDist(col.r, col.v, col.b, r, v, b);
-		}
-
-		//
-		// Retourne la couleur CPC la plus proche du pixel passé en paramètre
-		//
-		static private RvbColor RechercheProche(RvbColor p, bool cpcPlus, bool newMethode) {
-			RvbColor choix = new RvbColor(0);
-			if (cpcPlus) {
-				choix.b = (byte)((p.b >> 4) * 17);
-				choix.v = (byte)((p.v >> 4) * 17);
-				choix.r = (byte)((p.r >> 4) * 17);
-				Coul[((choix.v << 4) & 0xF00) + ((choix.r) & 0xF0) + ((choix.b) >> 4)]++;
-				//Coul[((p.v >> 4) << 8) + ((p.r >> 4) << 4) + (p.b >> 4)]++;
-			}
-			else {
-				int indexChoix = 0;
-				if (newMethode) {
-					int OldDist1 = 0x7FFFFFFF;
-					for (int i = 0; i < 27; i++) {
-						RvbColor s = BitmapCPC.RgbCPC[i];
-						int Dist1 = CalcDist(s.r, s.v, s.b, p.r, p.v, p.b);
-						if (Dist1 < OldDist1) {
-							OldDist1 = Dist1;
-							choix = s;
-							indexChoix = i;
-							if (Dist1 == 0)
-								break;
-						}
-					}
-				}
-				else {
-					indexChoix = (p.r > SEUIL_LUM_2 ? 2 : p.r > SEUIL_LUM_1 ? 1 : 0) + (p.b > SEUIL_LUM_2 ? 6 : p.b > SEUIL_LUM_1 ? 3 : 0) + (p.v > SEUIL_LUM_2 ? 18 : p.v > SEUIL_LUM_1 ? 9 : 0);
-					choix = BitmapCPC.RgbCPC[indexChoix];
-				}
-				Coul[indexChoix]++;
-			}
-			return choix;
+		static int CalcDist(RvbColor c, int r, int v, int b) {
+			return (c.r > r ? (c.r - r) * K_R : (r - c.r) * K_R) + (c.v > v ? (c.v - v) * K_V : (v - c.v) * K_V) + (c.b > b ? (c.b - b) * K_B : (b - c.b) * K_B);
 		}
 
 		static private void AddPixel(int x, int y, int corr, int decalMasque) {
@@ -275,36 +238,60 @@ namespace ConvImgCpc {
 						break;
 				}
 
+			RvbColor choix;
 			for (xPix = 0; xPix < xdest; xPix += Tx)
 				for (yPix = 0; yPix < ydest; yPix += 2) {
 					// Lecture de la couleur du point au coordonnées (x,y)
-					RvbColor p1 = bitmap.GetPixelColor(xPix, yPix);
-					if (p1.r != 0 && p1.v != 0 && p1.b != 0) {
-						float r = tblContrast[p1.r];
-						float v = tblContrast[p1.v];
-						float b = tblContrast[p1.b];
+					RvbColor p = bitmap.GetPixelColor(xPix, yPix);
+					if (p.r != 0 && p.v != 0 && p.b != 0) {
+						float r = tblContrast[p.r];
+						float v = tblContrast[p.v];
+						float b = tblContrast[p.b];
 						if (pctLumi != 100 || pctSat != 100)
 							SetLumiSat(lumi, satur, ref r, ref v, ref b);
 
-						p1.r = (byte)MinMax((int)r, 0, 255);
-						p1.v = (byte)MinMax((int)v, 0, 255);
-						p1.b = (byte)MinMax((int)b, 0, 255);
+						p.r = (byte)MinMax((int)r, 0, 255);
+						p.v = (byte)MinMax((int)v, 0, 255);
+						p.b = (byte)MinMax((int)b, 0, 255);
 					}
 
 					// Recherche le point dans la couleur cpc la plus proche
-					RvbColor p2 = RechercheProche(p1, cpcPlus, newMethode);
+					int indexChoix = 0;
+					if (cpcPlus) {
+						choix = new RvbColor((byte)((p.r >> 4) * 17), (byte)((p.v >> 4) * 17), (byte)((p.b >> 4) * 17));
+						indexChoix = ((choix.v << 4) & 0xF00) + ((choix.r) & 0xF0) + ((choix.b) >> 4);
+					}
+					else {
+						if (!newMethode)
+							indexChoix = (p.r > SEUIL_LUM_2 ? 2 : p.r > SEUIL_LUM_1 ? 1 : 0) + (p.b > SEUIL_LUM_2 ? 6 : p.b > SEUIL_LUM_1 ? 3 : 0) + (p.v > SEUIL_LUM_2 ? 18 : p.v > SEUIL_LUM_1 ? 9 : 0);
+						else {
+							int OldDist1 = 0x7FFFFFFF;
+							for (int i = 0; i < 27; i++) {
+								RvbColor s = BitmapCPC.RgbCPC[i];
+								int Dist1 = CalcDist(s.r, s.v, s.b, p.r, p.v, p.b);
+								if (Dist1 < OldDist1) {
+									OldDist1 = Dist1;
+									indexChoix = i;
+									if (Dist1 == 0)
+										break;
+								}
+							}
+						}
+						choix = BitmapCPC.RgbCPC[indexChoix];
+					}
+					Coul[indexChoix]++;
 
 					if (fctCalcDiff != null) {
 						// Modifie composante Rouge
-						fctCalcDiff(p1.r - p2.r, 0);
+						fctCalcDiff(p.r - choix.r, 0);
 
 						// Modifie composante Verte
-						fctCalcDiff(p1.v - p2.v, 1);
+						fctCalcDiff(p.v - choix.v, 1);
 
 						// Modifie composante Bleue
-						fctCalcDiff(p1.b - p2.b, 2);
+						fctCalcDiff(p.b - choix.b, 2);
 					}
-					bitmap.SetPixel(xPix, yPix, p2.GetColor);
+					bitmap.SetPixel(xPix, yPix, choix.GetColor);
 				}
 			if (CpcPlus) {
 				//
@@ -334,10 +321,6 @@ namespace ConvImgCpc {
 					NbCol++;
 
 			return NbCol;
-		}
-
-		static private RvbColor GetRgbCol(int Col, bool CpcPlus) {
-			return CpcPlus ? new RvbColor((byte)(((Col & 0xF0) >> 4) * 17), (byte)(((Col & 0xF00) >> 8) * 17), (byte)((Col & 0x0F) * 17)) : BitmapCPC.RgbCPC[Col < 27 ? Col : 0];
 		}
 
 		//
@@ -507,7 +490,7 @@ namespace ConvImgCpc {
 		//
 		static void Passe2(BitmapCPC dest, int[] CChoix, bool CpcPlus, int PixMode) {
 			for (int i = 0; i < MaxCol; i++)
-				tabCol[i] = GetRgbCol(CChoix[i], CpcPlus);
+				tabCol[i] = CpcPlus ? new RvbColor((byte)(((CChoix[i] & 0xF0) >> 4) * 17), (byte)(((CChoix[i] & 0xF00) >> 8) * 17), (byte)((CChoix[i] & 0x0F) * 17)) : BitmapCPC.RgbCPC[CChoix[i] < 27 ? CChoix[i] : 0];
 
 			switch (PixMode) {
 				case 1:

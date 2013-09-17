@@ -259,7 +259,7 @@ namespace ConvImgCpc {
 				for (int i = 0; i < 17; i++)
 					Palette[i] = BmpCpc[i + 4];
 
-			Pack.Depack(BmpCpc, Std ? 21 : 4, BufTmp);
+			PackDepack.Depack(BmpCpc, Std ? 21 : 4, BufTmp);
 			System.Array.Copy(BufTmp, BmpCpc, 0x10000);
 			if (Overscan) {
 				NbCol = MaxColsCpc;
@@ -353,7 +353,7 @@ namespace ConvImgCpc {
 		private void SetPalette(byte[] PalStart, int startAdr, bool Plus) {
 			ModeCPC = PalStart[startAdr] & 0x03;
 			for (int i = 0; i < 16; i++)
-				Palette[i] = Plus ? PalStart[startAdr + 1 + i << 1] + PalStart[startAdr + 2 + i << 1] << 8 : PalStart[startAdr + i + 1];
+				Palette[i] = Plus ? PalStart[startAdr + 1 + (i << 1)] + (PalStart[startAdr + 2 + (i << 1)] << 8 ): PalStart[startAdr + i + 1];
 		}
 	}
 }
