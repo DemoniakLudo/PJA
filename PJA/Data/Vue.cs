@@ -6,7 +6,7 @@ namespace PJA {
 		public byte numVue; // Numéro de vue
 		public string libelle = "";
 		public int indexImage; // numéro d'image
-		private List<Zone> lstZone = new List<Zone>();
+		public List<Zone> lstZone = new List<Zone>();
 
 		public Vue(byte num, string lbl , int img) {
 			numVue = num;

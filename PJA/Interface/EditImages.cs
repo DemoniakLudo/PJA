@@ -52,7 +52,7 @@ namespace PJA {
 			bpEditMode_CheckedChanged(null, null);
 			UpdateListe(-1);
 			Valid = true;
-			dlgImportImage.Filter = "Images (*.scr, *.bmp, *.gif, *.png, *.jpg)|*.scr;*.bmp;*.gif;*.png;*.jpg";
+			dlgImportImage.Filter = "Images (*.scr, *.bin, *.bmp, *.gif, *.png, *.jpg)|*.scr;*.bin;*.bmp;*.gif;*.png;*.jpg";
 			dlgLoadPal.Filter = "Fichier palette (*.pal)|*.pal";
 		}
 

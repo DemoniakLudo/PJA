@@ -34,6 +34,12 @@
 			this.bpSupprime = new System.Windows.Forms.Button();
 			this.bpAffecte = new System.Windows.Forms.Button();
 			this.pictureBox = new System.Windows.Forms.PictureBox();
+			this.bpAddZone = new System.Windows.Forms.Button();
+			this.listZone = new System.Windows.Forms.ListBox();
+			this.allZones = new System.Windows.Forms.CheckBox();
+			this.typeZone = new System.Windows.Forms.ComboBox();
+			this.label3 = new System.Windows.Forms.Label();
+			this.bpDelZone = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.numSalle)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
 			this.SuspendLayout();
@@ -158,12 +164,87 @@
 			this.pictureBox.Size = new System.Drawing.Size(640, 400);
 			this.pictureBox.TabIndex = 18;
 			this.pictureBox.TabStop = false;
+			this.pictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox_MouseDown);
+			this.pictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox_MouseMove);
+			this.pictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox_MouseUp);
+			// 
+			// bpAddZone
+			// 
+			this.bpAddZone.Enabled = false;
+			this.bpAddZone.Image = global::PJA.Properties.Resources.Add;
+			this.bpAddZone.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.bpAddZone.Location = new System.Drawing.Point(842, 291);
+			this.bpAddZone.Name = "bpAddZone";
+			this.bpAddZone.Size = new System.Drawing.Size(108, 34);
+			this.bpAddZone.TabIndex = 25;
+			this.bpAddZone.Text = "Ajouter Zone";
+			this.bpAddZone.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.bpAddZone.UseVisualStyleBackColor = true;
+			this.bpAddZone.Click += new System.EventHandler(this.bpAddZone_Click);
+			// 
+			// listZone
+			// 
+			this.listZone.FormattingEnabled = true;
+			this.listZone.Location = new System.Drawing.Point(657, 1);
+			this.listZone.Name = "listZone";
+			this.listZone.Size = new System.Drawing.Size(293, 264);
+			this.listZone.TabIndex = 26;
+			this.listZone.SelectedIndexChanged += new System.EventHandler(this.listZone_SelectedIndexChanged);
+			// 
+			// allZones
+			// 
+			this.allZones.AutoSize = true;
+			this.allZones.Location = new System.Drawing.Point(657, 271);
+			this.allZones.Name = "allZones";
+			this.allZones.Size = new System.Drawing.Size(141, 17);
+			this.allZones.TabIndex = 27;
+			this.allZones.Text = "Afficher toutes les zones";
+			this.allZones.UseVisualStyleBackColor = true;
+			this.allZones.CheckedChanged += new System.EventHandler(this.allZones_CheckedChanged);
+			// 
+			// typeZone
+			// 
+			this.typeZone.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.typeZone.FormattingEnabled = true;
+			this.typeZone.Location = new System.Drawing.Point(721, 299);
+			this.typeZone.Name = "typeZone";
+			this.typeZone.Size = new System.Drawing.Size(117, 21);
+			this.typeZone.TabIndex = 28;
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(645, 302);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(74, 13);
+			this.label3.TabIndex = 29;
+			this.label3.Text = "type de zone :";
+			// 
+			// bpDelZone
+			// 
+			this.bpDelZone.Enabled = false;
+			this.bpDelZone.Image = global::PJA.Properties.Resources.Del;
+			this.bpDelZone.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.bpDelZone.Location = new System.Drawing.Point(842, 331);
+			this.bpDelZone.Name = "bpDelZone";
+			this.bpDelZone.Size = new System.Drawing.Size(108, 34);
+			this.bpDelZone.TabIndex = 30;
+			this.bpDelZone.Text = "Supprimer Zone";
+			this.bpDelZone.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.bpDelZone.UseVisualStyleBackColor = true;
+			this.bpDelZone.Click += new System.EventHandler(this.bpDelZone_Click);
 			// 
 			// EditVues
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(642, 632);
+			this.ClientSize = new System.Drawing.Size(951, 632);
+			this.Controls.Add(this.bpDelZone);
+			this.Controls.Add(this.label3);
+			this.Controls.Add(this.typeZone);
+			this.Controls.Add(this.allZones);
+			this.Controls.Add(this.listZone);
+			this.Controls.Add(this.bpAddZone);
 			this.Controls.Add(this.bpEdit);
 			this.Controls.Add(this.bpAddVue);
 			this.Controls.Add(this.listVue);
@@ -199,6 +280,12 @@
 		private System.Windows.Forms.ListBox listVue;
 		private System.Windows.Forms.Button bpAddVue;
 		private System.Windows.Forms.Button bpEdit;
+		private System.Windows.Forms.Button bpAddZone;
+		private System.Windows.Forms.ListBox listZone;
+		private System.Windows.Forms.CheckBox allZones;
+		private System.Windows.Forms.ComboBox typeZone;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.Button bpDelZone;
 
 	}
 }

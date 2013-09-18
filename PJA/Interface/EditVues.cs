@@ -11,6 +11,11 @@ namespace PJA {
 		private Vue selVue = null;
 		private DataVue dataVue;
 		private int numImage;
+		private Zone newZone = new Zone(0, 0);
+		private bool zoneDown = false;
+		private Pen penBlack = new Pen(Color.Red, 2);
+		private Pen penWhite = new Pen(Color.White, 2);
+		private Pen penBlue = new Pen(Color.Blue, 2);
 
 		public EditVues(Projet prj) {
 			InitializeComponent();
@@ -27,10 +32,39 @@ namespace PJA {
 			RefreshListVue();
 			numSalle.Maximum = projet.MapData.NbSalles - 1;
 			numSalle.Value = 0;
+			penWhite.DashStyle = System.Drawing.Drawing2D.DashStyle.DashDotDot;
+			typeZone.DataSource = System.Enum.GetValues(typeof(Zone.TypeZone));
+			Render();
+		}
+
+		private void RenderZone(Zone z, Pen pen) {
+			if (z.IsZone) {
+				int xd = z.xd;
+				int w = z.xa - z.xd;
+				if (w < 0) {
+					w = -w;
+					xd = z.xa;
+				}
+				int yd = z.yd;
+				int h = z.ya - z.yd;
+				if (h < 0) {
+					h = -h;
+					yd = z.ya;
+				}
+				Graphics.FromImage(pictureBox.Image).DrawRectangle(pen, xd << 3, yd << 1, w << 3, h << 1);
+				Graphics.FromImage(pictureBox.Image).DrawRectangle(penWhite, xd << 3, yd << 1, w << 3, h << 1);
+			}
 		}
 
 		private void Render() {
 			bitmapCPC.Render(bmpLock, bitmapCPC.ModeCPC, 1, 0, 0, false);
+			if (allZones.Checked && selVue != null)
+				foreach (Zone z in selVue.lstZone)
+					RenderZone(z, penBlue);
+
+			if (newZone != null)
+				RenderZone(newZone, penBlack);
+
 			pictureBox.Refresh();
 		}
 
@@ -41,6 +75,16 @@ namespace PJA {
 				listVue.Items.Add(v);
 
 			listVue.EndUpdate();
+		}
+
+		private void RefreshListZone() {
+			listZone.BeginUpdate();
+			listZone.Items.Clear();
+			if (selVue != null)
+				foreach (Zone z in selVue.lstZone)
+					listZone.Items.Add(z);
+
+			listZone.EndUpdate();
 		}
 
 		private void listImage_SelectedIndexChanged(object sender, System.EventArgs e) {
@@ -98,6 +142,65 @@ namespace PJA {
 			bpAffecte.Enabled = bpEdit.Enabled = bpSupprime.Enabled = selVue != null;
 			nomVue.Text = selVue != null ? selVue.libelle : "";
 			listImage.SelectedIndex = selVue != null && listImage.Items.Count > selVue.indexImage ? selVue.indexImage : -1;
+			RefreshListZone();
+		}
+
+		private void bpAddZone_Click(object sender, System.EventArgs e) {
+			bpAddZone.Enabled = false;
+			newZone.typeZone = (Zone.TypeZone)typeZone.SelectedItem;
+			selVue.lstZone.Add(newZone);
+			newZone = new Zone(0, 0);
+			Render();
+			RefreshListZone();
+		}
+
+		private void bpDelZone_Click(object sender, System.EventArgs e) {
+			if (MessageBox.Show("Etes-vous sur(e) de vouloir supprimer cette zone", "Attention", MessageBoxButtons.YesNo) == DialogResult.Yes) {
+				foreach (Zone z in selVue.lstZone)
+					if (z == newZone) {
+						selVue.lstZone.Remove(z);
+						break;
+					}
+				RefreshListZone();
+				newZone = new Zone(0, 0);
+				Render();
+			}
+		}
+
+		private void pictureBox_MouseDown(object sender, MouseEventArgs e) {
+			if (newZone != null) {
+				int x = e.X >> 3;
+				int y = e.Y >> 1;
+				if (!zoneDown) {
+					newZone = new Zone(x, y);
+					zoneDown = true;
+					bpDelZone.Enabled = bpAddZone.Enabled = false;
+				}
+				newZone.xa = x;
+				newZone.ya = y;
+				Render();
+			}
+		}
+
+		private void pictureBox_MouseMove(object sender, MouseEventArgs e) {
+			if (e.Button == System.Windows.Forms.MouseButtons.Left)
+				pictureBox_MouseDown(sender, e);
+		}
+
+		private void pictureBox_MouseUp(object sender, MouseEventArgs e) {
+			zoneDown = false;
+			bpAddZone.Enabled = newZone.IsZone;
+		}
+
+		private void listZone_SelectedIndexChanged(object sender, System.EventArgs e) {
+			newZone = listZone.SelectedItem as Zone;
+			typeZone.SelectedItem = newZone.typeZone;
+			bpDelZone.Enabled = true;
+			Render();
+		}
+
+		private void allZones_CheckedChanged(object sender, System.EventArgs e) {
+			Render();
 		}
 	}
 }

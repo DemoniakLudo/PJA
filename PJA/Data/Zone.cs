@@ -1,12 +1,16 @@
 ﻿using System.IO;
 
 namespace PJA {
-	class Zone: BaseData {
+	public class Zone: BaseData {
 		public enum TypeZone { DEP_NORD, DEP_SUD, DEP_EST, DEP_OUEST, DEP_HAUT, DEP_BAS, RECHERCHE, ACTION, ACTION_CACHEE };
 		public int xd, yd, xa, ya; // Coordonnées de la zone
 		public TypeZone typeZone;
 
-		public Zone() {
+		public bool IsZone { get { return xd != xa && yd != ya; } }
+
+		public Zone(int x, int y) {
+			xd = x;
+			yd = y;
 		}
 
 		public Zone(StreamReader rd) {
@@ -14,11 +18,41 @@ namespace PJA {
 		}
 
 		public override bool Load(StreamReader rd) {
-			throw new System.NotImplementedException();
+			string line = rd.ReadLine();
+			if (line.StartsWith("#ZONE_TYPE")) {
+				typeZone = (TypeZone)int.Parse(line.Substring(11));
+				line = rd.ReadLine();
+				if (line.StartsWith("#ZONE_XD")) {
+					xd = int.Parse(line.Substring(9));
+					line = rd.ReadLine();
+					if (line.StartsWith("#ZONE_YD")) {
+						yd = int.Parse(line.Substring(9));
+						line = rd.ReadLine();
+						if (line.StartsWith("#ZONE_XA")) {
+							xa = int.Parse(line.Substring(9));
+							line = rd.ReadLine();
+							if (line.StartsWith("#ZONE_YA")) {
+								ya = int.Parse(line.Substring(9));
+								return true;
+							}
+						}
+					}
+				}
+			}
+			return false;
 		}
 
 		public override bool Save(StreamWriter wr) {
-			throw new System.NotImplementedException();
+			wr.WriteLine("#ZONE_TYPE\t" + ((int)typeZone).ToString());
+			wr.WriteLine("#ZONE_XD\t" + xd);
+			wr.WriteLine("#ZONE_YD\t" + yd);
+			wr.WriteLine("#ZONE_XA\t" + xa);
+			wr.WriteLine("#ZONE_YA\t" + ya);
+			return true;
+		}
+
+		public override string ToString() {
+			return "Zone " + typeZone.ToString();
 		}
 	}
 }
