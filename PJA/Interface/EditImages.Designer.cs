@@ -673,7 +673,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "EditImages";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Editeur d\'images";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.EditImages_FormClosed);
 			this.tramage.ResumeLayout(false);

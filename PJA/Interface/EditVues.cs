@@ -5,9 +5,8 @@ using System.Windows.Forms;
 namespace PJA {
 	public partial class EditVues: Form {
 		private LockBitmap bmpLock;
-		public BitmapCPC bitmapCPC;
+		private BitmapCPC bitmapCPC;
 		private Projet projet;
-		public bool Valid = false;
 		private Map curMap = null;
 		private Vue selVue = null;
 		private DataVue dataVue;
@@ -19,16 +18,12 @@ namespace PJA {
 			int tx = pictureBox.Width = projet.Cx * 8;
 			int ty = pictureBox.Height = projet.Cy * 16;
 			bitmapCPC = new BitmapCPC(tx, ty, projet.Mode);
-			Bitmap bmp = new Bitmap(tx, ty);
-			pictureBox.Image = bmp;
-			bmpLock = new LockBitmap(bmp);
-			listImage.BeginUpdate();
-			listImage.Items.Clear();
+			pictureBox.Image = new Bitmap(tx, ty);
+			bmpLock = new LockBitmap(pictureBox.Image as Bitmap);
 			foreach (Image img in projet.ImageData.listImg)
 				listImage.Items.Add(img);
 
 			dataVue = projet.VueData;
-			listImage.EndUpdate();
 			RefreshListVue();
 			numSalle.Maximum = projet.MapData.NbSalles - 1;
 			numSalle.Value = 0;
@@ -73,7 +68,7 @@ namespace PJA {
 		}
 
 		private void nomVue_TextChanged(object sender, System.EventArgs e) {
-			bpAddVue.Enabled = nomVue.Text != "";
+			bpAddVue.Enabled = nomVue.Text.Length > 0;
 		}
 
 		private void bpAffecte_Click(object sender, System.EventArgs e) {
@@ -102,7 +97,7 @@ namespace PJA {
 			selVue = listVue.SelectedItem as Vue;
 			bpAffecte.Enabled = bpEdit.Enabled = bpSupprime.Enabled = selVue != null;
 			nomVue.Text = selVue != null ? selVue.libelle : "";
-			listImage.SelectedIndex = selVue != null ? selVue.indexImage : -1;
+			listImage.SelectedIndex = selVue != null && listImage.Items.Count > selVue.indexImage ? selVue.indexImage : -1;
 		}
 	}
 }

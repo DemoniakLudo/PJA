@@ -33,6 +33,7 @@ namespace PJA {
 			pictureMap.Refresh();
 			nbSalles.Text = dataMap.NbSalles.ToString();
 			curSalle.Text = dataMap.CurSalle.ToString();
+			bpEditVues.Enabled = dataMap.NbSalles > 0;
 		}
 
 
@@ -155,7 +156,7 @@ namespace PJA {
 		}
 
 		[System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
-		public static extern bool SetCursorPos(int X, int Y);
+		private static extern bool SetCursorPos(int X, int Y);
 
 		private void bpFindSalle_Click(object sender, System.EventArgs e) {
 			int numSalle;

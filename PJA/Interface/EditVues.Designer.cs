@@ -111,6 +111,7 @@
 			// 
 			// bpAddVue
 			// 
+			this.bpAddVue.Enabled = false;
 			this.bpAddVue.Image = global::PJA.Properties.Resources.Add;
 			this.bpAddVue.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.bpAddVue.Location = new System.Drawing.Point(15, 88);
