@@ -13,8 +13,8 @@ namespace PJA {
 		private int numImage;
 		private Zone newZone = new Zone(0, 0);
 		private bool zoneDown = false;
-		private Pen penBlack = new Pen(Color.Red, 2);
 		private Pen penWhite = new Pen(Color.White, 2);
+		private Pen penRed = new Pen(Color.Red, 2);
 		private Pen penBlue = new Pen(Color.Blue, 2);
 
 		public EditVues(Projet prj) {
@@ -63,7 +63,7 @@ namespace PJA {
 					RenderZone(z, penBlue);
 
 			if (newZone != null)
-				RenderZone(newZone, penBlack);
+				RenderZone(newZone, penRed);
 
 			pictureBox.Refresh();
 		}
@@ -107,7 +107,7 @@ namespace PJA {
 			else
 				curMap = null;
 
-			bpAffecte.Enabled = bpSupprime.Enabled = (curMap != null && curMap.numVue > 0);
+			bpAffecte.Enabled = bpDelVue.Enabled = (curMap != null && curMap.numVue > 0);
 			listVue.SelectedIndex = (curMap != null && curMap.numVue > 0) ? curMap.numVue - 1 : -1;
 		}
 
@@ -125,12 +125,13 @@ namespace PJA {
 			RefreshListVue();
 		}
 
-		private void bpEdit_Click(object sender, System.EventArgs e) {
+		private void bpEditVue_Click(object sender, System.EventArgs e) {
 			selVue.libelle = nomVue.Text;
 			selVue.indexImage = numImage;
+			RefreshListVue();
 		}
 
-		private void bpSupprime_Click(object sender, System.EventArgs e) {
+		private void bpDelVue_Click(object sender, System.EventArgs e) {
 			if (selVue != null && MessageBox.Show("Etes-vous sur(e) de vouloir supprimer cette vue", "Attention", MessageBoxButtons.YesNo) == DialogResult.Yes) {
 				dataVue.listVue.Remove(selVue);
 				RefreshListVue();
@@ -139,7 +140,7 @@ namespace PJA {
 
 		private void listVue_SelectedIndexChanged(object sender, System.EventArgs e) {
 			selVue = listVue.SelectedItem as Vue;
-			bpAffecte.Enabled = bpEdit.Enabled = bpSupprime.Enabled = selVue != null;
+			bpAffecte.Enabled = bpEditVue.Enabled = bpDelVue.Enabled = selVue != null;
 			nomVue.Text = selVue != null ? selVue.libelle : "";
 			listImage.SelectedIndex = selVue != null && listImage.Items.Count > selVue.indexImage ? selVue.indexImage : -1;
 			RefreshListZone();

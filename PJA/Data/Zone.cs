@@ -52,7 +52,7 @@ namespace PJA {
 		}
 
 		public override string ToString() {
-			return "Zone " + typeZone.ToString();
+			return "Zone type " + typeZone.ToString();
 		}
 	}
 }

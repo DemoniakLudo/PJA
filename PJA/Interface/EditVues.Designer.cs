@@ -29,9 +29,9 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.nomVue = new System.Windows.Forms.TextBox();
 			this.listVue = new System.Windows.Forms.ListBox();
-			this.bpEdit = new System.Windows.Forms.Button();
+			this.bpEditVue = new System.Windows.Forms.Button();
 			this.bpAddVue = new System.Windows.Forms.Button();
-			this.bpSupprime = new System.Windows.Forms.Button();
+			this.bpDelVue = new System.Windows.Forms.Button();
 			this.bpAffecte = new System.Windows.Forms.Button();
 			this.pictureBox = new System.Windows.Forms.PictureBox();
 			this.bpAddZone = new System.Windows.Forms.Button();
@@ -101,19 +101,19 @@
 			this.listVue.TabIndex = 22;
 			this.listVue.SelectedIndexChanged += new System.EventHandler(this.listVue_SelectedIndexChanged);
 			// 
-			// bpEdit
+			// bpEditVue
 			// 
-			this.bpEdit.Enabled = false;
-			this.bpEdit.Image = global::PJA.Properties.Resources.Edit;
-			this.bpEdit.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.bpEdit.Location = new System.Drawing.Point(15, 128);
-			this.bpEdit.Name = "bpEdit";
-			this.bpEdit.Size = new System.Drawing.Size(108, 34);
-			this.bpEdit.TabIndex = 24;
-			this.bpEdit.Text = "Modifier vue";
-			this.bpEdit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.bpEdit.UseVisualStyleBackColor = true;
-			this.bpEdit.Click += new System.EventHandler(this.bpEdit_Click);
+			this.bpEditVue.Enabled = false;
+			this.bpEditVue.Image = global::PJA.Properties.Resources.Edit;
+			this.bpEditVue.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.bpEditVue.Location = new System.Drawing.Point(15, 128);
+			this.bpEditVue.Name = "bpEditVue";
+			this.bpEditVue.Size = new System.Drawing.Size(108, 34);
+			this.bpEditVue.TabIndex = 24;
+			this.bpEditVue.Text = "Modifier vue";
+			this.bpEditVue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.bpEditVue.UseVisualStyleBackColor = true;
+			this.bpEditVue.Click += new System.EventHandler(this.bpEditVue_Click);
 			// 
 			// bpAddVue
 			// 
@@ -129,19 +129,19 @@
 			this.bpAddVue.UseVisualStyleBackColor = true;
 			this.bpAddVue.Click += new System.EventHandler(this.bpAddVue_Click);
 			// 
-			// bpSupprime
+			// bpDelVue
 			// 
-			this.bpSupprime.Enabled = false;
-			this.bpSupprime.Image = global::PJA.Properties.Resources.Del;
-			this.bpSupprime.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.bpSupprime.Location = new System.Drawing.Point(15, 168);
-			this.bpSupprime.Name = "bpSupprime";
-			this.bpSupprime.Size = new System.Drawing.Size(108, 34);
-			this.bpSupprime.TabIndex = 21;
-			this.bpSupprime.Text = "Supprimer vue";
-			this.bpSupprime.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.bpSupprime.UseVisualStyleBackColor = true;
-			this.bpSupprime.Click += new System.EventHandler(this.bpSupprime_Click);
+			this.bpDelVue.Enabled = false;
+			this.bpDelVue.Image = global::PJA.Properties.Resources.Del;
+			this.bpDelVue.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.bpDelVue.Location = new System.Drawing.Point(15, 168);
+			this.bpDelVue.Name = "bpDelVue";
+			this.bpDelVue.Size = new System.Drawing.Size(108, 34);
+			this.bpDelVue.TabIndex = 21;
+			this.bpDelVue.Text = "Supprimer vue";
+			this.bpDelVue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.bpDelVue.UseVisualStyleBackColor = true;
+			this.bpDelVue.Click += new System.EventHandler(this.bpDelVue_Click);
 			// 
 			// bpAffecte
 			// 
@@ -245,10 +245,10 @@
 			this.Controls.Add(this.allZones);
 			this.Controls.Add(this.listZone);
 			this.Controls.Add(this.bpAddZone);
-			this.Controls.Add(this.bpEdit);
+			this.Controls.Add(this.bpEditVue);
 			this.Controls.Add(this.bpAddVue);
 			this.Controls.Add(this.listVue);
-			this.Controls.Add(this.bpSupprime);
+			this.Controls.Add(this.bpDelVue);
 			this.Controls.Add(this.bpAffecte);
 			this.Controls.Add(this.nomVue);
 			this.Controls.Add(this.label2);
@@ -276,10 +276,10 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.TextBox nomVue;
 		private System.Windows.Forms.Button bpAffecte;
-		private System.Windows.Forms.Button bpSupprime;
+		private System.Windows.Forms.Button bpDelVue;
 		private System.Windows.Forms.ListBox listVue;
 		private System.Windows.Forms.Button bpAddVue;
-		private System.Windows.Forms.Button bpEdit;
+		private System.Windows.Forms.Button bpEditVue;
 		private System.Windows.Forms.Button bpAddZone;
 		private System.Windows.Forms.ListBox listZone;
 		private System.Windows.Forms.CheckBox allZones;
