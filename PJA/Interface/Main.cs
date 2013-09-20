@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace PJA {
 	public partial class Main: Form {
@@ -64,23 +66,44 @@ namespace PJA {
 				editImages.MajProjet(projet, true);
 		}
 
+		static private void ShowException(Exception ex) {
+			string msg = "";
+			while (ex != null) {
+				msg += ex.Message + "\n";
+				ex = ex.InnerException;
+			}
+			MessageBox.Show(msg);
+		}
+
 		private void bpLoad_Click(object sender, EventArgs e) {
 			OpenFileDialog dlg = new OpenFileDialog();
-			dlg.Filter = "Projet PJA (*.pja)|*.pja";
+			dlg.Filter = "Projet PJA (*.xml)|*.xml";
 			DialogResult result = dlg.ShowDialog();
 			if (result == DialogResult.OK) {
-				if (!projet.Load(dlg.FileName))
-					MessageBox.Show("Erreur de lecture...");
+				FileStream file = File.Open(dlg.FileName, FileMode.Open);
+				try {
+					projet = (Projet)new XmlSerializer(typeof(Projet)).Deserialize(file);
+				}
+				catch (Exception ex) {
+					ShowException(ex);
+				}
+				file.Close();
 			}
 		}
 
 		private void bpSave_Click(object sender, EventArgs e) {
 			SaveFileDialog dlg = new SaveFileDialog();
-			dlg.Filter = "Projet PJA (*.pja)|*.pja";
+			dlg.Filter = "Projet PJA (*.xml)|*.xml";
 			DialogResult result = dlg.ShowDialog();
 			if (result == DialogResult.OK) {
-				if (!projet.Save(dlg.FileName))
-					MessageBox.Show("Erreur de sauvegarde...");
+				FileStream file = File.Open(dlg.FileName, FileMode.OpenOrCreate);
+				try {
+					new XmlSerializer(typeof(Projet)).Serialize(file, projet);
+				}
+				catch (Exception ex) {
+					ShowException(ex);
+				}
+				file.Close();
 			}
 		}
 	}

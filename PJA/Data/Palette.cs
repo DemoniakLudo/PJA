@@ -1,9 +1,19 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace PJA {
-	public class Palette: BaseData {
-		public byte[] palette = new byte[34];
-		public string nom = "";
+	[Serializable]
+	public class Palette {
+		private byte[] palColor = new byte[34];
+		public byte[] PalColor {
+			get { return palColor; }
+			set { palColor = value; }
+		}
+		private string nom = "";
+		public string Nom {
+			get { return nom; }
+			set { nom = value; }
+		}
 
 		public Palette() {
 		}
@@ -27,7 +37,7 @@ namespace PJA {
 		}
 
 		public int GetPalette(int ind) {
-			return ind < 17 ? (palette[2 * ind] << 8) + palette[2 * ind + 1] : 0;
+			return ind < 17 ? (palColor[2 * ind] << 8) + palColor[2 * ind + 1] : 0;
 		}
 
 		public void SendPalette(int[] pal) {
@@ -36,11 +46,11 @@ namespace PJA {
 		}
 
 		public void SetPalette(int ind, int val) {
-			palette[2 * ind] = (byte)(val >> 8);
-			palette[2 * ind + 1] = (byte)val;
+			palColor[2 * ind] = (byte)(val >> 8);
+			palColor[2 * ind + 1] = (byte)val;
 		}
 
-		public override bool Load(StreamReader rd) {
+		public bool Load(StreamReader rd) {
 			string line = rd.ReadLine();
 			if (line.StartsWith("#PALETTE_NAME")) {
 				nom = line.Substring(14);
@@ -49,16 +59,16 @@ namespace PJA {
 			if (line.StartsWith("#PALETTE_VALUE") || line.StartsWith("#IMAGE_PALETTE")) {
 				byte[] tmp = System.Convert.FromBase64String(line.Substring(15));
 				for (int i = 0; i < 34; i++)
-					palette[i] = tmp[i];
+					palColor[i] = tmp[i];
 
 				return true;
 			}
 			return false;
 		}
 
-		public override bool Save(StreamWriter wr) {
+		public bool Save(StreamWriter wr) {
 			wr.WriteLine("#PALETTE_NAME\t" + nom);
-			wr.WriteLine("#PALETTE_VALUE\t" + System.Convert.ToBase64String(palette));
+			wr.WriteLine("#PALETTE_VALUE\t" + System.Convert.ToBase64String(palColor));
 			return true;
 		}
 

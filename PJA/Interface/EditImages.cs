@@ -345,7 +345,7 @@ namespace PJA {
 				}
 				rd.Close();
 			}
-		}
+ 		}
 
 		private void bpSavePal_Click(object sender, System.EventArgs e) {
 			SaveFileDialog dlg = new SaveFileDialog();

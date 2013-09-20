@@ -59,7 +59,7 @@ namespace PJA {
 		private void Render() {
 			bitmapCPC.Render(bmpLock, bitmapCPC.ModeCPC, 1, 0, 0, false);
 			if (allZones.Checked && selVue != null)
-				foreach (Zone z in selVue.lstZone)
+				foreach (Zone z in selVue.LstZone)
 					RenderZone(z, penBlue);
 
 			if (newZone != null)
@@ -71,7 +71,7 @@ namespace PJA {
 		private void RefreshListVue() {
 			listVue.BeginUpdate();
 			listVue.Items.Clear();
-			foreach (Vue v in dataVue.listVue)
+			foreach (Vue v in dataVue.ListVue)
 				listVue.Items.Add(v);
 
 			listVue.EndUpdate();
@@ -81,7 +81,7 @@ namespace PJA {
 			listZone.BeginUpdate();
 			listZone.Items.Clear();
 			if (selVue != null)
-				foreach (Zone z in selVue.lstZone)
+				foreach (Zone z in selVue.LstZone)
 					listZone.Items.Add(z);
 
 			listZone.EndUpdate();
@@ -107,8 +107,8 @@ namespace PJA {
 			else
 				curMap = null;
 
-			bpAffecte.Enabled = bpDelVue.Enabled = (curMap != null && curMap.numVue > 0);
-			listVue.SelectedIndex = (curMap != null && curMap.numVue > 0) ? curMap.numVue - 1 : -1;
+			bpAffecte.Enabled = bpDelVue.Enabled = (curMap != null && curMap.NumVue > 0);
+			listVue.SelectedIndex = (curMap != null && curMap.NumVue > 0) ? curMap.NumVue - 1 : -1;
 		}
 
 		private void nomVue_TextChanged(object sender, System.EventArgs e) {
@@ -116,24 +116,24 @@ namespace PJA {
 		}
 
 		private void bpAffecte_Click(object sender, System.EventArgs e) {
-			curMap.numVue = selVue.numVue;
+			curMap.NumVue = selVue.NumVue;
 		}
 
 		private void bpAddVue_Click(object sender, System.EventArgs e) {
-			Vue v = new Vue((byte)(1 + dataVue.listVue.Count), nomVue.Text, numImage);
-			dataVue.listVue.Add(v);
+			Vue v = new Vue((byte)(1 + dataVue.ListVue.Count), nomVue.Text, numImage);
+			dataVue.ListVue.Add(v);
 			RefreshListVue();
 		}
 
 		private void bpEditVue_Click(object sender, System.EventArgs e) {
-			selVue.libelle = nomVue.Text;
-			selVue.indexImage = numImage;
+			selVue.Libelle = nomVue.Text;
+			selVue.IndexImage = numImage;
 			RefreshListVue();
 		}
 
 		private void bpDelVue_Click(object sender, System.EventArgs e) {
 			if (selVue != null && MessageBox.Show("Etes-vous sur(e) de vouloir supprimer cette vue", "Attention", MessageBoxButtons.YesNo) == DialogResult.Yes) {
-				dataVue.listVue.Remove(selVue);
+				dataVue.ListVue.Remove(selVue);
 				RefreshListVue();
 			}
 		}
@@ -141,15 +141,15 @@ namespace PJA {
 		private void listVue_SelectedIndexChanged(object sender, System.EventArgs e) {
 			selVue = listVue.SelectedItem as Vue;
 			bpAffecte.Enabled = bpEditVue.Enabled = bpDelVue.Enabled = selVue != null;
-			nomVue.Text = selVue != null ? selVue.libelle : "";
-			listImage.SelectedIndex = selVue != null && listImage.Items.Count > selVue.indexImage ? selVue.indexImage : -1;
+			nomVue.Text = selVue != null ? selVue.Libelle : "";
+			listImage.SelectedIndex = selVue != null && listImage.Items.Count > selVue.IndexImage ? selVue.IndexImage : -1;
 			RefreshListZone();
 		}
 
 		private void bpAddZone_Click(object sender, System.EventArgs e) {
 			bpAddZone.Enabled = false;
 			newZone.typeZone = (Zone.TypeZone)typeZone.SelectedItem;
-			selVue.lstZone.Add(newZone);
+			selVue.LstZone.Add(newZone);
 			newZone = new Zone(0, 0);
 			Render();
 			RefreshListZone();
@@ -157,9 +157,9 @@ namespace PJA {
 
 		private void bpDelZone_Click(object sender, System.EventArgs e) {
 			if (MessageBox.Show("Etes-vous sur(e) de vouloir supprimer cette zone", "Attention", MessageBoxButtons.YesNo) == DialogResult.Yes) {
-				foreach (Zone z in selVue.lstZone)
+				foreach (Zone z in selVue.LstZone)
 					if (z == newZone) {
-						selVue.lstZone.Remove(z);
+						selVue.LstZone.Remove(z);
 						break;
 					}
 				RefreshListZone();

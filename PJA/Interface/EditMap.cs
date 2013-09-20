@@ -47,11 +47,11 @@ namespace PJA {
 		}
 
 		private void DessineUneCase(Map m, Pen penCase, int xd, int yd, int xa, int ya) {
-			gfx.DrawLine(m.ouest == (byte)DataMap.typeCase.CASE_VIDE ? penCase : penGris, xd, yd, xd, ya);
-			gfx.DrawLine(m.sud == (byte)DataMap.typeCase.CASE_VIDE ? penCase : penGris, xd, ya, xa, ya);
-			gfx.DrawLine(m.est == (byte)DataMap.typeCase.CASE_VIDE ? penCase : penGris, xa, ya, xa, yd);
-			gfx.DrawLine(m.nord == (byte)DataMap.typeCase.CASE_VIDE ? penCase : penGris, xa, yd, xd, yd);
-			if (m.map == DataMap.typeCase.CASE_DEPART || m.map == DataMap.typeCase.CASE_ARRIVEE)
+			gfx.DrawLine(m.Ouest == (byte)Map.TypeCase.CASE_VIDE ? penCase : penGris, xd, yd, xd, ya);
+			gfx.DrawLine(m.Sud == (byte)Map.TypeCase.CASE_VIDE ? penCase : penGris, xd, ya, xa, ya);
+			gfx.DrawLine(m.Est == (byte)Map.TypeCase.CASE_VIDE ? penCase : penGris, xa, ya, xa, yd);
+			gfx.DrawLine(m.Nord == (byte)Map.TypeCase.CASE_VIDE ? penCase : penGris, xa, yd, xd, yd);
+			if (m.TypeMap == Map.TypeCase.CASE_DEPART || m.TypeMap == Map.TypeCase.CASE_ARRIVEE)
 				gfx.DrawRectangle(penCase, (xd + xa) / 2 - 1, (yd + ya) / 2 - 1, 2, 2);
 		}
 
@@ -61,18 +61,18 @@ namespace PJA {
 			for (int i = 0; i < DataMap.TAILLE_X; i++)
 				for (int j = 0; j < DataMap.TAILLE_Y; j++) {
 					Map m = dataMap.GetMap(i, j);
-					DataMap.typeCase t = (DataMap.typeCase)m.map;
+					Map.TypeCase t = m.TypeMap;
 					Pen p = null;
 					switch (t) {
-						case DataMap.typeCase.CASE_PLEINE:
+						case Map.TypeCase.CASE_PLEINE:
 							p = penNoirGras;
 							break;
 
-						case DataMap.typeCase.CASE_DEPART:
+						case Map.TypeCase.CASE_DEPART:
 							p = penVert;
 							break;
 
-						case DataMap.typeCase.CASE_ARRIVEE:
+						case Map.TypeCase.CASE_ARRIVEE:
 							p = penRouge;
 							break;
 					}
@@ -82,18 +82,18 @@ namespace PJA {
 		}
 
 		private void ModifCase(int xPos, int yPos) {
-			DataMap.typeCase type = DataMap.typeCase.ERREUR;
+			Map.TypeCase type = Map.TypeCase.ERREUR;
 			if (radioSalle.Checked)
-				type = DataMap.typeCase.CASE_PLEINE;
+				type = Map.TypeCase.CASE_PLEINE;
 			else
 				if (radioStart.Checked)
-					type = DataMap.typeCase.CASE_DEPART;
+					type = Map.TypeCase.CASE_DEPART;
 				else
 					if (radioEnd.Checked)
-						type = DataMap.typeCase.CASE_ARRIVEE;
+						type = Map.TypeCase.CASE_ARRIVEE;
 					else
 						if (radioGomme.Checked)
-							type = DataMap.typeCase.CASE_VIDE;
+							type = Map.TypeCase.CASE_VIDE;
 
 			DataMap.Cnx autoCnx = DataMap.Cnx.NULL;
 			if (cnxHaut.Checked)
@@ -127,15 +127,15 @@ namespace PJA {
 				// Affiche les informations de la case en cours
 
 				// Numéro de salle
-				numCase.Text = m.map != DataMap.typeCase.CASE_VIDE ? m.numCase.ToString() : "";
+				numCase.Text = m.TypeMap != Map.TypeCase.CASE_VIDE ? m.NumCase.ToString() : "";
 
 				// Informations de déplacements
-				nord.Text = m.nord != 255 ? m.nord.ToString() : "";
-				sud.Text = m.sud != 255 ? m.sud.ToString() : "";
-				est.Text = m.est != 255 ? m.est.ToString() : "";
-				ouest.Text = m.ouest != 255 ? m.ouest.ToString() : "";
-				haut.Text = m.haut != 255 ? m.haut.ToString() : "";
-				bas.Text = m.bas != 255 ? m.bas.ToString() : "";
+				nord.Text = m.Nord != 255 ? m.Nord.ToString() : "";
+				sud.Text = m.Sud != 255 ? m.Sud.ToString() : "";
+				est.Text = m.Est != 255 ? m.Est.ToString() : "";
+				ouest.Text = m.Ouest != 255 ? m.Ouest.ToString() : "";
+				haut.Text = m.Haut != 255 ? m.Haut.ToString() : "";
+				bas.Text = m.Bas != 255 ? m.Bas.ToString() : "";
 
 				// Informations commandes
 

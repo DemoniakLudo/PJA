@@ -29,7 +29,7 @@ namespace PJA {
 
 		private void bpAdd_Click(object sender, EventArgs e) {
 			if (paletteName.Text.Length > 0) {
-				if (lstPal.Find(delegate(Palette p) { return p.nom == paletteName.Text; }) == null) {
+				if (lstPal.Find(delegate(Palette p) { return p.Nom == paletteName.Text; }) == null) {
 					lstPal.Add(new Palette(paletteName.Text, palette));
 					UpdateListe(listPal.Items.Count);
 				}
