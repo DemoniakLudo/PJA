@@ -1,4 +1,4 @@
 ﻿Modification conception :
 ok		- Modifier les méthodes de lecture/écriture pour pouvoir lire aléatoirement chaque élément -> XML
-		- Modification gestion des cases (DataMap) -> Liste plutôt que tableau pour gain de place
+ok		- Modification gestion des cases (DataMap) -> Liste plutôt que tableau pour gain de place
 		- Supprimer la classe 'Vue', pour l'intégrer tout ou en partie dans la classe Map

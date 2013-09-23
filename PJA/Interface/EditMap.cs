@@ -59,7 +59,7 @@ namespace PJA {
 		private void DessinerCases() {
 			int stepX = grilleX / DataMap.TAILLE_X;
 			int stepY = grilleY / DataMap.TAILLE_Y;
-			foreach (Map m in dataMap.TabMap) {
+			foreach (Map m in dataMap.ListMap) {
 				Pen p = null;
 				switch (m.TypeMap) {
 					case Map.TypeCase.CASE_PLEINE:
