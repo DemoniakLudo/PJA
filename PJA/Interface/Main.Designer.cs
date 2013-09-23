@@ -34,6 +34,7 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.mode = new System.Windows.Forms.ComboBox();
 			this.bpNew = new System.Windows.Forms.Button();
+			this.nomProjet = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.nbCols)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nbLignes)).BeginInit();
 			this.SuspendLayout();
@@ -170,11 +171,20 @@
 			this.bpNew.UseVisualStyleBackColor = true;
 			this.bpNew.Click += new System.EventHandler(this.bpNew_Click);
 			// 
+			// nomProjet
+			// 
+			this.nomProjet.AutoSize = true;
+			this.nomProjet.Location = new System.Drawing.Point(122, 46);
+			this.nomProjet.Name = "nomProjet";
+			this.nomProjet.Size = new System.Drawing.Size(0, 13);
+			this.nomProjet.TabIndex = 12;
+			// 
 			// Main
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(532, 398);
+			this.Controls.Add(this.nomProjet);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label3);
@@ -208,6 +218,7 @@
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.ComboBox mode;
 		private System.Windows.Forms.Button bpNew;
+		private System.Windows.Forms.Label nomProjet;
 	}
 }
 
