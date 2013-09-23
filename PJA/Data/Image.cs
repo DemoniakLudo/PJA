@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 namespace PJA {
 	[Serializable]
@@ -22,11 +21,6 @@ namespace PJA {
 				data[i] = d[i];
 		}
 
-		public Image(StreamReader rd) {
-			pal = new Palette();
-			Load(rd);
-		}
-
 		public override string ToString() {
 			return nom;
 		}
@@ -41,28 +35,6 @@ namespace PJA {
 
 		public void SetPal(Palette p) {
 			pal = p;
-		}
-
-		public bool Load(StreamReader rd) {
-			string line = rd.ReadLine();
-			if (line.StartsWith("#IMAGE_NAME")) {
-				nom = line.Substring(12);
-				line = rd.ReadLine();
-				if (line.StartsWith("#IMAGE_DATA")) {
-					byte[] tmp = System.Convert.FromBase64String(line.Substring(12));
-					for (int i = 0; i < tmp.Length; i++)
-						data[i] = tmp[i];
-
-					return pal.Load(rd);
-				}
-			}
-			return false;
-		}
-
-		public bool Save(StreamWriter wr) {
-			wr.WriteLine("#IMAGE_NAME\t" + nom);
-			wr.WriteLine("#IMAGE_DATA\t" + System.Convert.ToBase64String(data));
-			return pal.Save(wr);
 		}
 	}
 }

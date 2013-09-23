@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace PJA {
 	[Serializable]
@@ -39,28 +38,6 @@ namespace PJA {
 					listImg.Insert(i + 1, img);
 					break;
 				}
-		}
-
-		public bool Load(StreamReader rd) {
-			string line = rd.ReadLine();
-			if (line.StartsWith("#IMAGE_NB")) {
-				listImg.Clear();
-				int nb = int.Parse(line.Substring(10));
-				for (; nb-- > 0; )
-					listImg.Add(new Image(rd));
-
-				return true;
-			}
-			return false;
-		}
-
-		public bool Save(StreamWriter wr) {
-			wr.WriteLine("#IMAGE_NB\t" + listImg.Count);
-			foreach (Image img in listImg)
-				if (!img.Save(wr))
-					return false;
-
-			return true;
 		}
 	}
 }

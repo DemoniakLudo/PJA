@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 namespace PJA {
 	[Serializable]
@@ -69,41 +68,6 @@ namespace PJA {
 			dataMap = new DataMap();
 			dataImage = new DataImage();
 			dataVue = new DataVue();
-		}
-
-		public bool Load(string name) {
-			bool ret = false;
-			StreamReader rd = new StreamReader(name);
-			string line = rd.ReadLine();
-			if (line != null) {
-				if (line.StartsWith("#PROJET_MODE")) {
-					mode = int.Parse(line.Substring(13));
-					line = rd.ReadLine();
-					if (line.StartsWith("#PROJET_RESO_X")) {
-						cx = int.Parse(line.Substring(15));
-						line = rd.ReadLine();
-						if (line.StartsWith("#PROJET_RESO_Y")) {
-							cy = int.Parse(line.Substring(15));
-							ret = dataMap.Load(rd) && dataImage.Load(rd) && dataVue.Load(rd);
-						}
-					}
-				}
-			}
-			rd.Close();
-			return ret;
-		}
-
-		//
-		// Lecture projet
-		//
-		public bool Save(string name) {
-			StreamWriter wr = new StreamWriter(name);
-			wr.WriteLine("#PROJET_MODE\t" + mode);
-			wr.WriteLine("#PROJET_RESO_X\t" + cx);
-			wr.WriteLine("#PROJET_RESO_Y\t" + cy);
-			bool ret = dataMap.Save(wr) && dataImage.Save(wr) && dataVue.Save(wr);
-			wr.Close();
-			return ret;
 		}
 	}
 }

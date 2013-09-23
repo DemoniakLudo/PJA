@@ -106,15 +106,5 @@ namespace PJA {
 				file.Close();
 			}
 		}
-
-		private void bpImport_Click(object sender, EventArgs e) {
-			OpenFileDialog dlg = new OpenFileDialog();
-			dlg.Filter = "Projet PJA (*.pja)|*.pja";
-			DialogResult result = dlg.ShowDialog();
-			if (result == DialogResult.OK) {
-				if (!projet.Load(dlg.FileName))
-					MessageBox.Show("Erreur de lecture...");
-			}
-		}
 	}
 }
