@@ -14,6 +14,7 @@ namespace PJA {
 		private DataMap dataMap;
 		public bool Valid;
 		private Projet projet;
+		private int niveau = 0; // ####
 
 		public EditMap(Projet prj) {
 			InitializeComponent();
@@ -60,7 +61,7 @@ namespace PJA {
 			int stepY = grilleY / DataMap.TAILLE_Y;
 			for (int i = 0; i < DataMap.TAILLE_X; i++)
 				for (int j = 0; j < DataMap.TAILLE_Y; j++) {
-					Map m = dataMap.GetMap(i, j, false);
+					Map m = dataMap.FindMap(i, j, niveau, false);
 					Map.TypeCase t = m != null ? m.TypeMap : Map.TypeCase.CASE_VIDE;
 					Pen p = null;
 					switch (t) {
@@ -109,7 +110,7 @@ namespace PJA {
 			if (cnxOuest.Checked)
 				autoCnx |= DataMap.Cnx.OUEST;
 
-			dataMap.ModifCase(xPos, yPos, type, autoCnx);
+			dataMap.ModifCase(xPos, yPos, niveau, type, autoCnx);
 			UpdateImage();
 		}
 
@@ -122,7 +123,7 @@ namespace PJA {
 			if (e.X >= 0 && e.Y >= 00 && e.X < grilleX - 1 && e.Y < grilleY - 1) {
 				int xPos = e.X / (grilleX / DataMap.TAILLE_X);
 				int yPos = e.Y / (grilleY / DataMap.TAILLE_Y);
-				Map m = dataMap.GetMap(xPos, yPos, false);
+				Map m = dataMap.FindMap(xPos, yPos, niveau, false);
 
 				// Affiche les informations de la case en cours
 
