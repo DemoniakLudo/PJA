@@ -59,27 +59,24 @@ namespace PJA {
 		private void DessinerCases() {
 			int stepX = grilleX / DataMap.TAILLE_X;
 			int stepY = grilleY / DataMap.TAILLE_Y;
-			for (int i = 0; i < DataMap.TAILLE_X; i++)
-				for (int j = 0; j < DataMap.TAILLE_Y; j++) {
-					Map m = dataMap.FindMap(i, j, niveau, false);
-					Map.TypeCase t = m != null ? m.TypeMap : Map.TypeCase.CASE_VIDE;
-					Pen p = null;
-					switch (t) {
-						case Map.TypeCase.CASE_PLEINE:
-							p = penNoirGras;
-							break;
+			foreach (Map m in dataMap.TabMap) {
+				Pen p = null;
+				switch (m.TypeMap) {
+					case Map.TypeCase.CASE_PLEINE:
+						p = penNoirGras;
+						break;
 
-						case Map.TypeCase.CASE_DEPART:
-							p = penVert;
-							break;
+					case Map.TypeCase.CASE_DEPART:
+						p = penVert;
+						break;
 
-						case Map.TypeCase.CASE_ARRIVEE:
-							p = penRouge;
-							break;
-					}
-					if (p != null)
-						DessineUneCase(m, p, stepX * i, stepY * j, stepX * i + stepX, stepY * j + stepY);
+					case Map.TypeCase.CASE_ARRIVEE:
+						p = penRouge;
+						break;
 				}
+				if (p != null)
+					DessineUneCase(m, p, stepX * m.X, stepY * m.Y, stepX * (m.X + 1), stepY * (m.Y + 1));
+			}
 		}
 
 		private void ModifCase(int xPos, int yPos) {
@@ -123,7 +120,7 @@ namespace PJA {
 			if (e.X >= 0 && e.Y >= 00 && e.X < grilleX - 1 && e.Y < grilleY - 1) {
 				int xPos = e.X / (grilleX / DataMap.TAILLE_X);
 				int yPos = e.Y / (grilleY / DataMap.TAILLE_Y);
-				Map m = dataMap.FindMap(xPos, yPos, niveau, false);
+				Map m = dataMap.FindMap(xPos, yPos, niveau);
 
 				// Affiche les informations de la case en cours
 
@@ -152,22 +149,15 @@ namespace PJA {
 			}
 		}
 
-		private void EditMap_FormClosed(object sender, FormClosedEventArgs e) {
-			Valid = false;
-		}
-
 		[System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
 		private static extern bool SetCursorPos(int X, int Y);
 
 		private void bpFindSalle_Click(object sender, System.EventArgs e) {
 			int numSalle;
 			if (int.TryParse(salleRech.Text, out numSalle)) {
-				int x = 0, y = 0, n = 0;
-				if (dataMap.RechercheSalle(numSalle, ref x, ref y, ref n) != null) {
-					int stepX = pictureMap.Left + Left - 4 + (x * grilleX / DataMap.TAILLE_X);
-					int stepY = pictureMap.Top + Top + 10 + (y * grilleY / DataMap.TAILLE_Y);
-					SetCursorPos(stepX, stepY);
-				}
+				Map m = dataMap.FindMap(numSalle);
+				if (m != null)
+					SetCursorPos(pictureMap.Left + Left - 4 + (m.X * grilleX / DataMap.TAILLE_X), pictureMap.Top + Top + 10 + (m.Y * grilleY / DataMap.TAILLE_Y));
 				else
 					MessageBox.Show("Salle " + numSalle + " non trouvée.");
 			}
@@ -176,6 +166,10 @@ namespace PJA {
 		private void bpEditVues_Click(object sender, System.EventArgs e) {
 			EditVues dial = new EditVues(projet);
 			dial.ShowDialog(this);
+		}
+
+		private void EditMap_FormClosed(object sender, FormClosedEventArgs e) {
+			Valid = false;
 		}
 	}
 }

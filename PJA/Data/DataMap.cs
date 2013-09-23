@@ -21,28 +21,25 @@ namespace PJA {
 		public enum Cnx { NULL = 0, HAUT = 1, BAS = 2, NORD = 4, SUD = 8, EST = 16, OUEST = 32 };
 		private bool modif;
 		public bool Modif { get { return modif; } }
-		private int xStart, yStart, nStart;
-		private int xGoal, yGoal, nGoal;
+		private int xStart = -1, yStart = -1, nStart = -1;
+		private int xGoal = -1, yGoal = -1, nGoal = -1;
 		public int NbSalles { get { return tabMap.Count; } }
 		private int curSalle = 0;
 		public int CurSalle { get { return curSalle; } }
 
 		public DataMap() {
-			Init();
 		}
 
-		private void Init() {
+		public void Init() {
 			SetGoal(-1, -1, -1);
 			SetStart(-1, -1, -1);
-		}
-
-		public Map FindMap(int x, int y, int z, bool add) {
-			Map map = tabMap.Find(m => m.X == x && m.Y == y && m.Z == z);
-			if (map == null && add) {
-				map = new Map(x, y, z);
-				tabMap.Add(map);
+			foreach (Map m in tabMap) {
+				if (m.TypeMap == Map.TypeCase.CASE_DEPART)
+					SetStart(m.X, m.Y, m.Z);
+				else
+					if (m.TypeMap == Map.TypeCase.CASE_ARRIVEE)
+						SetGoal(m.X, m.Y, m.Z);
 			}
-			return map;
 		}
 
 		private void SetGoal(int x, int y, int n) {
@@ -57,9 +54,21 @@ namespace PJA {
 			nStart = n;
 		}
 
+		public Map FindMap(int x, int y, int z) {
+			return tabMap.Find(m => m.X == x && m.Y == y && m.Z == z);
+		}
+
+		public Map FindMap(int numSalle) {
+			return tabMap.Find(m => m.NumCase == numSalle);
+		}
+
 		private void SetCase(int x, int y, int n, Map.TypeCase valeur, Cnx autoCnx) {
 			if (x >= 0 && x < TAILLE_X && y >= 0 && y < TAILLE_X && n >= 0 && n < TAILLE_Z) {
-				Map map = FindMap(x, y, n, valeur != Map.TypeCase.CASE_VIDE);
+				Map map = FindMap(x, y, n);
+				if (map == null && valeur != Map.TypeCase.CASE_VIDE) {
+					map = new Map(x, y, n);
+					tabMap.Add(map);
+				}
 				if (map != null && map.TypeMap != valeur) {
 					switch (valeur) {
 						case Map.TypeCase.CASE_PLEINE:
@@ -94,59 +103,58 @@ namespace PJA {
 		private void Connect(Map map, int x, int y, int n, Cnx autoCnx, Map.TypeCase valeur) {
 			byte c = GetCaseLibre();
 			if (c != 255) {
-				int pos = x + y * TAILLE_Y + n * TAILLE_Y * TAILLE_Z;
 				map.NumCase = c;
 				map.TypeMap = valeur;
 
 				// Connecte la salle en Bas
-				if (n > 0 && (autoCnx & Cnx.BAS) == Cnx.BAS) {
-					Map mb = FindMap(x, y, n - 1, false);
-					if (mb != null && mb.TypeMap != Map.TypeCase.CASE_VIDE) {
+				if ((autoCnx & Cnx.BAS) == Cnx.BAS) {
+					Map mb = FindMap(x, y, n - 1);
+					if (mb != null) {
 						mb.Haut = c;
 						map.Bas = mb.NumCase;
 					}
 				}
 
 				// Connecte la salle en Haut
-				if (n < TAILLE_Z - 1 && (autoCnx & Cnx.HAUT) == Cnx.HAUT) {
-					Map mh = FindMap(x, y, n + 1, false);
-					if (mh != null && mh.TypeMap != Map.TypeCase.CASE_VIDE) {
+				if ((autoCnx & Cnx.HAUT) == Cnx.HAUT) {
+					Map mh = FindMap(x, y, n + 1);
+					if (mh != null) {
 						mh.Bas = c;
 						map.Haut = mh.NumCase;
 					}
 				}
 
 				// Connecte la salle au Nord
-				if (y > 0 && (autoCnx & Cnx.NORD) == Cnx.NORD) {
-					Map mn = FindMap(x, y - 1, n, false);
-					if (mn != null && mn.TypeMap != Map.TypeCase.CASE_VIDE) {
+				if ((autoCnx & Cnx.NORD) == Cnx.NORD) {
+					Map mn = FindMap(x, y - 1, n);
+					if (mn != null) {
 						mn.Sud = c;
 						map.Nord = mn.NumCase;
 					}
 				}
 
 				// Connecte la salle au Sud
-				if (y < TAILLE_Y - 1 && (autoCnx & Cnx.SUD) == Cnx.SUD) {
-					Map ms = FindMap(x, y + 1, n, false);
-					if (ms != null && ms.TypeMap != Map.TypeCase.CASE_VIDE) {
+				if ((autoCnx & Cnx.SUD) == Cnx.SUD) {
+					Map ms = FindMap(x, y + 1, n);
+					if (ms != null) {
 						ms.Nord = c;
 						map.Sud = ms.NumCase;
 					}
 				}
 
 				// Connecte la salle à l'Est
-				if (x < TAILLE_X - 1 && (autoCnx & Cnx.EST) == Cnx.EST) {
-					Map me = FindMap(x + 1, y, n, false);
-					if (me != null && me.TypeMap != Map.TypeCase.CASE_VIDE) {
+				if ((autoCnx & Cnx.EST) == Cnx.EST) {
+					Map me = FindMap(x + 1, y, n);
+					if (me != null) {
 						me.Ouest = c;
 						map.Est = me.NumCase;
 					}
 				}
 
 				// Connecte la salle à l'Ouest
-				if (x > 0 && (autoCnx & Cnx.OUEST) == Cnx.OUEST) {
-					Map mo = FindMap(x - 1, y, n, false);
-					if (mo != null && mo.TypeMap != Map.TypeCase.CASE_VIDE) {
+				if ((autoCnx & Cnx.OUEST) == Cnx.OUEST) {
+					Map mo = FindMap(x - 1, y, n);
+					if (mo != null) {
 						mo.Est = c;
 						map.Ouest = mo.NumCase;
 					}
@@ -156,38 +164,38 @@ namespace PJA {
 
 		private void Deconnect(Map map, int x, int y, int n) {
 			// Déconnecte la salle en Bas
-			Map mb = FindMap(x, y, n - 1, false);
+			Map mb = FindMap(x, y, n - 1);
 			if (mb != null)
 				mb.Haut = 255;
 
 			// Déconnecte la salle en Haut
-			Map mh = FindMap(x, y, n + 1, false);
+			Map mh = FindMap(x, y, n + 1);
 			if (mh != null)
 				mh.Bas = 255;
 
 			// Déconnecte la salle au Nord
-			Map mn = FindMap(x, y - 1, n, false);
+			Map mn = FindMap(x, y - 1, n);
 			if (mn != null)
 				mn.Sud = 255;
 
 			// Déconnecte la salle au Sud
-			Map ms = FindMap(x, y + 1, n, false);
+			Map ms = FindMap(x, y + 1, n);
 			if (ms != null)
 				ms.Nord = 255;
 
 			// Déconnecte la salle à l'Est
-			Map me = FindMap(x + 1, y, n, false);
+			Map me = FindMap(x + 1, y, n);
 			if (me != null)
 				me.Ouest = 255;
 
 			// Déconnecte la salle à l'Ouest
-			Map mo = FindMap(x - 1, y, n, false);
+			Map mo = FindMap(x - 1, y, n);
 			if (mo != null)
 				mo.Est = 255;
 		}
 
 		public void ModifCase(int xPos, int yPos, int zPos, Map.TypeCase type, Cnx autoCnx) {
-			Map map = FindMap(xPos, yPos, zPos, false);
+			Map map = FindMap(xPos, yPos, zPos);
 			switch (type) {
 				case Map.TypeCase.CASE_PLEINE:
 					// Ajoute une salle
@@ -197,7 +205,7 @@ namespace PJA {
 
 				case Map.TypeCase.CASE_DEPART:
 					// Positionne la salle de départ
-					if ((map == null || map.TypeMap != Map.TypeCase.CASE_PLEINE) && (xPos != xGoal || yPos != yGoal || zPos != nGoal)) {
+					if (map == null) {
 						// on efface l'ancienne position et on affecte la nouvelle
 						SetCase(xStart, yStart, nStart, Map.TypeCase.CASE_VIDE, autoCnx);
 						SetCase(xPos, yPos, zPos, Map.TypeCase.CASE_DEPART, autoCnx);
@@ -207,7 +215,7 @@ namespace PJA {
 
 				case Map.TypeCase.CASE_ARRIVEE:
 					// Positonne la salle d'arrivée
-					if ((map == null || map.TypeMap != Map.TypeCase.CASE_PLEINE) && (xPos != xStart || yPos != yStart || zPos != nStart)) {
+					if (map == null) {
 						// on efface l'ancienne position et on affecte la nouvelle
 						SetCase(xGoal, yGoal, nGoal, Map.TypeCase.CASE_VIDE, autoCnx);
 						SetCase(xPos, yPos, zPos, Map.TypeCase.CASE_ARRIVEE, autoCnx);
@@ -226,16 +234,6 @@ namespace PJA {
 					SetCase(xPos, yPos, zPos, Map.TypeCase.CASE_VIDE, autoCnx);
 					break;
 			}
-		}
-
-		public Map RechercheSalle(int numSalle, ref int x, ref int y, ref int n) {
-			Map map = tabMap.Find(m => m.NumCase == numSalle && m.TypeMap != Map.TypeCase.CASE_VIDE);
-			if (map != null) {
-				x = map.X;
-				y = map.Y;
-				n = map.Z;
-			}
-			return map;
 		}
 	}
 }
