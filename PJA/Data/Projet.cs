@@ -3,21 +3,6 @@
 namespace PJA {
 	[Serializable]
 	public class Projet {
-		private DataMap dataMap;
-		public DataMap MapData {
-			get { return dataMap; }
-			set { dataMap = value; }
-		}
-		private DataImage dataImage;
-		public DataImage ImageData {
-			get { return dataImage; }
-			set { dataImage = value; }
-		}
-		private DataVue dataVue;
-		public DataVue VueData {
-			get { return dataVue; }
-			set { dataVue = value; }
-		}
 		private int mode;
 		public int Mode {
 			get { return mode; }
@@ -48,8 +33,23 @@ namespace PJA {
 				}
 			}
 		}
+		private DataMap dataMap;
+		public DataMap MapData {
+			get { return dataMap; }
+			set { dataMap = value; }
+		}
+		private DataImage dataImage;
+		public DataImage ImageData {
+			get { return dataImage; }
+			set { dataImage = value; }
+		}
+		private DataVue dataVue;
+		public DataVue VueData {
+			get { return dataVue; }
+			set { dataVue = value; }
+		}
 		private bool modif;
-		public bool Modif { get { return modif | dataMap.Modif | dataImage.Modif; } }
+		public bool Modif { get { return modif | dataMap.Modif | dataImage.Modif|dataVue.Modif; } }
 
 		public Projet() {
 			New();

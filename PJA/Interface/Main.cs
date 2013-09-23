@@ -96,7 +96,7 @@ namespace PJA {
 			dlg.Filter = "Projet PJA (*.xml)|*.xml";
 			DialogResult result = dlg.ShowDialog();
 			if (result == DialogResult.OK) {
-				FileStream file = File.Open(dlg.FileName, FileMode.OpenOrCreate);
+				FileStream file = File.Open(dlg.FileName, FileMode.Create);
 				try {
 					new XmlSerializer(typeof(Projet)).Serialize(file, projet);
 				}
