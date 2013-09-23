@@ -48,11 +48,9 @@
     <Compile Include="Data\CpcSystem.cs" />
     <Compile Include="Data\DataImage.cs" />
     <Compile Include="Data\DataMap.cs" />
-    <Compile Include="Data\DataVue.cs" />
     <Compile Include="Data\Image.cs" />
     <Compile Include="Data\Palette.cs" />
     <Compile Include="Data\Resultat.cs" />
-    <Compile Include="Data\Vue.cs" />
     <Compile Include="Data\Zone.cs" />
     <Compile Include="Interface\EditColor.cs">
       <SubType>Form</SubType>

@@ -26,11 +26,6 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.numSalle = new System.Windows.Forms.NumericUpDown();
 			this.listImage = new System.Windows.Forms.ListBox();
-			this.label2 = new System.Windows.Forms.Label();
-			this.nomVue = new System.Windows.Forms.TextBox();
-			this.listVue = new System.Windows.Forms.ListBox();
-			this.bpEditVue = new System.Windows.Forms.Button();
-			this.bpAddVue = new System.Windows.Forms.Button();
 			this.bpDelVue = new System.Windows.Forms.Button();
 			this.bpAffecte = new System.Windows.Forms.Button();
 			this.pictureBox = new System.Windows.Forms.PictureBox();
@@ -40,6 +35,8 @@
 			this.typeZone = new System.Windows.Forms.ComboBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.bpDelZone = new System.Windows.Forms.Button();
+			this.label2 = new System.Windows.Forms.Label();
+			this.imageAffect = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.numSalle)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
 			this.SuspendLayout();
@@ -75,66 +72,12 @@
 			this.listImage.TabIndex = 14;
 			this.listImage.SelectedIndexChanged += new System.EventHandler(this.listImage_SelectedIndexChanged);
 			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(12, 55);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(82, 13);
-			this.label2.TabIndex = 19;
-			this.label2.Text = "Nom de la vue :";
-			// 
-			// nomVue
-			// 
-			this.nomVue.Location = new System.Drawing.Point(107, 52);
-			this.nomVue.Name = "nomVue";
-			this.nomVue.Size = new System.Drawing.Size(284, 20);
-			this.nomVue.TabIndex = 20;
-			this.nomVue.TextChanged += new System.EventHandler(this.nomVue_TextChanged);
-			// 
-			// listVue
-			// 
-			this.listVue.FormattingEnabled = true;
-			this.listVue.Location = new System.Drawing.Point(224, 77);
-			this.listVue.Name = "listVue";
-			this.listVue.Size = new System.Drawing.Size(167, 147);
-			this.listVue.TabIndex = 22;
-			this.listVue.SelectedIndexChanged += new System.EventHandler(this.listVue_SelectedIndexChanged);
-			// 
-			// bpEditVue
-			// 
-			this.bpEditVue.Enabled = false;
-			this.bpEditVue.Image = global::PJA.Properties.Resources.Edit;
-			this.bpEditVue.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.bpEditVue.Location = new System.Drawing.Point(15, 128);
-			this.bpEditVue.Name = "bpEditVue";
-			this.bpEditVue.Size = new System.Drawing.Size(108, 34);
-			this.bpEditVue.TabIndex = 24;
-			this.bpEditVue.Text = "Modifier vue";
-			this.bpEditVue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.bpEditVue.UseVisualStyleBackColor = true;
-			this.bpEditVue.Click += new System.EventHandler(this.bpEditVue_Click);
-			// 
-			// bpAddVue
-			// 
-			this.bpAddVue.Enabled = false;
-			this.bpAddVue.Image = global::PJA.Properties.Resources.Add;
-			this.bpAddVue.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.bpAddVue.Location = new System.Drawing.Point(15, 88);
-			this.bpAddVue.Name = "bpAddVue";
-			this.bpAddVue.Size = new System.Drawing.Size(108, 34);
-			this.bpAddVue.TabIndex = 23;
-			this.bpAddVue.Text = "Ajouter vue";
-			this.bpAddVue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.bpAddVue.UseVisualStyleBackColor = true;
-			this.bpAddVue.Click += new System.EventHandler(this.bpAddVue_Click);
-			// 
 			// bpDelVue
 			// 
 			this.bpDelVue.Enabled = false;
 			this.bpDelVue.Image = global::PJA.Properties.Resources.Del;
 			this.bpDelVue.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.bpDelVue.Location = new System.Drawing.Point(15, 168);
+			this.bpDelVue.Location = new System.Drawing.Point(283, 1);
 			this.bpDelVue.Name = "bpDelVue";
 			this.bpDelVue.Size = new System.Drawing.Size(108, 34);
 			this.bpDelVue.TabIndex = 21;
@@ -234,24 +177,38 @@
 			this.bpDelZone.UseVisualStyleBackColor = true;
 			this.bpDelZone.Click += new System.EventHandler(this.bpDelZone_Click);
 			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(12, 54);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(84, 13);
+			this.label2.TabIndex = 31;
+			this.label2.Text = "Image affectée :";
+			// 
+			// imageAffect
+			// 
+			this.imageAffect.Enabled = false;
+			this.imageAffect.Location = new System.Drawing.Point(107, 51);
+			this.imageAffect.Name = "imageAffect";
+			this.imageAffect.Size = new System.Drawing.Size(284, 20);
+			this.imageAffect.TabIndex = 32;
+			// 
 			// EditVues
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(951, 632);
+			this.Controls.Add(this.imageAffect);
+			this.Controls.Add(this.label2);
 			this.Controls.Add(this.bpDelZone);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.typeZone);
 			this.Controls.Add(this.allZones);
 			this.Controls.Add(this.listZone);
 			this.Controls.Add(this.bpAddZone);
-			this.Controls.Add(this.bpEditVue);
-			this.Controls.Add(this.bpAddVue);
-			this.Controls.Add(this.listVue);
 			this.Controls.Add(this.bpDelVue);
 			this.Controls.Add(this.bpAffecte);
-			this.Controls.Add(this.nomVue);
-			this.Controls.Add(this.label2);
 			this.Controls.Add(this.pictureBox);
 			this.Controls.Add(this.listImage);
 			this.Controls.Add(this.numSalle);
@@ -273,19 +230,16 @@
 		private System.Windows.Forms.NumericUpDown numSalle;
 		private System.Windows.Forms.ListBox listImage;
 		private System.Windows.Forms.PictureBox pictureBox;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.TextBox nomVue;
 		private System.Windows.Forms.Button bpAffecte;
 		private System.Windows.Forms.Button bpDelVue;
-		private System.Windows.Forms.ListBox listVue;
-		private System.Windows.Forms.Button bpAddVue;
-		private System.Windows.Forms.Button bpEditVue;
 		private System.Windows.Forms.Button bpAddZone;
 		private System.Windows.Forms.ListBox listZone;
 		private System.Windows.Forms.CheckBox allZones;
 		private System.Windows.Forms.ComboBox typeZone;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Button bpDelZone;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.TextBox imageAffect;
 
 	}
 }

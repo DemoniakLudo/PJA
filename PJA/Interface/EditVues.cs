@@ -8,8 +8,6 @@ namespace PJA {
 		private BitmapCPC bitmapCPC;
 		private Projet projet;
 		private Map curMap = null;
-		private Vue selVue = null;
-		private DataVue dataVue;
 		private int numImage;
 		private Zone newZone = new Zone(0, 0);
 		private bool zoneDown = false;
@@ -28,8 +26,6 @@ namespace PJA {
 			foreach (Image img in projet.ImageData.listImg)
 				listImage.Items.Add(img);
 
-			dataVue = projet.VueData;
-			RefreshListVue();
 			numSalle.Maximum = projet.MapData.NbSalles - 1;
 			numSalle.Value = 0;
 			penWhite.DashStyle = System.Drawing.Drawing2D.DashStyle.DashDotDot;
@@ -58,8 +54,8 @@ namespace PJA {
 
 		private void Render() {
 			bitmapCPC.Render(bmpLock, bitmapCPC.ModeCPC, 1, 0, 0, false);
-			if (allZones.Checked && selVue != null)
-				foreach (Zone z in selVue.LstZone)
+			if (allZones.Checked && curMap != null)
+				foreach (Zone z in curMap.LstZone)
 					RenderZone(z, penBlue);
 
 			if (newZone != null)
@@ -68,23 +64,23 @@ namespace PJA {
 			pictureBox.Refresh();
 		}
 
-		private void RefreshListVue() {
-			listVue.BeginUpdate();
-			listVue.Items.Clear();
-			foreach (Vue v in dataVue.ListVue)
-				listVue.Items.Add(v);
-
-			listVue.EndUpdate();
-		}
-
 		private void RefreshListZone() {
 			listZone.BeginUpdate();
 			listZone.Items.Clear();
-			if (selVue != null)
-				foreach (Zone z in selVue.LstZone)
+			if (curMap != null)
+				foreach (Zone z in curMap.LstZone)
 					listZone.Items.Add(z);
 
 			listZone.EndUpdate();
+		}
+
+		private void SetNewImage(int index) {
+			listImage.SelectedIndex = index;
+			imageAffect.Text = index > -1 ? (listImage.SelectedItem as Image).ToString() : "";
+			if (curMap != null)
+				curMap.IndexImage = index;
+
+			bpDelVue.Enabled = index > -1;
 		}
 
 		private void listImage_SelectedIndexChanged(object sender, System.EventArgs e) {
@@ -97,54 +93,32 @@ namespace PJA {
 				System.Array.Clear(bitmapCPC.BmpCpc, 0, bitmapCPC.BmpCpc.Length);
 
 			Render();
+			RefreshListZone();
 			numImage = listImage.SelectedIndex;
+			bpAffecte.Enabled = numImage > -1;
 		}
 
 		private void numSalle_ValueChanged(object sender, System.EventArgs e) {
 			curMap = projet.MapData.FindMap((int)numSalle.Value);
-			bpAffecte.Enabled = bpDelVue.Enabled = (curMap != null && curMap.NumVue > 0);
-			listVue.SelectedIndex = (curMap != null && curMap.NumVue > 0) ? curMap.NumVue - 1 : -1;
-		}
-
-		private void nomVue_TextChanged(object sender, System.EventArgs e) {
-			bpAddVue.Enabled = nomVue.Text.Length > 0;
+			SetNewImage(curMap != null ? curMap.IndexImage : -1);
+			bpAffecte.Enabled = numImage > -1;
 		}
 
 		private void bpAffecte_Click(object sender, System.EventArgs e) {
-			curMap.NumVue = selVue.NumVue;
-		}
-
-		private void bpAddVue_Click(object sender, System.EventArgs e) {
-			Vue v = new Vue((byte)(1 + dataVue.ListVue.Count), nomVue.Text, numImage);
-			dataVue.ListVue.Add(v);
-			RefreshListVue();
-		}
-
-		private void bpEditVue_Click(object sender, System.EventArgs e) {
-			selVue.Libelle = nomVue.Text;
-			selVue.IndexImage = numImage;
-			RefreshListVue();
+			SetNewImage(numImage);
 		}
 
 		private void bpDelVue_Click(object sender, System.EventArgs e) {
-			if (selVue != null && MessageBox.Show("Etes-vous sur(e) de vouloir supprimer cette vue", "Attention", MessageBoxButtons.YesNo) == DialogResult.Yes) {
-				dataVue.ListVue.Remove(selVue);
-				RefreshListVue();
+			if (curMap.IndexImage > -1 && MessageBox.Show("Etes-vous sur(e) de vouloir supprimer cette affectation ?", "Attention", MessageBoxButtons.YesNo) == DialogResult.Yes) {
+				curMap.LstZone.Clear();
+				SetNewImage(-1);
 			}
-		}
-
-		private void listVue_SelectedIndexChanged(object sender, System.EventArgs e) {
-			selVue = listVue.SelectedItem as Vue;
-			bpAffecte.Enabled = bpEditVue.Enabled = bpDelVue.Enabled = selVue != null;
-			nomVue.Text = selVue != null ? selVue.Libelle : "";
-			listImage.SelectedIndex = selVue != null && listImage.Items.Count > selVue.IndexImage ? selVue.IndexImage : -1;
-			RefreshListZone();
 		}
 
 		private void bpAddZone_Click(object sender, System.EventArgs e) {
 			bpAddZone.Enabled = false;
 			newZone.typeZone = (Zone.TypeZone)typeZone.SelectedItem;
-			selVue.LstZone.Add(newZone);
+			curMap.LstZone.Add(newZone);
 			newZone = new Zone(0, 0);
 			Render();
 			RefreshListZone();
@@ -152,11 +126,7 @@ namespace PJA {
 
 		private void bpDelZone_Click(object sender, System.EventArgs e) {
 			if (MessageBox.Show("Etes-vous sur(e) de vouloir supprimer cette zone", "Attention", MessageBoxButtons.YesNo) == DialogResult.Yes) {
-				foreach (Zone z in selVue.LstZone)
-					if (z == newZone) {
-						selVue.LstZone.Remove(z);
-						break;
-					}
+				curMap.LstZone.Remove(newZone);
 				RefreshListZone();
 				newZone = new Zone(0, 0);
 				Render();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace PJA {
 	[Serializable]
@@ -44,11 +45,6 @@ namespace PJA {
 			get { return bas; }
 			set { bas = value; }
 		}
-		private byte numVue;		// Numéro de vue à charger
-		public byte NumVue {
-			get { return numVue; }
-			set { numVue = value; }
-		}
 		private byte valDef;		// valeur par défaut variable de salle
 		public byte ValDef {
 			get { return valDef; }
@@ -69,16 +65,41 @@ namespace PJA {
 			get { return z; }
 			set { z = value; }
 		}
+		private string libelle = "";
+		public string Libelle {
+			get { return libelle; }
+			set { libelle = value; }
+		}
+		private int indexImage; // numéro d'image à charger (anciennement 'vue')
+		public int IndexImage {
+			get { return indexImage; }
+			set { indexImage = value; }
+		}
+		private List<Zone> lstZone = new List<Zone>();
+		public List<Zone> LstZone {
+			get { return lstZone; }
+			set { lstZone = value; }
+		}
 
 		public Map() {
+			Init();
 		}
 
 		public Map(int xx, int yy, int zz) {
 			x = xx;
 			y = yy;
 			z = zz;
+			Init();
+		}
+
+		private void Init() {
 			nord = sud = est = ouest = haut = bas = numCase = 255;
+			indexImage = -1;
 			typeMap = TypeCase.CASE_VIDE;
+		}
+
+		public override string ToString() {
+			return libelle;
 		}
 	}
 }

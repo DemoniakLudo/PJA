@@ -43,13 +43,8 @@ namespace PJA {
 			get { return dataImage; }
 			set { dataImage = value; }
 		}
-		private DataVue dataVue;
-		public DataVue VueData {
-			get { return dataVue; }
-			set { dataVue = value; }
-		}
 		private bool modif;
-		public bool Modif { get { return modif | dataMap.Modif | dataImage.Modif|dataVue.Modif; } }
+		public bool Modif { get { return modif | dataMap.Modif | dataImage.Modif; } }
 
 		public Projet() {
 			New();
@@ -67,13 +62,11 @@ namespace PJA {
 			// Réinitialisation variables
 			dataMap = new DataMap();
 			dataImage = new DataImage();
-			dataVue = new DataVue();
 		}
 
 		public void Init() {
 			dataMap.Init();
 			dataImage.Init();
-			dataVue.Init();
 		}
 	}
 }
