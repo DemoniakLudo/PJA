@@ -83,6 +83,7 @@ namespace PJA {
 				FileStream file = File.Open(dlg.FileName, FileMode.Open);
 				try {
 					projet = (Projet)new XmlSerializer(typeof(Projet)).Deserialize(file);
+					projet.Init();
 				}
 				catch (Exception ex) {
 					ShowException(ex);

@@ -9,6 +9,9 @@ namespace PJA {
 		private bool modif;
 		public bool Modif { get { return modif; } }
 
+		public void Init() {
+		}
+
 		public void AddImage(string nom, int[] palette, byte[] data) {
 			listImg.Add(new Image(nom, palette, data));
 			modif = true;

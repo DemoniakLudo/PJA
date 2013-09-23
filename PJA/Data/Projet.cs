@@ -69,5 +69,11 @@ namespace PJA {
 			dataImage = new DataImage();
 			dataVue = new DataVue();
 		}
+
+		public void Init() {
+			dataMap.Init();
+			dataImage.Init();
+			dataVue.Init();
+		}
 	}
 }
