@@ -34,6 +34,7 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.mode = new System.Windows.Forms.ComboBox();
 			this.bpNew = new System.Windows.Forms.Button();
+			this.bpImport = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.nbCols)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nbLignes)).BeginInit();
 			this.SuspendLayout();
@@ -170,11 +171,22 @@
 			this.bpNew.UseVisualStyleBackColor = true;
 			this.bpNew.Click += new System.EventHandler(this.bpNew_Click);
 			// 
+			// bpImport
+			// 
+			this.bpImport.Location = new System.Drawing.Point(119, 41);
+			this.bpImport.Name = "bpImport";
+			this.bpImport.Size = new System.Drawing.Size(101, 23);
+			this.bpImport.TabIndex = 12;
+			this.bpImport.Text = "Importer .PJA";
+			this.bpImport.UseVisualStyleBackColor = true;
+			this.bpImport.Click += new System.EventHandler(this.bpImport_Click);
+			// 
 			// Main
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(532, 398);
+			this.Controls.Add(this.bpImport);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label3);
@@ -208,6 +220,7 @@
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.ComboBox mode;
 		private System.Windows.Forms.Button bpNew;
+		private System.Windows.Forms.Button bpImport;
 	}
 }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace PJA {
 	[Serializable]
@@ -50,9 +51,68 @@ namespace PJA {
 			set { numVue = value; }
 		}
 		private byte valDef;		// valeur par défaut variable de salle
-		private byte ValDef {
+		public byte ValDef {
 			get { return valDef; }
 			set { valDef = value; }
+		}
+
+		public bool Load(StreamReader rd) {
+			string line = rd.ReadLine();
+			if (line.StartsWith("#MAP_TYPE")) {
+				typeMap = (TypeCase)int.Parse(line.Substring(10));
+				line = rd.ReadLine();
+				if (line.StartsWith("#MAP_NUM")) {
+					numCase = byte.Parse(line.Substring(9));
+					line = rd.ReadLine();
+					if (line.StartsWith("#MAP_NORD")) {
+						nord = byte.Parse(line.Substring(10));
+						line = rd.ReadLine();
+						if (line.StartsWith("#MAP_SUD")) {
+							sud = byte.Parse(line.Substring(9));
+							line = rd.ReadLine();
+							if (line.StartsWith("#MAP_EST")) {
+								est = byte.Parse(line.Substring(9));
+								line = rd.ReadLine();
+								if (line.StartsWith("#MAP_OUEST")) {
+									ouest = byte.Parse(line.Substring(11));
+									line = rd.ReadLine();
+									if (line.StartsWith("#MAP_HAUT")) {
+										haut = byte.Parse(line.Substring(10));
+										line = rd.ReadLine();
+										if (line.StartsWith("#MAP_BAS")) {
+											bas = byte.Parse(line.Substring(9));
+											line = rd.ReadLine();
+											if (line.StartsWith("#MAP_NUMVUE")) {
+												numVue = byte.Parse(line.Substring(12));
+												line = rd.ReadLine();
+												if (line.StartsWith("#MAP_VALDEF")) {
+													valDef = byte.Parse(line.Substring(12));
+													return true;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			return false;
+		}
+
+		public bool Save(StreamWriter wr) {
+			wr.WriteLine("#MAP_TYPE\t" + ((int)typeMap).ToString());
+			wr.WriteLine("#MAP_NUM\t" + numCase);
+			wr.WriteLine("#MAP_NORD\t" + nord);
+			wr.WriteLine("#MAP_SUD\t" + sud);
+			wr.WriteLine("#MAP_EST\t" + est);
+			wr.WriteLine("#MAP_OUEST\t" + ouest);
+			wr.WriteLine("#MAP_HAUT\t" + haut);
+			wr.WriteLine("#MAP_BAS\t" + bas);
+			wr.WriteLine("#MAP_NUMVUE\t" + numVue);
+			wr.WriteLine("#MAP_VALDEF\t" + valDef);
+			return true;
 		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace PJA {
 	[Serializable]
@@ -255,6 +256,58 @@ namespace PJA {
 				}
 			}
 			return false;
+		}
+
+		public  bool Load(StreamReader rd) {
+			string line = rd.ReadLine();
+			if (line != null) {
+				if (line.StartsWith("#MAP_NB_CASES")) {
+					int nb = int.Parse(line.Substring(14));
+					Init();
+					for (; nb-- > 0; ) {
+						line = rd.ReadLine();
+						if (line.StartsWith("#MAP_COORD")) {
+							int p = line.IndexOf(';');
+							if (p > 0) {
+								int n = int.Parse(line.Substring(11, p - 11));
+								line = line.Substring(p + 1);
+								p = line.IndexOf(';');
+								if (p > 0) {
+									int x = int.Parse(line.Substring(0, p));
+									line = line.Substring(p + 1);
+									int y = int.Parse(line);
+									if (!tabMap[x + y * TAILLE_Y + n * TAILLE_Y * TAILLE_Z].Load(rd))
+										return false;
+									else
+										caseLibre[tabMap[x+ y * TAILLE_Y + n * TAILLE_Y * TAILLE_Z].NumCase] = 1;
+								}
+								else
+									return false;
+							}
+							else
+								return false;
+						}
+						else return false;
+					}
+					return true;
+				}
+				else
+					return false;
+			}
+			return false;
+		}
+
+		public  bool Save(StreamWriter wr) {
+			wr.WriteLine("#MAP_NB_CASES\t" + nbSalles);
+			for (int n = 0; n < TAILLE_Z; n++)
+				for (int y = 0; y < TAILLE_Y; y++)
+					for (int x = 0; x < TAILLE_X; x++)
+						if (tabMap[x + y * TAILLE_Y + n * TAILLE_Y * TAILLE_Z].TypeMap != Map.TypeCase.CASE_VIDE) {
+							wr.WriteLine("#MAP_COORD\t" + n + ";" + x + ";" + y);
+							if (!tabMap[x + y * TAILLE_Y + n * TAILLE_Y * TAILLE_Z].Save(wr))
+								return false;
+						}
+			return true;
 		}
 	}
 }
