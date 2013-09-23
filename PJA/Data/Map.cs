@@ -69,5 +69,16 @@ namespace PJA {
 			get { return z; }
 			set { z = value; }
 		}
+
+		public Map() {
+		}
+
+		public Map(int xx, int yy, int zz) {
+			x = xx;
+			y = yy;
+			z = zz;
+			nord = sud = est = ouest = haut = bas = numCase = 255;
+			typeMap = TypeCase.CASE_VIDE;
+		}
 	}
 }

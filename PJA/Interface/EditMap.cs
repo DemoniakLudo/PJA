@@ -60,8 +60,8 @@ namespace PJA {
 			int stepY = grilleY / DataMap.TAILLE_Y;
 			for (int i = 0; i < DataMap.TAILLE_X; i++)
 				for (int j = 0; j < DataMap.TAILLE_Y; j++) {
-					Map m = dataMap.GetMap(i, j);
-					Map.TypeCase t = m.TypeMap;
+					Map m = dataMap.GetMap(i, j, false);
+					Map.TypeCase t = m != null ? m.TypeMap : Map.TypeCase.CASE_VIDE;
 					Pen p = null;
 					switch (t) {
 						case Map.TypeCase.CASE_PLEINE:
@@ -122,20 +122,20 @@ namespace PJA {
 			if (e.X >= 0 && e.Y >= 00 && e.X < grilleX - 1 && e.Y < grilleY - 1) {
 				int xPos = e.X / (grilleX / DataMap.TAILLE_X);
 				int yPos = e.Y / (grilleY / DataMap.TAILLE_Y);
-				Map m = dataMap.GetMap(xPos, yPos);
+				Map m = dataMap.GetMap(xPos, yPos, false);
 
 				// Affiche les informations de la case en cours
 
 				// Numéro de salle
-				numCase.Text = m.TypeMap != Map.TypeCase.CASE_VIDE ? m.NumCase.ToString() : "";
+				numCase.Text = m != null && m.TypeMap != Map.TypeCase.CASE_VIDE ? m.NumCase.ToString() : "";
 
 				// Informations de déplacements
-				nord.Text = m.Nord != 255 ? m.Nord.ToString() : "";
-				sud.Text = m.Sud != 255 ? m.Sud.ToString() : "";
-				est.Text = m.Est != 255 ? m.Est.ToString() : "";
-				ouest.Text = m.Ouest != 255 ? m.Ouest.ToString() : "";
-				haut.Text = m.Haut != 255 ? m.Haut.ToString() : "";
-				bas.Text = m.Bas != 255 ? m.Bas.ToString() : "";
+				nord.Text = m != null && m.Nord != 255 ? m.Nord.ToString() : "";
+				sud.Text = m != null && m.Sud != 255 ? m.Sud.ToString() : "";
+				est.Text = m != null && m.Est != 255 ? m.Est.ToString() : "";
+				ouest.Text = m != null && m.Ouest != 255 ? m.Ouest.ToString() : "";
+				haut.Text = m != null && m.Haut != 255 ? m.Haut.ToString() : "";
+				bas.Text = m != null && m.Bas != 255 ? m.Bas.ToString() : "";
 
 				// Informations commandes
 
@@ -162,7 +162,7 @@ namespace PJA {
 			int numSalle;
 			if (int.TryParse(salleRech.Text, out numSalle)) {
 				int x = 0, y = 0, n = 0;
-				if (dataMap.RechercheSalle(numSalle, ref x, ref y, ref n)) {
+				if (dataMap.RechercheSalle(numSalle, ref x, ref y, ref n) != null) {
 					int stepX = pictureMap.Left + Left - 4 + (x * grilleX / DataMap.TAILLE_X);
 					int stepY = pictureMap.Top + Top + 10 + (y * grilleY / DataMap.TAILLE_Y);
 					SetCursorPos(stepX, stepY);

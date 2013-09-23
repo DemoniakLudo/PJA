@@ -102,11 +102,7 @@ namespace PJA {
 
 		private void numSalle_ValueChanged(object sender, System.EventArgs e) {
 			int x = 0, y = 0, n = 0;
-			if (projet.MapData.RechercheSalle((int)numSalle.Value, ref x, ref y, ref n))
-				curMap = projet.MapData.GetMap(x, y, n);
-			else
-				curMap = null;
-
+			curMap = projet.MapData.RechercheSalle((int)numSalle.Value, ref x, ref y, ref n);
 			bpAffecte.Enabled = bpDelVue.Enabled = (curMap != null && curMap.NumVue > 0);
 			listVue.SelectedIndex = (curMap != null && curMap.NumVue > 0) ? curMap.NumVue - 1 : -1;
 		}
