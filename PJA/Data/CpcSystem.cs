@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace PJA {
@@ -60,15 +61,33 @@ namespace PJA {
 		}
 		*/
 
+		private int CalcCheckSum(CpcAmsdos str) {
+			int checkSum = 0;
 
+			int size = Marshal.SizeOf(str);
+			byte[] arr = new byte[size];
+			IntPtr ptr = Marshal.AllocHGlobal(size);
+
+			Marshal.StructureToPtr(str, ptr, true);
+			Marshal.Copy(ptr, arr, 0, size);
+			Marshal.FreeHGlobal(ptr);
+			for (int i = 0; i < 67; i++)
+				checkSum += arr[i];
+
+			return checkSum;
+		}
 	}
-	/*
-	class CpcAmsdos {
+
+
+
+	[StructLayoutAttribute(LayoutKind.Sequential)]
+	struct CpcAmsdos {
 		//
 		// Structure d'une entrée AMSDOS
 		//
 		public byte UserNumber;				// User
-		public char[] FileName = new char[15];	// Nom + extension
+		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 15)]
+		public string FileName;	// Nom + extension
 		public byte BlockNum;					// Numéro du premier bloc (disquette)
 		public byte LastBlock;					// Numéro du dernier bloc (disquette)
 		public byte FileType;					// Type de fichier
@@ -77,10 +96,12 @@ namespace PJA {
 		public byte FirstBlock;				// Premier bloc de fichier (disquette)
 		public short LogicalLength;			// Longueur logique
 		public short EntryAdress;				// Point d'entrée
-		public byte[] Unused = new byte[0x24];
+		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 0x24)]
+		public string Unused;
 		public short RealLength;				// Longueur réelle
 		public byte BigLength;					// Longueur réelle (3 octets)
 		public short CheckSum;					// CheckSum Amsdos
-		public byte[] Unused2 = new byte[0x3B];
-	}*/
+		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 0x3B)]
+		public string Unused2;
+	}
 }

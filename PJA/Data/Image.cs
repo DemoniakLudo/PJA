@@ -16,21 +16,21 @@ namespace PJA {
 
 		public Image(string n, int[] p, byte[] d) {
 			nom = n;
+			SetImage(d, p);
+		}
+
+		public void SetImage(byte[] img, int[] p) {
+			Array.Copy(img, data, data.Length);
 			pal = new Palette(p);
-			for (int i = 0; i < data.Length; i++)
-				data[i] = d[i];
+		}
+
+		public void GetImage(byte[] dest, int[] p) {
+			Array.Copy(data, dest, data.Length);
+			pal.SendPalette(p);
 		}
 
 		public override string ToString() {
 			return nom;
-		}
-
-		public int GetPalette(int ind) {
-			return pal.GetPalette(ind);
-		}
-
-		public void SendPalette(int[] p) {
-			pal.SendPalette(p);
 		}
 
 		public void SetPal(Palette p) {

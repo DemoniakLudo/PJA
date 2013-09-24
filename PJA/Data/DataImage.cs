@@ -17,10 +17,6 @@ namespace PJA {
 			modif = true;
 		}
 
-		static public void RenameImage(Image i, string nom) {
-			i.nom = nom;
-		}
-
 		public void DeleteImage(Image img) {
 			listImg.Remove(img);
 		}

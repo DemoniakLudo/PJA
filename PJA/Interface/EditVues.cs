@@ -85,12 +85,10 @@ namespace PJA {
 
 		private void listImage_SelectedIndexChanged(object sender, System.EventArgs e) {
 			Image selImage = listImage.SelectedItem as Image;
-			if (selImage != null) {
-				selImage.SendPalette(bitmapCPC.Palette);
-				System.Array.Copy(selImage.data, bitmapCPC.BmpCpc, selImage.data.Length);
-			}
+			if (selImage != null)
+				selImage.GetImage(bitmapCPC.BmpCpc, bitmapCPC.Palette);
 			else
-				System.Array.Clear(bitmapCPC.BmpCpc, 0, bitmapCPC.BmpCpc.Length);
+				bitmapCPC.ClearBmp();
 
 			Render();
 			RefreshListZone();
@@ -149,7 +147,7 @@ namespace PJA {
 		}
 
 		private void pictureBox_MouseMove(object sender, MouseEventArgs e) {
-			if (e.Button == System.Windows.Forms.MouseButtons.Left)
+			if (e.Button == MouseButtons.Left)
 				pictureBox_MouseDown(sender, e);
 		}
 

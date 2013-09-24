@@ -69,6 +69,10 @@ namespace ConvImgCpc {
 				Palette[i] = PaletteStandardCPC[i];
 		}
 
+		public void ClearBmp() {
+			System.Array.Clear(BmpCpc, 0, BmpCpc.Length);
+		}
+
 		public void SetPalette(int entree, int valeur) {
 			Palette[entree] = valeur;
 		}

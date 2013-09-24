@@ -57,7 +57,7 @@ namespace PJA {
 				line = rd.ReadLine();
 			}
 			if (line.StartsWith("#PALETTE_VALUE") || line.StartsWith("#IMAGE_PALETTE")) {
-				byte[] tmp = System.Convert.FromBase64String(line.Substring(15));
+				byte[] tmp = Convert.FromBase64String(line.Substring(15));
 				for (int i = 0; i < 34; i++)
 					palColor[i] = tmp[i];
 

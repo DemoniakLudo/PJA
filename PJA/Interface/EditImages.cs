@@ -163,7 +163,7 @@ namespace PJA {
 		private void bpEdit_Click(object sender, System.EventArgs e) {
 			Image img = listImage.SelectedItem as Image;
 			if (img != null && imageName.Text.Length > 0) {
-				DataImage.RenameImage(img, imageName.Text);
+				img.nom = imageName.Text;
 				UpdateListe(listImage.SelectedIndex);
 			}
 		}
@@ -221,10 +221,7 @@ namespace PJA {
 			Image img = listImage.SelectedItem as Image;
 			if (img != null) {
 				imageName.Text = img.nom;
-				for (int i = 0; i < 16; i++)
-					bitmapCPC.SetPalette(i, img.GetPalette(i));
-
-				System.Array.Copy(img.data, bitmapCPC.BmpCpc, img.data.Length);
+				img.GetImage(bitmapCPC.BmpCpc, bitmapCPC.Palette);
 				Render();
 			}
 		}
@@ -345,7 +342,7 @@ namespace PJA {
 				}
 				rd.Close();
 			}
- 		}
+		}
 
 		private void bpSavePal_Click(object sender, System.EventArgs e) {
 			SaveFileDialog dlg = new SaveFileDialog();
