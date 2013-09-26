@@ -7,7 +7,7 @@ namespace PJA {
 	public partial class EditImages: Form {
 		private Bitmap bmp, image;
 		private LockBitmap bmpLock;
-		public BitmapCPC bitmapCPC;
+		public BitmapCpc bitmapCpc;
 		private Label[] colors = new Label[16];
 		private CheckBox[] lockColors = new CheckBox[16];
 		public int[] lockState = new int[16];
@@ -60,7 +60,7 @@ namespace PJA {
 			int tx = pictureBox.Width = prj.Cx * 8;
 			int ty = pictureBox.Height = prj.Cy * 16;
 			if (newCpc)
-				bitmapCPC = new BitmapCPC(tx, ty, prj.Mode);
+				bitmapCpc = new BitmapCpc(tx, ty, prj.Mode);
 			bmp = new Bitmap(tx, ty);
 			pictureBox.Image = bmp;
 			bmpLock = new LockBitmap(bmp);
@@ -86,10 +86,10 @@ namespace PJA {
 			Label colorClick = sender as Label;
 			numCol = colorClick.Tag != null ? (int)colorClick.Tag : 0;
 			if (!bpEditMode.Checked) {
-				EditColor ed = new EditColor(numCol, bitmapCPC.Palette[numCol], bitmapCPC.GetPaletteColor(numCol).GetColorARGB, cpcPlus.Checked);
+				EditColor ed = new EditColor(numCol, bitmapCpc.Palette[numCol], bitmapCpc.GetPaletteColor(numCol).GetColorArgb, cpcPlus.Checked);
 				ed.ShowDialog(this);
 				if (ed.isValide) {
-					bitmapCPC.SetPalette(numCol, ed.ValColor);
+					bitmapCpc.SetPalette(numCol, ed.ValColor);
 					if (autoRecalc.Checked)
 						bpRecalc_Click(sender, e);
 					else
@@ -100,14 +100,14 @@ namespace PJA {
 
 		public void UpdatePalette() {
 			for (int i = 0; i < 16; i++) {
-				colors[i].BackColor = Color.FromArgb(bitmapCPC.GetPaletteColor(i).GetColorARGB);
+				colors[i].BackColor = Color.FromArgb(bitmapCpc.GetPaletteColor(i).GetColorArgb);
 				colors[i].Refresh();
 			}
 		}
 
 		private void Render() {
-			bitmapCPC.cpcPlus = cpcPlus.Checked;
-			bitmapCPC.Render(bmpLock, bitmapCPC.ModeCPC, zoom, offsetX, offsetY, false);
+			bitmapCpc.cpcPlus = cpcPlus.Checked;
+			bitmapCpc.Render(bmpLock, bitmapCpc.ModeCPC, zoom, offsetX, offsetY, false);
 			pictureBox.Refresh();
 			UpdatePalette();
 		}
@@ -141,11 +141,11 @@ namespace PJA {
 					image = new Bitmap(dlgImportImage.FileName);
 				}
 				catch {
-					bitmapCPC.CreateImageFile(dlgImportImage.FileName);
-					cpcPlus.Checked = bitmapCPC.cpcPlus;
-					projet.Cx = bitmapCPC.TailleX >> 3;
-					projet.Cy = bitmapCPC.TailleY >> 4;
-					projet.Mode = bitmapCPC.ModeCPC;
+					bitmapCpc.CreateImageFile(dlgImportImage.FileName);
+					cpcPlus.Checked = bitmapCpc.cpcPlus;
+					projet.Cx = bitmapCpc.TailleX >> 3;
+					projet.Cy = bitmapCpc.TailleY >> 4;
+					projet.Mode = bitmapCpc.ModeCPC;
 					MajProjet(projet, false);
 				}
 				bpRecalc_Click(sender, e);
@@ -155,7 +155,7 @@ namespace PJA {
 
 		private void bpAdd_Click(object sender, System.EventArgs e) {
 			if (imageName.Text.Length > 0) {
-				dataImage.AddImage(imageName.Text, bitmapCPC.Palette, bitmapCPC.BmpCpc);
+				dataImage.AddImage(imageName.Text, bitmapCpc.Palette, bitmapCpc.bmpCpc);
 				UpdateListe(listImage.Items.Count);
 			}
 		}
@@ -194,7 +194,7 @@ namespace PJA {
 				bpRecalc.Enabled = false;
 				long t0 = System.Environment.TickCount;
 				Conversion.Convert(image,
-									bitmapCPC,
+									bitmapCpc,
 									radioKeepLarger.Checked ? Conversion.SizeMode.KeepLarger : radioKeepSmaller.Checked ? Conversion.SizeMode.KeepSmaller : Conversion.SizeMode.Fit,
 									methode.SelectedIndex,
 									matrice.SelectedIndex + 2,
@@ -221,7 +221,7 @@ namespace PJA {
 			Image img = listImage.SelectedItem as Image;
 			if (img != null) {
 				imageName.Text = img.nom;
-				img.GetImage(bitmapCPC.BmpCpc, bitmapCPC.Palette);
+				img.GetImage(bitmapCpc.bmpCpc, bitmapCpc.Palette);
 				Render();
 			}
 		}
@@ -321,7 +321,7 @@ namespace PJA {
 				StreamReader rd = new StreamReader(dlgLoadPal.FileName);
 				if (palTmp.Load(rd)) {
 					for (int i = 0; i < 16; i++)
-						bitmapCPC.SetPalette(i, palTmp.GetPalette(i));
+						bitmapCpc.SetPalette(i, palTmp.GetPalette(i));
 
 					string strNbp = rd.ReadLine();
 					if (strNbp != null && strNbp.StartsWith("#NB_PAL_PREDEF")) {
@@ -350,7 +350,7 @@ namespace PJA {
 			DialogResult result = dlg.ShowDialog();
 			if (result == DialogResult.OK) {
 				StreamWriter wr = new StreamWriter(dlg.FileName);
-				Palette palTmp = new Palette(bitmapCPC.Palette);
+				Palette palTmp = new Palette(bitmapCpc.Palette);
 				palTmp.Save(wr);
 				wr.WriteLine("#NB_PAL_PREDEF\t" + dataImage.listPal.Count);
 				foreach (Palette p in dataImage.listPal)
@@ -360,11 +360,11 @@ namespace PJA {
 		}
 
 		private void bpPredefPal_Click(object sender, System.EventArgs e) {
-			PredefPal pPal = new PredefPal(dataImage.listPal, bitmapCPC.Palette);
+			PredefPal pPal = new PredefPal(dataImage.listPal, bitmapCpc.Palette);
 			pPal.ShowDialog();
 			if (pPal.selPal != null) {
 				for (int i = 0; i < 16; i++)
-					bitmapCPC.SetPalette(i, pPal.selPal.GetPalette(i));
+					bitmapCpc.SetPalette(i, pPal.selPal.GetPalette(i));
 
 				if (autoRecalc.Checked)
 					bpRecalc_Click(sender, e);
@@ -381,7 +381,7 @@ namespace PJA {
 
 		private void pictureBox_MouseDown(object sender, MouseEventArgs e) {
 			if (bpEditMode.Checked) {
-				bitmapCPC.SetPixelCpc(offsetX + (e.X / zoom), offsetY + (e.Y / zoom), numCol);
+				bitmapCpc.SetPixelCpc(offsetX + (e.X / zoom), offsetY + (e.Y / zoom), numCol);
 				Render();
 			}
 		}

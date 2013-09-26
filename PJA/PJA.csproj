@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ConvImgCpc">
+      <HintPath>dll\ConvImgCpc.dll</HintPath>
+    </Reference>
     <Reference Include="Pack">
       <HintPath>dll\Pack.dll</HintPath>
     </Reference>
@@ -44,9 +47,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConvImgCpc\BitmapCpc.cs" />
-    <Compile Include="ConvImgCpc\Conversion.cs" />
-    <Compile Include="ConvImgCpc\LockBitmap.cs" />
     <Compile Include="Data\Action.cs" />
     <Compile Include="Data\CpcSystem.cs" />
     <Compile Include="Data\DataImage.cs" />
@@ -55,12 +55,6 @@
     <Compile Include="Data\Palette.cs" />
     <Compile Include="Data\Resultat.cs" />
     <Compile Include="Data\Zone.cs" />
-    <Compile Include="Interface\EditColor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Interface\EditColor.designer.cs">
-      <DependentUpon>EditColor.cs</DependentUpon>
-    </Compile>
     <Compile Include="Interface\EditImages.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -95,9 +89,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Data\Projet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Interface\EditColor.resx">
-      <DependentUpon>EditColor.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Interface\EditImages.resx">
       <DependentUpon>EditImages.cs</DependentUpon>
     </EmbeddedResource>

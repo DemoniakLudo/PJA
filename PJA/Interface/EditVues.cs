@@ -5,7 +5,7 @@ using System.Windows.Forms;
 namespace PJA {
 	public partial class EditVues: Form {
 		private LockBitmap bmpLock;
-		private BitmapCPC bitmapCPC;
+		private BitmapCpc bitmapCPC;
 		private Projet projet;
 		private Map curMap = null;
 		private int numImage;
@@ -20,7 +20,7 @@ namespace PJA {
 			projet = prj;
 			int tx = pictureBox.Width = projet.Cx * 8;
 			int ty = pictureBox.Height = projet.Cy * 16;
-			bitmapCPC = new BitmapCPC(tx, ty, projet.Mode);
+			bitmapCPC = new BitmapCpc(tx, ty, projet.Mode);
 			pictureBox.Image = new Bitmap(tx, ty);
 			bmpLock = new LockBitmap(pictureBox.Image as Bitmap);
 			foreach (Image img in projet.ImageData.listImg)
@@ -86,7 +86,7 @@ namespace PJA {
 		private void listImage_SelectedIndexChanged(object sender, System.EventArgs e) {
 			Image selImage = listImage.SelectedItem as Image;
 			if (selImage != null)
-				selImage.GetImage(bitmapCPC.BmpCpc, bitmapCPC.Palette);
+				selImage.GetImage(bitmapCPC.bmpCpc, bitmapCPC.Palette);
 			else
 				bitmapCPC.ClearBmp();
 
