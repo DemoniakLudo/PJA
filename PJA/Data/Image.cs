@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConvImgCpc;
+using System;
 
 namespace PJA {
 	[Serializable]
@@ -20,12 +21,28 @@ namespace PJA {
 		}
 
 		public void SetImage(byte[] img, int[] p) {
-			Array.Copy(img, data, data.Length);
+			RepackImage(img, img.Length);
 			pal = new Palette(p);
 		}
 
+		public void RepackImage(byte[] img, int l) {
+			if (data[0] != (byte)'P' || data[1] != (byte)'K' || data[2] != (byte)l || data[3] != (byte)(l >> 8)) {
+				l = PackDepack.Pack(img, l, data, 4);
+				data[0] = (byte)'P';
+				data[1] = (byte)'K';
+				data[2] = (byte)l;
+				data[3] = (byte)(l >> 8);
+				Array.Resize(ref data, l);
+			}
+		}
+
 		public void GetImage(byte[] dest, int[] p) {
-			Array.Copy(data, dest, data.Length);
+			int l = data.Length;
+			if (data[0] == (byte)'P' && data[1] == (byte)'K' && data[2] == (byte)l && data[3] == (byte)(l >> 8))
+				PackDepack.Depack(data, 4, dest);
+			else
+				Array.Copy(data, dest, data.Length);
+
 			pal.SendPalette(p);
 		}
 

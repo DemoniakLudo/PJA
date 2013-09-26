@@ -35,6 +35,7 @@
 			this.mode = new System.Windows.Forms.ComboBox();
 			this.bpNew = new System.Windows.Forms.Button();
 			this.nomProjet = new System.Windows.Forms.Label();
+			this.bpRepack = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.nbCols)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nbLignes)).BeginInit();
 			this.SuspendLayout();
@@ -179,11 +180,22 @@
 			this.nomProjet.Size = new System.Drawing.Size(0, 13);
 			this.nomProjet.TabIndex = 12;
 			// 
+			// bpRepack
+			// 
+			this.bpRepack.Location = new System.Drawing.Point(12, 99);
+			this.bpRepack.Name = "bpRepack";
+			this.bpRepack.Size = new System.Drawing.Size(101, 23);
+			this.bpRepack.TabIndex = 13;
+			this.bpRepack.Text = "Repack Images";
+			this.bpRepack.UseVisualStyleBackColor = true;
+			this.bpRepack.Click += new System.EventHandler(this.bpRepack_Click);
+			// 
 			// Main
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(532, 398);
+			this.Controls.Add(this.bpRepack);
 			this.Controls.Add(this.nomProjet);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.label2);
@@ -219,6 +231,7 @@
 		private System.Windows.Forms.ComboBox mode;
 		private System.Windows.Forms.Button bpNew;
 		private System.Windows.Forms.Label nomProjet;
+		private System.Windows.Forms.Button bpRepack;
 	}
 }
 

@@ -106,19 +106,19 @@
 		* Variables globales modifiées : /
 		*
 		********************************************************** !0! ****************/
-		static public int Pack(byte[] BufIn, int LengthIn, byte[] BufOut) {
+		static public int Pack(byte[] bufIn, int lengthIn, byte[] bufOut, int lengthOut) {
 			byte[] codebuffer = new byte[24];
 			byte bits = 0;
 			int count = 0, bitcount = 0, codecount = 0;
 			int matchtablestart = 0, matchtableend = 0, oldmatchtablestart;
-			int start, end, max, b, c, d, LengthOut = 0;
+			int start, end, max, b, c, d;
 
 			for (int i = 0; i < matches.Length; i++)
 				matches[i] = 0;
 
 			for (; ; ) {
 				for (c = matchtableend; c < count; c++) {
-					b = BufIn[c];
+					b = bufIn[c];
 					matchtable[b, matches[b]] = c;
 					matches[b]++;
 				}
@@ -128,7 +128,7 @@
 					int stlen = 0;
 					int stpos = 0;
 					int stlen2 = 0;
-					int bb = BufIn[count];
+					int bb = bufIn[count];
 					for (c = matches[bb] - 1; c >= 0; c--) {
 						start = matchtable[bb, c];
 						end = start + MAXSTRING;
@@ -138,7 +138,7 @@
 						max = end - start;
 						if (max >= stlen) {
 							for (d = 1; d < max; d++)
-								if (BufIn[start + d] != BufIn[count + d])
+								if (start + d >= lengthIn || count + d >= lengthIn || bufIn[start + d] != bufIn[count + d])
 									break;
 
 							if ((d >= 2) && (d > stlen)) {
@@ -152,8 +152,8 @@
 						if ((stlen == MAXSTRING) && (stpos == stlen))
 							break;
 					}
-					if (count + 1 < LengthIn) {
-						bb = BufIn[count + 1];
+					if (count + 1 < lengthIn) {
+						bb = bufIn[count + 1];
 						for (c = matches[bb] - 1; c >= 0; c--) {
 							start = matchtable[bb, c];
 							end = start + MAXSTRING;
@@ -163,7 +163,7 @@
 							max = end - start;
 							if (max >= stlen2) {
 								for (d = 1; d < max; d++)
-									if (BufIn[start + d] != BufIn[count + d + 1])
+									if (start + d >= lengthIn || count + d + 1 >= lengthIn || bufIn[start + d] != bufIn[count + d + 1])
 										break;
 
 								if ((d >= 2) && (d >= stlen2))
@@ -178,7 +178,7 @@
 
 					if (stlen > 1) {
 						if ((stlen == 2) && (stpos >= MAXSTRING)) {
-							codebuffer[codecount++] = BufIn[count++];
+							codebuffer[codecount++] = bufIn[count++];
 							bitcount++;
 						}
 						else {
@@ -221,22 +221,22 @@
 						}
 					}
 					else {
-						codebuffer[codecount++] = BufIn[count++];
+						codebuffer[codecount++] = bufIn[count++];
 						bitcount++;
 					}
 				}
 				else {
-					codebuffer[codecount++] = BufIn[count++];
+					codebuffer[codecount++] = bufIn[count++];
 					bitcount++;
 				}
 				if (bitcount == 8) {
-					BufOut[LengthOut++] = bits;
-					System.Array.Copy(codebuffer, 0, BufOut, LengthOut, codecount);
-					LengthOut += codecount;
+					bufOut[lengthOut++] = bits;
+					System.Array.Copy(codebuffer, 0, bufOut, lengthOut, codecount);
+					lengthOut += codecount;
 					bitcount = codecount = 0;
 					bits = 0;
 				}
-				if (count >= LengthIn)
+				if (count >= lengthIn)
 					break;
 
 				oldmatchtablestart = matchtablestart;
@@ -245,10 +245,9 @@
 					matchtablestart = 0;
 
 				for (c = oldmatchtablestart; c < matchtablestart; c++) {
-					b = BufIn[c];
+					b = bufIn[c];
 					for (d = 0; d < matches[b]; d++)
 						if (matchtable[b, d] >= matchtablestart) {
-							//memmove(&matchtable[b, 0], &matchtable[b, d], (matches[b] - d) * sizeof(int));
 							System.Buffer.BlockCopy(matchtable, ((b * SEEKBACK) + d) * sizeof(int), matchtable, b * SEEKBACK * sizeof(int), (matches[b] - d) * sizeof(int));
 							break;
 						}
@@ -258,10 +257,10 @@
 			}
 			codebuffer[codecount++] = 0;
 			bits = (byte)(bits | (1 << bitcount));
-			BufOut[LengthOut++] = bits;
-			System.Array.Copy(codebuffer, 0, BufOut, LengthOut, codecount);
-			LengthOut += codecount;
-			return (LengthOut);
+			bufOut[lengthOut++] = bits;
+			System.Array.Copy(codebuffer, 0, bufOut, lengthOut, codecount);
+			lengthOut += codecount;
+			return (lengthOut);
 		}
 	}
 }

@@ -17,6 +17,10 @@ namespace PJA {
 			bpNew_Click(null, null);
 		}
 
+		private void SetEtatBp(bool etat) {
+			bpEditMap.Enabled = bpEditImg.Enabled = bpLoad.Enabled = bpNew.Enabled = bpSave.Enabled = bpRepack.Enabled = etat;
+		}
+
 		private void EditMapClick(object sender, EventArgs e) {
 			Point p = editMap != null ? editMap.Location : new Point(0, 0);
 			if (editMap == null || !editMap.Valid) // si pas déjà visible
@@ -76,6 +80,7 @@ namespace PJA {
 		}
 
 		private void bpLoad_Click(object sender, EventArgs e) {
+			SetEtatBp(false);
 			OpenFileDialog dlg = new OpenFileDialog();
 			dlg.Filter = "Projet PJA (*.xml)|*.xml";
 			DialogResult result = dlg.ShowDialog();
@@ -95,9 +100,11 @@ namespace PJA {
 				}
 				file.Close();
 			}
+			SetEtatBp(true);
 		}
 
 		private void bpSave_Click(object sender, EventArgs e) {
+			SetEtatBp(false);
 			SaveFileDialog dlg = new SaveFileDialog();
 			dlg.Filter = "Projet PJA (*.xml)|*.xml";
 			DialogResult result = dlg.ShowDialog();
@@ -105,12 +112,20 @@ namespace PJA {
 				FileStream file = File.Open(dlg.FileName, FileMode.Create);
 				try {
 					new XmlSerializer(typeof(Projet)).Serialize(file, projet);
+					nomProjet.Text = Path.GetFileName(dlg.FileName);
 				}
 				catch (Exception ex) {
 					ShowException(ex);
 				}
 				file.Close();
 			}
+			SetEtatBp(true);
+		}
+
+		private void bpRepack_Click(object sender, EventArgs e) {
+			SetEtatBp(false);
+			projet.ImageData.Repack();
+			SetEtatBp(true);
 		}
 	}
 }

@@ -38,5 +38,13 @@ namespace PJA {
 					break;
 				}
 		}
+
+		public void Repack() {
+			byte[] tmp = new byte[0x8000];
+			foreach (Image i in listImg) {
+				Array.Copy(i.data, tmp, i.data.Length);
+				i.RepackImage(tmp, i.data.Length);
+			}
+		}
 	}
 }
