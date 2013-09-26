@@ -1,5 +1,6 @@
-/*.suo
 /PJA/bin
 /PJA/obj
-/*.pja
-/Projets
+*.xml
+*.suo
+*.user
+*.bak
