@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Pack">
+      <HintPath>dll\Pack.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -44,7 +47,6 @@
     <Compile Include="ConvImgCpc\BitmapCpc.cs" />
     <Compile Include="ConvImgCpc\Conversion.cs" />
     <Compile Include="ConvImgCpc\LockBitmap.cs" />
-    <Compile Include="ConvImgCpc\Pack.cs" />
     <Compile Include="Data\Action.cs" />
     <Compile Include="Data\CpcSystem.cs" />
     <Compile Include="Data\DataImage.cs" />

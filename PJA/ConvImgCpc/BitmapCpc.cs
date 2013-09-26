@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Pack;
+using System.IO;
 
 namespace ConvImgCpc {
 	public class BitmapCPC {
