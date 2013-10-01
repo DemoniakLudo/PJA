@@ -3,34 +3,27 @@ using System.Drawing;
 using System.Windows.Forms;
 
 namespace PJA {
-	public partial class EditVues: Form {
+	public partial class EditZones: Form {
 		private LockBitmap bmpLock;
 		private BitmapCpc bitmapCPC;
-		private Projet projet;
 		private Map curMap = null;
-		private int numImage;
 		private Zone newZone = new Zone(0, 0);
 		private bool zoneDown = false;
 		private Pen penWhite = new Pen(Color.White, 2);
 		private Pen penRed = new Pen(Color.Red, 2);
 		private Pen penBlue = new Pen(Color.Blue, 2);
+		private Image selImage;
 
-		public EditVues(Projet prj) {
+		public EditZones(Projet prj) {
 			InitializeComponent();
-			projet = prj;
-			int tx = pictureBox.Width = projet.Cx * 8;
-			int ty = pictureBox.Height = projet.Cy * 16;
-			bitmapCPC = new BitmapCpc(tx, ty, projet.Mode);
+			int tx = pictureBox.Width = prj.Cx * 8;
+			int ty = pictureBox.Height = prj.Cy * 16;
+			bitmapCPC = new BitmapCpc(tx, ty, prj.Mode);
 			pictureBox.Image = new Bitmap(tx, ty);
 			bmpLock = new LockBitmap(pictureBox.Image as Bitmap);
-			foreach (Image img in projet.ImageData.listImg)
-				listImage.Items.Add(img);
 
-			numSalle.Maximum = projet.MapData.NbSalles - 1;
-			numSalle.Value = 0;
 			penWhite.DashStyle = System.Drawing.Drawing2D.DashStyle.DashDotDot;
 			typeZone.DataSource = System.Enum.GetValues(typeof(Zone.TypeZone));
-			Render();
 		}
 
 		private void RenderZone(Zone z, Pen pen) {
@@ -74,17 +67,9 @@ namespace PJA {
 			listZone.EndUpdate();
 		}
 
-		private void SetNewImage(int index) {
-			listImage.SelectedIndex = index;
-			imageAffect.Text = index > -1 ? (listImage.SelectedItem as Image).ToString() : "";
-			if (curMap != null)
-				curMap.IndexImage = index;
-
-			bpDelVue.Enabled = index > -1;
-		}
-
-		private void listImage_SelectedIndexChanged(object sender, System.EventArgs e) {
-			Image selImage = listImage.SelectedItem as Image;
+		public void ChangeMap(Map m, Image img) {
+			curMap = m;
+			selImage = img;
 			if (selImage != null)
 				selImage.GetImage(bitmapCPC.bmpCpc, bitmapCPC.Palette);
 			else
@@ -92,25 +77,6 @@ namespace PJA {
 
 			Render();
 			RefreshListZone();
-			numImage = listImage.SelectedIndex;
-			bpAffecte.Enabled = numImage > -1;
-		}
-
-		private void numSalle_ValueChanged(object sender, System.EventArgs e) {
-			curMap = projet.MapData.FindMap((int)numSalle.Value);
-			SetNewImage(curMap != null ? curMap.IndexImage : -1);
-			bpAffecte.Enabled = numImage > -1;
-		}
-
-		private void bpAffecte_Click(object sender, System.EventArgs e) {
-			SetNewImage(numImage);
-		}
-
-		private void bpDelVue_Click(object sender, System.EventArgs e) {
-			if (curMap.IndexImage > -1 && MessageBox.Show("Etes-vous sur(e) de vouloir supprimer cette affectation ?", "Attention", MessageBoxButtons.YesNo) == DialogResult.Yes) {
-				curMap.LstZone.Clear();
-				SetNewImage(-1);
-			}
 		}
 
 		private void bpAddZone_Click(object sender, System.EventArgs e) {

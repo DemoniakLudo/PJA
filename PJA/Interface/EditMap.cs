@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace PJA {
@@ -15,6 +16,9 @@ namespace PJA {
 		public bool Valid;
 		private Projet projet;
 		private int niveau = 0; // ####
+		private int numImage = -1;
+		private Map curMap;
+		private EditZones editZones;
 
 		public EditMap(Projet prj) {
 			InitializeComponent();
@@ -25,7 +29,10 @@ namespace PJA {
 			pictureMap.Image = new Bitmap(grilleX, grilleY);
 			gfx = Graphics.FromImage(pictureMap.Image);
 			UpdateImage();
+			editZones = new EditZones(prj);
 			Valid = true;
+			foreach (Image img in projet.ImageData.listImg)
+				listImage.Items.Add(img);
 		}
 
 		private void UpdateImage() {
@@ -34,9 +41,7 @@ namespace PJA {
 			pictureMap.Refresh();
 			nbSalles.Text = dataMap.NbSalles.ToString();
 			curSalle.Text = dataMap.CurSalle.ToString();
-			bpEditVues.Enabled = dataMap.NbSalles > 0;
 		}
-
 
 		private void DessinerGrille() {
 			gfx.FillRectangle(brushBlanc, pictureMap.ClientRectangle);
@@ -116,60 +121,115 @@ namespace PJA {
 				ModifCase(e.X / (grilleX / DataMap.TAILLE_X), e.Y / (grilleY / DataMap.TAILLE_Y));
 		}
 
+		private void InfoMap(int xPos, int yPos) {
+			curMap = dataMap.FindMap(xPos, yPos, niveau);
+
+			// Affiche les informations de la case en cours
+
+			// Numéro de salle
+			numCase.Text = salleRech.Text = curMap != null && curMap.TypeMap != Map.TypeCase.CASE_VIDE ? curMap.NumCase.ToString() : "";
+
+			// Informations de déplacements
+			nord.Text = curMap != null && curMap.Nord != 255 ? curMap.Nord.ToString() : "";
+			sud.Text = curMap != null && curMap.Sud != 255 ? curMap.Sud.ToString() : "";
+			est.Text = curMap != null && curMap.Est != 255 ? curMap.Est.ToString() : "";
+			ouest.Text = curMap != null && curMap.Ouest != 255 ? curMap.Ouest.ToString() : "";
+			haut.Text = curMap != null && curMap.Haut != 255 ? curMap.Haut.ToString() : "";
+			bas.Text = curMap != null && curMap.Bas != 255 ? curMap.Bas.ToString() : "";
+
+			// Informations commandes
+
+			// Informations actions
+
+			// Informations objets
+
+			// Informations libellés
+
+			// Informations image
+			SetNewImage(curMap != null ? curMap.IndexImage : -1);
+			bpAffecte.Enabled = bpDelVue.Enabled = numImage > -1;
+		}
+
+
+		private void pictureMap_MouseDown(object sender, MouseEventArgs e) {
+			if (e.X >= 0 && e.Y >= 00 && e.X < grilleX - 1 && e.Y < grilleY - 1) {
+				int xPos = e.X / (grilleX / DataMap.TAILLE_X);
+				int yPos = e.Y / (grilleY / DataMap.TAILLE_Y);
+				// si le bouton gauche est enfoncé, on modifie les cases de la map sous le curseur
+				if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+					ModifCase(xPos, yPos);
+				else
+					if (e.Button == MouseButtons.Right)
+						InfoMap(xPos, yPos);
+			}
+		}
+
 		private void pictureMap_MouseMove(object sender, MouseEventArgs e) {
 			if (e.X >= 0 && e.Y >= 00 && e.X < grilleX - 1 && e.Y < grilleY - 1) {
 				int xPos = e.X / (grilleX / DataMap.TAILLE_X);
 				int yPos = e.Y / (grilleY / DataMap.TAILLE_Y);
-				Map m = dataMap.FindMap(xPos, yPos, niveau);
-
-				// Affiche les informations de la case en cours
-
-				// Numéro de salle
-				numCase.Text = m != null && m.TypeMap != Map.TypeCase.CASE_VIDE ? m.NumCase.ToString() : "";
-
-				// Informations de déplacements
-				nord.Text = m != null && m.Nord != 255 ? m.Nord.ToString() : "";
-				sud.Text = m != null && m.Sud != 255 ? m.Sud.ToString() : "";
-				est.Text = m != null && m.Est != 255 ? m.Est.ToString() : "";
-				ouest.Text = m != null && m.Ouest != 255 ? m.Ouest.ToString() : "";
-				haut.Text = m != null && m.Haut != 255 ? m.Haut.ToString() : "";
-				bas.Text = m != null && m.Bas != 255 ? m.Bas.ToString() : "";
-
-				// Informations commandes
-
-				// Informations actions
-
-				// Informations objets
-
-				// Informations libellés
-
 				// si le bouton gauche est enfoncé, on modifie les cases de la map sous le curseur
-				if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+				if ((e.Button & MouseButtons.Left) == MouseButtons.Left) {
 					ModifCase(xPos, yPos);
+					InfoMap(xPos, yPos);
+				}
 			}
 		}
 
 		[System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
 		private static extern bool SetCursorPos(int X, int Y);
 
+		[System.Runtime.InteropServices.DllImport("user32.dll")]
+		private static extern bool ClientToScreen(IntPtr hwnd, ref Point lpPoint);
+
 		private void bpFindSalle_Click(object sender, System.EventArgs e) {
 			int numSalle;
 			if (int.TryParse(salleRech.Text, out numSalle)) {
 				Map m = dataMap.FindMap(numSalle);
-				if (m != null)
-					SetCursorPos(pictureMap.Left + Left - 4 + (m.X * grilleX / DataMap.TAILLE_X), pictureMap.Top + Top + 10 + (m.Y * grilleY / DataMap.TAILLE_Y));
+				if (m != null) {
+					Point pt = new Point();
+					ClientToScreen((IntPtr)pictureMap.Handle, ref pt);
+					SetCursorPos(((grilleX / DataMap.TAILLE_X) >> 1) + pt.X + (m.X * grilleX / DataMap.TAILLE_X), ((grilleY / DataMap.TAILLE_Y) >> 1) + pt.Y + (m.Y * grilleY / DataMap.TAILLE_Y));
+					InfoMap(m.X, m.Y);
+				}
 				else
 					MessageBox.Show("Salle " + numSalle + " non trouvée.");
 			}
 		}
 
-		private void bpEditVues_Click(object sender, System.EventArgs e) {
-			EditVues dial = new EditVues(projet);
-			dial.ShowDialog(this);
+		private void EditMap_FormClosed(object sender, FormClosedEventArgs e) {
+			bpEditZones.Checked = false;
+			Valid = false;
 		}
 
-		private void EditMap_FormClosed(object sender, FormClosedEventArgs e) {
-			Valid = false;
+		private void SetNewImage(int index) {
+			listImage.SelectedIndex = index;
+			imageAffect.Text = index > -1 ? (listImage.SelectedItem as Image).ToString() : "";
+			if (curMap != null)
+				curMap.IndexImage = index;
+
+			bpDelVue.Enabled = index > -1;
+		}
+
+		private void listImage_SelectedIndexChanged(object sender, System.EventArgs e) {
+			numImage = listImage.SelectedIndex;
+			bpAffecte.Enabled = numImage > -1;
+			editZones.ChangeMap(curMap, listImage.SelectedItem as Image);
+		}
+
+		private void bpAffecte_Click(object sender, System.EventArgs e) {
+			SetNewImage(numImage);
+		}
+
+		private void bpDelVue_Click(object sender, System.EventArgs e) {
+			if (curMap.IndexImage > -1 && MessageBox.Show("Etes-vous sur(e) de vouloir supprimer cette affectation ?", "Attention", MessageBoxButtons.YesNo) == DialogResult.Yes) {
+				curMap.LstZone.Clear();
+				SetNewImage(-1);
+			}
+		}
+
+		private void bpEditZones_CheckedChanged(object sender, EventArgs e) {
+			editZones.Visible = bpEditZones.Checked;
 		}
 	}
 }
