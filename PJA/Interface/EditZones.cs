@@ -119,7 +119,7 @@ namespace PJA {
 
 		private void pictureBox_MouseUp(object sender, MouseEventArgs e) {
 			zoneDown = false;
-			bpAddZone.Enabled = newZone.IsZone;
+			bpAddZone.Enabled = newZone.IsZone && curMap != null;
 		}
 
 		private void listZone_SelectedIndexChanged(object sender, System.EventArgs e) {

@@ -147,7 +147,7 @@ namespace PJA {
 
 			// Informations image
 			SetNewImage(curMap != null ? curMap.IndexImage : -1);
-			bpAffecte.Enabled = bpDelVue.Enabled = numImage > -1;
+			bpAffecte.Enabled = bpDelVue.Enabled = curMap != null && numImage > -1;
 		}
 
 
@@ -213,7 +213,7 @@ namespace PJA {
 
 		private void listImage_SelectedIndexChanged(object sender, System.EventArgs e) {
 			numImage = listImage.SelectedIndex;
-			bpAffecte.Enabled = numImage > -1;
+			bpAffecte.Enabled = curMap != null && numImage > -1;
 			editZones.ChangeMap(curMap, listImage.SelectedItem as Image);
 		}
 
