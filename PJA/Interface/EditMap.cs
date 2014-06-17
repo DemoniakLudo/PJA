@@ -171,8 +171,11 @@ namespace PJA {
 				// si le bouton gauche est enfoncé, on modifie les cases de la map sous le curseur
 				if ((e.Button & MouseButtons.Left) == MouseButtons.Left) {
 					ModifCase(xPos, yPos);
-					InfoMap(xPos, yPos);
+					if (!infoSurvol.Checked)
+						InfoMap(xPos, yPos);
 				}
+				if (infoSurvol.Checked)
+					InfoMap(xPos, yPos);
 			}
 		}
 

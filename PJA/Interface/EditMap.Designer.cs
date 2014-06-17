@@ -60,6 +60,7 @@
 			this.bpAffecte = new System.Windows.Forms.Button();
 			this.pictureMap = new System.Windows.Forms.PictureBox();
 			this.bpEditZones = new System.Windows.Forms.CheckBox();
+			this.infoSurvol = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.pictureMap)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -421,11 +422,22 @@
 			this.bpEditZones.UseVisualStyleBackColor = true;
 			this.bpEditZones.CheckedChanged += new System.EventHandler(this.bpEditZones_CheckedChanged);
 			// 
+			// infoSurvol
+			// 
+			this.infoSurvol.AutoSize = true;
+			this.infoSurvol.Location = new System.Drawing.Point(525, 120);
+			this.infoSurvol.Name = "infoSurvol";
+			this.infoSurvol.Size = new System.Drawing.Size(129, 17);
+			this.infoSurvol.TabIndex = 39;
+			this.infoSurvol.Text = "Informations au survol";
+			this.infoSurvol.UseVisualStyleBackColor = true;
+			// 
 			// EditMap
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1036, 531);
+			this.Controls.Add(this.infoSurvol);
 			this.Controls.Add(this.bpEditZones);
 			this.Controls.Add(this.bpDelVue);
 			this.Controls.Add(this.bpAffecte);
@@ -515,5 +527,6 @@
 		private System.Windows.Forms.Button bpDelVue;
 		private System.Windows.Forms.Button bpAffecte;
 		private System.Windows.Forms.CheckBox bpEditZones;
+		private System.Windows.Forms.CheckBox infoSurvol;
 	}
 }
