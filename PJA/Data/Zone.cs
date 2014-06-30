@@ -3,7 +3,7 @@
 namespace PJA {
 	[Serializable]
 	public class Zone {
-		public enum TypeZone { DEP_NORD, DEP_SUD, DEP_EST, DEP_OUEST, DEP_HAUT, DEP_BAS, RECHERCHE, ACTION, ACTION_CACHEE };
+		public enum TypeZone { DEPLACEMENT, RECHERCHE, ACTION, ACTION_CACHEE };
 		public int xd, yd, xa, ya; // Coordonnées de la zone
 		public TypeZone typeZone;
 

@@ -63,12 +63,6 @@
     <Compile Include="Interface\EditMap.Designer.cs">
       <DependentUpon>EditMap.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\EditZones.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Interface\EditZones.Designer.cs">
-      <DependentUpon>EditZones.cs</DependentUpon>
-    </Compile>
     <Compile Include="Interface\Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -90,9 +84,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Interface\EditMap.resx">
       <DependentUpon>EditMap.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Interface\EditZones.resx">
-      <DependentUpon>EditZones.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Interface\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
