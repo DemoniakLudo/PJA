@@ -127,5 +127,10 @@ namespace PJA {
 			projet.ImageData.Repack();
 			SetEtatBp(true);
 		}
+
+		private void button1_Click(object sender, EventArgs e) {
+			CreateDsk dsk = new CreateDsk(projet);
+			dsk.Test();
+		}
 	}
 }
