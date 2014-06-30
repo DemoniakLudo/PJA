@@ -28,7 +28,7 @@
 			this.listImage = new System.Windows.Forms.ListBox();
 			this.bpAffecte = new System.Windows.Forms.Button();
 			this.bpDelLieu = new System.Windows.Forms.Button();
-			this.listMap = new System.Windows.Forms.ListBox();
+			this.listLieu = new System.Windows.Forms.ListBox();
 			this.bpAddLieu = new System.Windows.Forms.Button();
 			this.libelleMap = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
@@ -99,12 +99,12 @@
 			// 
 			// listMap
 			// 
-			this.listMap.FormattingEnabled = true;
-			this.listMap.Location = new System.Drawing.Point(2, 12);
-			this.listMap.Name = "listMap";
-			this.listMap.Size = new System.Drawing.Size(379, 264);
-			this.listMap.TabIndex = 39;
-			this.listMap.SelectedIndexChanged += new System.EventHandler(this.listMap_SelectedIndexChanged);
+			this.listLieu.FormattingEnabled = true;
+			this.listLieu.Location = new System.Drawing.Point(2, 12);
+			this.listLieu.Name = "listMap";
+			this.listLieu.Size = new System.Drawing.Size(379, 264);
+			this.listLieu.TabIndex = 39;
+			this.listLieu.SelectedIndexChanged += new System.EventHandler(this.listLieu_SelectedIndexChanged);
 			// 
 			// bpAddLieu
 			// 
@@ -170,6 +170,7 @@
 			this.typeZone.Name = "typeZone";
 			this.typeZone.Size = new System.Drawing.Size(117, 21);
 			this.typeZone.TabIndex = 47;
+			this.typeZone.SelectedIndexChanged += new System.EventHandler(this.typeZone_SelectedIndexChanged);
 			// 
 			// allZones
 			// 
@@ -230,7 +231,7 @@
 			this.Controls.Add(this.bpEditLibelle);
 			this.Controls.Add(this.libelleMap);
 			this.Controls.Add(this.bpAddLieu);
-			this.Controls.Add(this.listMap);
+			this.Controls.Add(this.listLieu);
 			this.Controls.Add(this.bpDelLieu);
 			this.Controls.Add(this.bpAffecte);
 			this.Controls.Add(this.listImage);
@@ -257,7 +258,7 @@
 		private System.Windows.Forms.ListBox listImage;
 		private System.Windows.Forms.Button bpAffecte;
 		private System.Windows.Forms.Button bpDelLieu;
-		private System.Windows.Forms.ListBox listMap;
+		private System.Windows.Forms.ListBox listLieu;
 		private System.Windows.Forms.Button bpAddLieu;
 		private System.Windows.Forms.TextBox libelleMap;
 		private System.Windows.Forms.Label label1;

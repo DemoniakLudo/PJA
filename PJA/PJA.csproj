@@ -76,6 +76,12 @@
     <Compile Include="Interface\PredefPal.Designer.cs">
       <DependentUpon>PredefPal.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interface\SelectLieu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\SelectLieu.Designer.cs">
+      <DependentUpon>SelectLieu.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Data\Projet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -90,6 +96,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Interface\PredefPal.resx">
       <DependentUpon>PredefPal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\SelectLieu.resx">
+      <DependentUpon>SelectLieu.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

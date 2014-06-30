@@ -12,7 +12,7 @@ namespace PJA {
 		private LockBitmap bmpLock;
 		private BitmapCpc bitmapCPC;
 		private Map curMap = null;
-		private Zone newZone = new Zone(0, 0);
+		private Zone newZone = null;
 		private bool zoneDown = false;
 		private Pen penWhite = new Pen(Color.White, 2);
 		private Pen penRed = new Pen(Color.Red, 2);
@@ -35,15 +35,15 @@ namespace PJA {
 
 			penWhite.DashStyle = System.Drawing.Drawing2D.DashStyle.DashDotDot;
 			typeZone.DataSource = System.Enum.GetValues(typeof(Zone.TypeZone));
-			RefreshListMap();
+			RefreshListLieu();
 		}
 
-		private void RefreshListMap() {
-			listMap.Items.Clear();
+		private void RefreshListLieu() {
+			listLieu.Items.Clear();
 			foreach (Map m in projet.MapData.ListMap) {
-				listMap.Items.Add(m);
+				listLieu.Items.Add(m);
 				if (curMap != null && curMap == m)
-					listMap.SelectedItem = m;
+					listLieu.SelectedItem = m;
 			}
 		}
 
@@ -75,15 +75,12 @@ namespace PJA {
 			curMap = new Map();
 			curMap.Libelle = "Nouveau Lieu" + (projet.MapData.ListMap.Count + 1).ToString();
 			projet.MapData.ListMap.Add(curMap);
-			RefreshListMap();
+			RefreshListLieu();
 		}
 
-		private void EditMap_FormClosed(object sender, FormClosedEventArgs e) {
-			Valid = false;
-		}
-
-		private void listMap_SelectedIndexChanged(object sender, EventArgs e) {
-			curMap = (Map)listMap.SelectedItem;
+		private void listLieu_SelectedIndexChanged(object sender, EventArgs e) {
+			curMap = (Map)listLieu.SelectedItem;
+			newZone = null;
 			SetNewImage(curMap.IndexImage);
 			libelleMap.Text = curMap.Libelle;
 			if (curMap.IndexImage > -1)
@@ -93,7 +90,7 @@ namespace PJA {
 		private void bpEditLibelle_Click(object sender, EventArgs e) {
 			if (curMap != null) {
 				curMap.Libelle = libelleMap.Text;
-				RefreshListMap();
+				RefreshListLieu();
 			}
 		}
 
@@ -117,7 +114,7 @@ namespace PJA {
 			}
 		}
 
-		private void Render() {
+		private void RenderAllZones() {
 			bitmapCPC.Render(bmpLock, bitmapCPC.ModeCPC, 1, 0, 0, false);
 			if (allZones.Checked && curMap != null)
 				foreach (Zone z in curMap.LstZone)
@@ -130,6 +127,7 @@ namespace PJA {
 		}
 
 		private void RefreshListZone() {
+			newZone = null;
 			listZone.BeginUpdate();
 			listZone.Items.Clear();
 			if (curMap != null)
@@ -139,7 +137,7 @@ namespace PJA {
 			listZone.EndUpdate();
 		}
 
-		public void ChangeMap(Map m, Image img) {
+		private void ChangeMap(Map m, Image img) {
 			curMap = m;
 			selImage = img;
 			if (selImage != null)
@@ -147,41 +145,21 @@ namespace PJA {
 			else
 				bitmapCPC.ClearBmp();
 
-			Render();
+			RenderAllZones();
 			RefreshListZone();
-		}
-
-		private void bpAddZone_Click(object sender, System.EventArgs e) {
-			bpAddZone.Enabled = false;
-			newZone.typeZone = (Zone.TypeZone)typeZone.SelectedItem;
-			curMap.LstZone.Add(newZone);
-			newZone = new Zone(0, 0);
-			Render();
-			RefreshListZone();
-		}
-
-		private void bpDelZone_Click(object sender, System.EventArgs e) {
-			if (MessageBox.Show("Etes-vous sur(e) de vouloir supprimer cette zone", "Attention", MessageBoxButtons.YesNo) == DialogResult.Yes) {
-				curMap.LstZone.Remove(newZone);
-				RefreshListZone();
-				newZone = new Zone(0, 0);
-				Render();
-			}
 		}
 
 		private void pictureBox_MouseDown(object sender, MouseEventArgs e) {
-			if (newZone != null) {
-				int x = e.X >> 3;
-				int y = e.Y >> 1;
-				if (!zoneDown) {
-					newZone = new Zone(x, y);
-					zoneDown = true;
-					bpDelZone.Enabled = bpAddZone.Enabled = false;
-				}
-				newZone.xa = x;
-				newZone.ya = y;
-				Render();
+			int x = e.X >> 3;
+			int y = e.Y >> 1;
+			if (!zoneDown) {
+				newZone = new Zone(x, y);
+				zoneDown = true;
+				bpDelZone.Enabled = bpAddZone.Enabled = false;
 			}
+			newZone.xa = x;
+			newZone.ya = y;
+			RenderAllZones();
 		}
 
 		private void pictureBox_MouseMove(object sender, MouseEventArgs e) {
@@ -194,20 +172,62 @@ namespace PJA {
 			bpAddZone.Enabled = newZone.IsZone && curMap != null;
 		}
 
+		private void bpAddZone_Click(object sender, System.EventArgs e) {
+			bpAddZone.Enabled = false;
+			newZone.typeZone = (Zone.TypeZone)typeZone.SelectedItem;
+			curMap.LstZone.Add(newZone);
+			RefreshListZone();
+			RenderAllZones();
+		}
+
+		private void bpDelZone_Click(object sender, System.EventArgs e) {
+			if (MessageBox.Show("Etes-vous sur(e) de vouloir supprimer cette zone", "Attention", MessageBoxButtons.YesNo) == DialogResult.Yes) {
+				curMap.LstZone.Remove(newZone);
+				RefreshListZone();
+				RenderAllZones();
+			}
+		}
+
 		private void listZone_SelectedIndexChanged(object sender, System.EventArgs e) {
 			newZone = listZone.SelectedItem as Zone;
 			typeZone.SelectedItem = newZone.typeZone;
 			bpDelZone.Enabled = true;
-			Render();
+			RenderAllZones();
 		}
 
 		private void allZones_CheckedChanged(object sender, System.EventArgs e) {
-			Render();
+			RenderAllZones();
 		}
 
 		private void typeZone_SelectedIndexChanged(object sender, System.EventArgs e) {
+			if (newZone != null) {
+				Zone.TypeZone t = (Zone.TypeZone)typeZone.SelectedItem;
+				if (newZone.typeZone != t) {
+					newZone.typeZone = t;
+					switch (t) {
+						case Zone.TypeZone.DEPLACEMENT:
+							SelectLieu sl = new SelectLieu(projet);
+							sl.ShowDialog();
+							newZone.varAction = sl.MapSel;
+							break;
 
+						case Zone.TypeZone.ACTION:
+							break;
+
+						case Zone.TypeZone.ACTION_CACHEE:
+							break;
+
+						case Zone.TypeZone.RECHERCHE:
+							break;
+					}
+					RefreshListZone();
+				}
+			}
 		}
 		#endregion
+
+		private void EditMap_FormClosed(object sender, FormClosedEventArgs e) {
+			Valid = false;
+		}
 	}
 }
