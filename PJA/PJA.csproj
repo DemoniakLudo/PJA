@@ -51,10 +51,13 @@
     <Compile Include="Data\Palette.cs" />
     <Compile Include="Data\Resultat.cs" />
     <Compile Include="Data\Zone.cs" />
+    <Compile Include="GestDsk\Amsdos.cs" />
     <Compile Include="GestDsk\CreateDsk.cs" />
+    <Compile Include="GestDsk\DirEntry.cs" />
     <Compile Include="GestDsk\Dsk.cs" />
     <Compile Include="GestDsk\DskSect.cs" />
     <Compile Include="GestDsk\DskTrack.cs" />
+    <Compile Include="GestDsk\GestDsk.cs" />
     <Compile Include="Interface\EditImages.cs">
       <SubType>Form</SubType>
     </Compile>

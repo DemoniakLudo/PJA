@@ -11,13 +11,19 @@ namespace PJA {
 			get { return pal; }
 			set { pal = value; }
 		}
+		private int internalSize;
+		public int InternalSize {
+			get { return internalSize; }
+			set { internalSize = value; }
+		}
 
 		public Image() {
 		}
 
-		public Image(string n, int[] p, byte[] d) {
+		public Image(string n, int[] p, byte[] d, int x, int y) {
 			nom = n;
 			SetImage(d, p);
+			internalSize = (x * y) + 7 * 2048;
 		}
 
 		public void SetImage(byte[] img, int[] p) {
@@ -26,14 +32,15 @@ namespace PJA {
 		}
 
 		public void RepackImage(byte[] img, int l) {
-			if (data[0] != (byte)'P' || data[1] != (byte)'K' || data[2] != (byte)l || data[3] != (byte)(l >> 8)) {
-				l = PackDepack.Pack(img, l, data, 4);
-				data[0] = (byte)'P';
-				data[1] = (byte)'K';
-				data[2] = (byte)l;
-				data[3] = (byte)(l >> 8);
-				Array.Resize(ref data, l);
-			}
+			if (data[0] == (byte)'P' && data[1] == (byte)'K' && data[2] == (byte)l && data[3] == (byte)(l >> 8)) 
+				 PackDepack.Depack(data, 4, img);
+
+			l = PackDepack.Pack(img, internalSize, data, 4);
+			data[0] = (byte)'P';
+			data[1] = (byte)'K';
+			data[2] = (byte)l;
+			data[3] = (byte)(l >> 8);
+			Array.Resize(ref data, l);
 		}
 
 		public void GetImage(byte[] dest, int[] p) {

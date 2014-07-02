@@ -129,8 +129,9 @@ namespace PJA {
 		}
 
 		private void button1_Click(object sender, EventArgs e) {
-			CreateDsk dsk = new CreateDsk(projet);
-			dsk.Test();
+			GestDsk d = new GestDsk(projet);
+			d.WriteZones();
+			d.WriteImages();
 		}
 	}
 }

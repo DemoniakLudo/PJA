@@ -12,8 +12,8 @@ namespace PJA {
 		public void Init() {
 		}
 
-		public void AddImage(string nom, int[] palette, byte[] data) {
-			listImg.Add(new Image(nom, palette, data));
+		public void AddImage(string nom, int[] palette, byte[] data, int x, int y) {
+			listImg.Add(new Image(nom, palette, data, x, y));
 			modif = true;
 		}
 

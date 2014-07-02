@@ -16,6 +16,7 @@ namespace PJA {
 		public byte[] Data = new byte[8192];
 
 		public DskTrack() {
+			SectSize = 2;
 			Id = "Track-Info\r\n    ";
 			for (int i = 0; i < 29; i++)
 				Sect[i] = new DskSect(0, 0, 0, 0);
@@ -30,7 +31,7 @@ namespace PJA {
 				Sect[i].N = tabSect[i].N;
 				Sect[i].Un1 = tabSect[i].Un1;
 				Sect[i].Un2 = tabSect[i].Un2;
-				DataSize += (short)(tabSect[i].R * 256);
+				DataSize += (short)(tabSect[i].N * 256);
 			}
 			OctRempl = or;
 			NbSect = (byte)tabSect.Length;
@@ -42,12 +43,12 @@ namespace PJA {
 			int pos = 0;
 			bool sectFound = false;
 			for (int i = 0; i < NbSect; i++)
-				if (Sect[i].N == sect) {
+				if (Sect[i].R == sect) {
 					sectFound = true;
 					break;
 				}
 				else
-					pos += Sect[i].R * 256;
+					pos += Sect[i].N * 256;
 
 			if (sectFound) {
 				Buffer.BlockCopy(dataSrc, posSrc, Data, pos, Math.Min(dataSrc.Length - posSrc, 0x200));

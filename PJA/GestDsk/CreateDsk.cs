@@ -8,16 +8,16 @@
 		private byte nbSects;
 		private byte firstSect;
 
-		public CreateDsk(Projet prj) {
+		public CreateDsk(Projet prj, int t, int h, int nbs, int s) {
 			projet = prj;
-			nbTracks = 40;
-			nbHeads = 1;
-			nbSects = 9;
-			firstSect = 0xC1;
+			nbTracks = (byte)t;
+			nbHeads = (byte)h;
+			nbSects = (byte)nbs;
+			firstSect = (byte)s;
 		}
 
 		public void Test() {
-			FormatDsk(firstSect, nbSects, true);
+			FormatDsk(true);
 			int t = 0;
 			int h = 0;
 			int s = 0;
@@ -33,22 +33,22 @@
 				sect.SetValues(C, H, R, N);
 		}
 
-		public void FormatDsk(int firstSect, int nbSect, bool entrelac) {
+		public void FormatDsk(bool entrelac) {
 			int inc = entrelac ? 1 : 2;
-			dsk.SetDskInfo(nbTracks, nbHeads, (short)(0x200 * nbSect), true);
+			dsk.SetDskInfo(nbTracks, nbHeads, (short)(0x100 + (0x200 * nbSects)), true);
 			for (int t = 0; t < nbTracks; t++) {
 				for (int h = 0; h < nbHeads; h++) {
 					int p1 = 0;
 					int p2 = entrelac ? 5 : 1;
-					for (int s = 0; s < nbSect; ) {
-						SetSecteur(ref tabSect[s++], t, h, 2, firstSect + p1);
-						if (s < nbSect)
-							SetSecteur(ref tabSect[s++], t, h, 2, firstSect + p2);
+					for (int s = 0; s < nbSects; ) {
+						SetSecteur(ref tabSect[s++], t, h, firstSect + p1, 2);
+						if (s < nbSects)
+							SetSecteur(ref tabSect[s++], t, h, firstSect + p2, 2);
 
 						p1 += inc;
 						p2 += inc;
 					}
-					dsk.FormatTrack((byte)t, (byte)h, 0xE5, tabSect, nbSect);
+					dsk.FormatTrack((byte)t, (byte)h, 0xE5, tabSect, nbSects);
 				}
 			}
 		}
@@ -61,9 +61,10 @@
 				if (++strtSect == nbSects) {
 					strtSect = 0;
 					if (nbHeads > 1) {
-						strtHd++;
-						if (strtHd == nbHeads)
+						if (++strtHd == nbHeads) {
 							strtTrk++;
+							strtHd = 0;
+						}
 					}
 					else
 						strtTrk++;

@@ -155,7 +155,7 @@ namespace PJA {
 
 		private void bpAdd_Click(object sender, System.EventArgs e) {
 			if (imageName.Text.Length > 0) {
-				dataImage.AddImage(imageName.Text, bitmapCpc.Palette, bitmapCpc.bmpCpc);
+				dataImage.AddImage(imageName.Text, bitmapCpc.Palette, bitmapCpc.bmpCpc, projet.Cx,projet.Cy);
 				UpdateListe(listImage.Items.Count);
 			}
 		}
