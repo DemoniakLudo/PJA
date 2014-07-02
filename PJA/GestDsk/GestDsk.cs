@@ -38,16 +38,16 @@ namespace PJA {
 
 		public void WriteZones() {
 			byte[] ptrZone = new byte[0x200];
-			byte[] dataZone = new byte[0x1000];
-			int posData = 0, memoPos = 0, posPtr = 0;
+			byte[] dataZone = new byte[0x2000];
+			int posData = 0, posPtr = 0, memoPos;
 			foreach (Map m in projet.MapData.ListMap) {
-				memoPos = posData;
+				memoPos = posData + (projet.MapData.ListMap.Count << 1);
 				foreach (Zone z in m.LstZone) {
 					dataZone[posData++] = (byte)z.typeZone;
 					dataZone[posData++] = (byte)z.xd;
 					dataZone[posData++] = (byte)z.xa;
-					dataZone[posData++] = (byte)z.yd;
-					dataZone[posData++] = (byte)z.ya;
+					dataZone[posData++] = (byte)(200 - z.yd);
+					dataZone[posData++] = (byte)(200 - z.ya);
 					dataZone[posData++] = (byte)(z.varAction & 0xFF);
 					dataZone[posData++] = (byte)(z.varAction >> 8);
 				}
@@ -57,6 +57,10 @@ namespace PJA {
 			}
 			Buffer.BlockCopy(ptrZone, 0, allData, 0, posPtr);
 			Buffer.BlockCopy(dataZone, 0, allData, posPtr, posData);
+			int t = 2;
+			int h = 0;
+			int s = 0;
+			dsk.SetDataDsk(ref t, ref h, ref s, allData, posPtr + posData);
 		}
 	}
 

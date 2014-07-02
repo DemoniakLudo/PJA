@@ -1,0 +1,24 @@
+BYTE NumVue	Numéro de la vue,  les vues étant numérotées de 1 à 80
+BYTE NumFace	Numéro de face (1 ou 2)
+BYTE StartTrack	Piste de départ (de 0 à 41)
+BYTE StartSect	Secteur de départ ( de #C0 à #C9)
+BYTE NbSects	Nombre de secteurs utilisés par l’image (de 1 à xx)
+
+-> Bitmap : 3 secteurs ? C8, C9, CA -> Ecrire un fichier "fictif" qui utilise les secteurs C8 et C9 (1 block) pour empêcher l'écrasement de la bitmap
+
+
+structure bitmap :
+
+16 octets "reconnaissance"
+n * 5 octets bitmap
+
+C0
+C5
+C1
+C6
+C2
+C7
+C3
+C8
+C4
+C9
