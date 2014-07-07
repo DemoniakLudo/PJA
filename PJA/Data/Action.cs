@@ -1,5 +1,5 @@
 ﻿namespace PJA {
-	class Action {
+	public class Action {
 		public enum TypeAction {
 			RIEN = 0,				// Action à définir
 			AFF_MSG,				// Action affichant un message

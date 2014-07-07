@@ -34,7 +34,7 @@ namespace PJA {
 			bmpLock = new LockBitmap(pictureBox.Image as Bitmap);
 
 			penWhite.DashStyle = System.Drawing.Drawing2D.DashStyle.DashDotDot;
-			typeZone.DataSource = System.Enum.GetValues(typeof(Zone.TypeZone));
+			typeZone.DataSource = Enum.GetValues(typeof(Zone.TypeZone));
 			RefreshListLieu();
 		}
 
@@ -54,17 +54,17 @@ namespace PJA {
 			bpDelLieu.Enabled = index > -1;
 		}
 
-		private void listImage_SelectedIndexChanged(object sender, System.EventArgs e) {
+		private void listImage_SelectedIndexChanged(object sender, EventArgs e) {
 			numImage = listImage.SelectedIndex;
 			bpAffecte.Enabled = curMap != null && numImage > -1;
 			ChangeMap(curMap, listImage.SelectedItem as Image);
 		}
 
-		private void bpAffecte_Click(object sender, System.EventArgs e) {
+		private void bpAffecte_Click(object sender, EventArgs e) {
 			SetNewImage(numImage);
 		}
 
-		private void bpDelLieu_Click(object sender, System.EventArgs e) {
+		private void bpDelLieu_Click(object sender, EventArgs e) {
 			if (MessageBox.Show("Etes-vous sur(e) de vouloir supprimer ce lieu ?", "Attention", MessageBoxButtons.YesNo) == DialogResult.Yes) {
 				curMap.LstZone.Clear();
 				SetNewImage(-1);
@@ -155,7 +155,7 @@ namespace PJA {
 			if (!zoneDown) {
 				newZone = new Zone(x, y);
 				zoneDown = true;
-				bpDelZone.Enabled = bpAddZone.Enabled = false;
+				bpDelZone.Enabled = bpEditZone.Enabled = bpAddZone.Enabled = false;
 			}
 			newZone.xa = x;
 			newZone.ya = y;
@@ -172,7 +172,7 @@ namespace PJA {
 			bpAddZone.Enabled = newZone.IsZone && curMap != null;
 		}
 
-		private void bpAddZone_Click(object sender, System.EventArgs e) {
+		private void bpAddZone_Click(object sender, EventArgs e) {
 			bpAddZone.Enabled = false;
 			newZone.typeZone = (Zone.TypeZone)typeZone.SelectedItem;
 			curMap.LstZone.Add(newZone);
@@ -180,7 +180,7 @@ namespace PJA {
 			RenderAllZones();
 		}
 
-		private void bpDelZone_Click(object sender, System.EventArgs e) {
+		private void bpDelZone_Click(object sender, EventArgs e) {
 			if (MessageBox.Show("Etes-vous sur(e) de vouloir supprimer cette zone", "Attention", MessageBoxButtons.YesNo) == DialogResult.Yes) {
 				curMap.LstZone.Remove(newZone);
 				RefreshListZone();
@@ -188,39 +188,44 @@ namespace PJA {
 			}
 		}
 
-		private void listZone_SelectedIndexChanged(object sender, System.EventArgs e) {
+		private void listZone_SelectedIndexChanged(object sender, EventArgs e) {
 			newZone = listZone.SelectedItem as Zone;
 			typeZone.SelectedItem = newZone.typeZone;
-			bpDelZone.Enabled = true;
+			bpEditZone.Enabled = bpDelZone.Enabled = true;
 			RenderAllZones();
 		}
 
-		private void allZones_CheckedChanged(object sender, System.EventArgs e) {
+		private void allZones_CheckedChanged(object sender, EventArgs e) {
 			RenderAllZones();
 		}
 
-		private void typeZone_SelectedIndexChanged(object sender, System.EventArgs e) {
+		private void EditZone(Zone.TypeZone t) {
+			newZone.typeZone = t;
+			switch (t) {
+				case Zone.TypeZone.DEPLACEMENT:
+					SelectLieu sl = new SelectLieu(projet);
+					sl.ShowDialog();
+					newZone.varAction = sl.MapSel;
+					break;
+
+				case Zone.TypeZone.ACTION:
+				case Zone.TypeZone.RECHERCHE:
+					ChoixAction sa = new ChoixAction(projet, newZone);
+					sa.ShowDialog();
+					break;
+			}
+			RefreshListZone();
+		}
+
+		private void bpEditZone_Click(object sender, EventArgs e) {
+			EditZone((Zone.TypeZone)typeZone.SelectedItem);
+		}
+
+		private void typeZone_SelectedIndexChanged(object sender, EventArgs e) {
 			if (newZone != null) {
 				Zone.TypeZone t = (Zone.TypeZone)typeZone.SelectedItem;
 				if (newZone.typeZone != t) {
-					newZone.typeZone = t;
-					switch (t) {
-						case Zone.TypeZone.DEPLACEMENT:
-							SelectLieu sl = new SelectLieu(projet);
-							sl.ShowDialog();
-							newZone.varAction = sl.MapSel;
-							break;
-
-						case Zone.TypeZone.ACTION:
-							break;
-
-						case Zone.TypeZone.ACTION_CACHEE:
-							break;
-
-						case Zone.TypeZone.RECHERCHE:
-							break;
-					}
-					RefreshListZone();
+					EditZone(t);
 				}
 			}
 		}

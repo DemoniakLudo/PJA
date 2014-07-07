@@ -71,6 +71,7 @@
 			this.Controls.Add(this.bpAnnule);
 			this.Controls.Add(this.bpValide);
 			this.Controls.Add(this.listLieu);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "SelectLieu";

@@ -39,6 +39,7 @@
 			this.listZone = new System.Windows.Forms.ListBox();
 			this.bpAddZone = new System.Windows.Forms.Button();
 			this.pictureBox = new System.Windows.Forms.PictureBox();
+			this.bpEditZone = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -97,11 +98,11 @@
 			this.bpDelLieu.UseVisualStyleBackColor = true;
 			this.bpDelLieu.Click += new System.EventHandler(this.bpDelLieu_Click);
 			// 
-			// listMap
+			// listLieu
 			// 
 			this.listLieu.FormattingEnabled = true;
 			this.listLieu.Location = new System.Drawing.Point(2, 12);
-			this.listLieu.Name = "listMap";
+			this.listLieu.Name = "listLieu";
 			this.listLieu.Size = new System.Drawing.Size(379, 264);
 			this.listLieu.TabIndex = 39;
 			this.listLieu.SelectedIndexChanged += new System.EventHandler(this.listLieu_SelectedIndexChanged);
@@ -153,7 +154,7 @@
 			this.bpDelZone.Enabled = false;
 			this.bpDelZone.Image = global::PJA.Properties.Resources.Del;
 			this.bpDelZone.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.bpDelZone.Location = new System.Drawing.Point(648, 553);
+			this.bpDelZone.Location = new System.Drawing.Point(648, 660);
 			this.bpDelZone.Name = "bpDelZone";
 			this.bpDelZone.Size = new System.Drawing.Size(108, 34);
 			this.bpDelZone.TabIndex = 48;
@@ -166,7 +167,7 @@
 			// 
 			this.typeZone.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.typeZone.FormattingEnabled = true;
-			this.typeZone.Location = new System.Drawing.Point(648, 633);
+			this.typeZone.Location = new System.Drawing.Point(648, 553);
 			this.typeZone.Name = "typeZone";
 			this.typeZone.Size = new System.Drawing.Size(117, 21);
 			this.typeZone.TabIndex = 47;
@@ -197,7 +198,7 @@
 			this.bpAddZone.Enabled = false;
 			this.bpAddZone.Image = global::PJA.Properties.Resources.Add;
 			this.bpAddZone.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.bpAddZone.Location = new System.Drawing.Point(648, 593);
+			this.bpAddZone.Location = new System.Drawing.Point(648, 580);
 			this.bpAddZone.Name = "bpAddZone";
 			this.bpAddZone.Size = new System.Drawing.Size(108, 34);
 			this.bpAddZone.TabIndex = 44;
@@ -217,6 +218,20 @@
 			this.pictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox_MouseMove);
 			this.pictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox_MouseUp);
 			// 
+			// bpEditZone
+			// 
+			this.bpEditZone.Enabled = false;
+			this.bpEditZone.Image = global::PJA.Properties.Resources.Edit;
+			this.bpEditZone.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.bpEditZone.Location = new System.Drawing.Point(648, 620);
+			this.bpEditZone.Name = "bpEditZone";
+			this.bpEditZone.Size = new System.Drawing.Size(108, 34);
+			this.bpEditZone.TabIndex = 44;
+			this.bpEditZone.Text = "Editer Zone";
+			this.bpEditZone.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.bpEditZone.UseVisualStyleBackColor = true;
+			this.bpEditZone.Click += new System.EventHandler(this.bpEditZone_Click);
+			// 
 			// EditMap
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -226,6 +241,7 @@
 			this.Controls.Add(this.typeZone);
 			this.Controls.Add(this.allZones);
 			this.Controls.Add(this.listZone);
+			this.Controls.Add(this.bpEditZone);
 			this.Controls.Add(this.bpAddZone);
 			this.Controls.Add(this.pictureBox);
 			this.Controls.Add(this.bpEditLibelle);
@@ -269,5 +285,6 @@
 		private System.Windows.Forms.ListBox listZone;
 		private System.Windows.Forms.Button bpAddZone;
 		private System.Windows.Forms.PictureBox pictureBox;
+		private System.Windows.Forms.Button bpEditZone;
 	}
 }

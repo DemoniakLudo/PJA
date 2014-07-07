@@ -220,6 +220,8 @@
 			this.Controls.Add(this.nbCols);
 			this.Controls.Add(this.bpEditImg);
 			this.Controls.Add(this.bpEditMap);
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "Main";
 			this.Text = "Menu principal";
 			((System.ComponentModel.ISupportInitialize)(this.nbCols)).EndInit();

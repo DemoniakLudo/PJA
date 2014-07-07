@@ -58,6 +58,12 @@
     <Compile Include="GestDsk\DskSect.cs" />
     <Compile Include="GestDsk\DskTrack.cs" />
     <Compile Include="GestDsk\GestDsk.cs" />
+    <Compile Include="Interface\ChoixAction.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\ChoixAction.Designer.cs">
+      <DependentUpon>ChoixAction.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface\EditImages.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -89,9 +95,18 @@
     <Compile Include="Interface\SelectLieu.Designer.cs">
       <DependentUpon>SelectLieu.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interface\SelectTexte.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\SelectTexte.Designer.cs">
+      <DependentUpon>SelectTexte.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Data\Projet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Interface\ChoixAction.resx">
+      <DependentUpon>ChoixAction.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Interface\EditImages.resx">
       <DependentUpon>EditImages.cs</DependentUpon>
     </EmbeddedResource>
@@ -106,6 +121,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Interface\SelectLieu.resx">
       <DependentUpon>SelectLieu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\SelectTexte.resx">
+      <DependentUpon>SelectTexte.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
