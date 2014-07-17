@@ -33,18 +33,23 @@ namespace PJA {
 				}
 			}
 		}
-		private DataMap dataMap;
+		private DataMap mapData;
 		public DataMap MapData {
-			get { return dataMap; }
-			set { dataMap = value; }
+			get { return mapData; }
+			set { mapData = value; }
 		}
-		private DataImage dataImage;
+		private DataImage imageData;
 		public DataImage ImageData {
-			get { return dataImage; }
-			set { dataImage = value; }
+			get { return imageData; }
+			set { imageData = value; }
+		}
+		private DataTexte texteData;
+		public DataTexte TexteData {
+			get { return texteData; }
+			set { texteData = value; }
 		}
 		private bool modif;
-		public bool Modif { get { return modif | dataMap.Modif | dataImage.Modif; } }
+		public bool Modif { get { return modif | mapData.Modif | imageData.Modif; } }
 
 		public Projet() {
 			New();
@@ -60,13 +65,14 @@ namespace PJA {
 			cy = 25;
 
 			// Réinitialisation variables
-			dataMap = new DataMap();
-			dataImage = new DataImage();
+			mapData = new DataMap();
+			imageData = new DataImage();
+			texteData = new DataTexte();
 		}
 
 		public void Init() {
-			dataMap.Init();
-			dataImage.Init();
+			mapData.Init();
+			imageData.Init();
 		}
 	}
 }

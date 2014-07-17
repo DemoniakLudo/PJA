@@ -1,4 +1,4 @@
-﻿namespace PJA.Interface {
+﻿namespace PJA {
 	partial class SelectTexte {
 		/// <summary>
 		/// Required designer variable.
@@ -39,6 +39,7 @@
 			this.listTexte.Name = "listTexte";
 			this.listTexte.Size = new System.Drawing.Size(581, 251);
 			this.listTexte.TabIndex = 0;
+			this.listTexte.SelectedIndexChanged += new System.EventHandler(this.listTexte_SelectedIndexChanged);
 			// 
 			// nouvTexte
 			// 
@@ -86,6 +87,7 @@
 			this.bpAddTexte.Text = "Ajouter Texte";
 			this.bpAddTexte.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.bpAddTexte.UseVisualStyleBackColor = true;
+			this.bpAddTexte.Click += new System.EventHandler(this.bpAddTexte_Click);
 			// 
 			// bpDelTexte
 			// 
@@ -99,6 +101,7 @@
 			this.bpDelTexte.Text = "Supprimer Texte";
 			this.bpDelTexte.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.bpDelTexte.UseVisualStyleBackColor = true;
+			this.bpDelTexte.Click += new System.EventHandler(this.bpDelTexte_Click);
 			// 
 			// bpEditTexte
 			// 
@@ -112,6 +115,7 @@
 			this.bpEditTexte.Text = "Editer Texte";
 			this.bpEditTexte.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.bpEditTexte.UseVisualStyleBackColor = true;
+			this.bpEditTexte.Click += new System.EventHandler(this.bpEditTexte_Click);
 			// 
 			// SelectTexte
 			// 
@@ -131,6 +135,7 @@
 			this.MinimizeBox = false;
 			this.Name = "SelectTexte";
 			this.Text = "SelectTexte";
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SelectTexte_FormClosed);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

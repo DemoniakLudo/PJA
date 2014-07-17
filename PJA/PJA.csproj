@@ -47,9 +47,11 @@
     <Compile Include="Data\Action.cs" />
     <Compile Include="Data\DataImage.cs" />
     <Compile Include="Data\DataMap.cs" />
+    <Compile Include="Data\DataTexte.cs" />
     <Compile Include="Data\Image.cs" />
     <Compile Include="Data\Palette.cs" />
     <Compile Include="Data\Resultat.cs" />
+    <Compile Include="Data\Texte.cs" />
     <Compile Include="Data\Zone.cs" />
     <Compile Include="GestDsk\Amsdos.cs" />
     <Compile Include="GestDsk\CreateDsk.cs" />

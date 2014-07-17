@@ -9,6 +9,7 @@ namespace PJA {
 		private Projet projet = new Projet();
 		private EditImages editImages;
 		private EditMap editMap;
+		private SelectTexte editText;
 		//private const int maxLiCo = 2048;
 		private const int maxLiCo = 4096;
 
@@ -37,6 +38,16 @@ namespace PJA {
 
 			editImages.Location = p;
 			editImages.Show();
+		}
+
+		private void bpEditTxt_Click(object sender, EventArgs e) {
+			Point p = editText != null ? editText.Location : new Point(0, 0);
+			if (editText == null || !editText.Valid) // si pas déjà visible
+				editText = new SelectTexte(projet, null);
+
+			editText.Location = p;
+			editText.Show();
+
 		}
 
 		private void mode_SelectedIndexChanged(object sender, EventArgs e) {

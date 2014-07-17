@@ -28,9 +28,17 @@ namespace PJA {
 					break;
 
 				case Action.TypeAction.AFF_MSG:
+					SelectTexte st = new SelectTexte(projet, actSel);
+					st.ShowDialog();
 					break;
 
 				case Action.TypeAction.PRISE_OBJ:
+					break;
+
+				case Action.TypeAction.DEPLACEMENT:
+					break;
+
+				case Action.TypeAction.MODIF_TYPE_ZONE:
 					break;
 			}
 			actSel.typeAction = t;
@@ -66,8 +74,10 @@ namespace PJA {
 
 		private void listAction_SelectedIndexChanged(object sender, EventArgs e) {
 			actSel = (Action)listAction.SelectedItem;
-			typeAction.SelectedItem = actSel.typeAction;
-			bpEditAction.Enabled = bpDelAction.Enabled = true;
+			if (actSel != null) {
+				typeAction.SelectedItem = actSel.typeAction;
+				bpEditAction.Enabled = bpDelAction.Enabled = true;
+			}
 		}
 	}
 }
