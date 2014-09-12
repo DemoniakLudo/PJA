@@ -22,8 +22,8 @@ namespace PJA {
 
 		public Image(string n, int[] p, byte[] d, int x, int y) {
 			nom = n;
-			SetImage(d, p);
 			internalSize = (x * y) + 7 * 2048;
+			SetImage(d, p);
 		}
 
 		public void SetImage(byte[] img, int[] p) {
