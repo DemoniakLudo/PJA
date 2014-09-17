@@ -21,9 +21,11 @@ namespace PJA {
 		//static private char[] CpcVGA = new char[27] { 'T', 'D', 'U', '\\', 'X', ']', 'L', 'E', 'M', 'V', 'F', 'W', '^', '@', '_', 'N', 'G', 'O', 'R', 'B', 'S', 'Z', 'Y', '[', 'J', 'C', 'K' };
 		private OpenFileDialog dlgLoadPal = new OpenFileDialog();
 		private OpenFileDialog dlgImportImage = new OpenFileDialog();
+		private Param param;
 
-		public EditImages(Projet prj) {
+		public EditImages(Projet prj, Param p) {
 			InitializeComponent();
+			param = p;
 			for (int i = 0; i < 16; i++) {
 				// Générer les contrôles de "couleurs"
 				colors[i] = new Label();
@@ -44,10 +46,26 @@ namespace PJA {
 			dataImage = prj.ImageData;
 			MajProjet(prj, true);
 			projet = prj;
-			radioFit.Checked = true;
-			methode.SelectedIndex = 0;
-			matrice.SelectedIndex = 0;
-			renderMode.SelectedIndex = 0;
+
+			methode.SelectedIndex = param.methode;
+			matrice.SelectedIndex = param.matrice - 2;
+			pctTrame.Value = param.pct;
+			lockState = param.lockState;
+			lumi.Value = param.pctLumi;
+			sat.Value = param.pctSat;
+			contrast.Value = param.pctContrast;
+			cpcPlus.Checked = param.cpcPlus;
+			newMethode.Checked = param.newMethode;
+			reducPal1.Checked = param.reductPal1;
+			reducPal2.Checked = param.reductPal2;
+			newReduc.Checked = param.newReduct;
+			sortPal.Checked = param.sortPal;
+			renderMode.SelectedIndex = param.pixMode;
+
+			radioFit.Checked = param.sizeMode== Param.SizeMode.Fit;
+			radioKeepLarger.Checked = param.sizeMode == Param.SizeMode.KeepLarger;
+			radioKeepSmaller.Checked = param.sizeMode == Param.SizeMode.KeepSmaller;
+
 			zoomLevel.SelectedIndex = 0;
 			bpEditMode_CheckedChanged(null, null);
 			UpdateListe(-1);
@@ -155,7 +173,7 @@ namespace PJA {
 
 		private void bpAdd_Click(object sender, System.EventArgs e) {
 			if (imageName.Text.Length > 0) {
-				dataImage.AddImage(imageName.Text, bitmapCpc.Palette, bitmapCpc.bmpCpc, projet.Cx,projet.Cy);
+				dataImage.AddImage(imageName.Text, bitmapCpc.Palette, bitmapCpc.bmpCpc, projet.Cx, projet.Cy);
 				UpdateListe(listImage.Items.Count);
 			}
 		}
@@ -193,23 +211,8 @@ namespace PJA {
 			if (sender != null && image != null) {
 				bpRecalc.Enabled = false;
 				long t0 = System.Environment.TickCount;
-				Conversion.Convert(image,
-									bitmapCpc,
-									radioKeepLarger.Checked ? Conversion.SizeMode.KeepLarger : radioKeepSmaller.Checked ? Conversion.SizeMode.KeepSmaller : Conversion.SizeMode.Fit,
-									methode.SelectedIndex,
-									matrice.SelectedIndex + 2,
-									(int)pctTrame.Value,
-									lockState,
-									(int)lumi.Value,
-									nb.Checked ? 0 : (int)sat.Value,
-									(int)contrast.Value,
-									cpcPlus.Checked,
-									newMethode.Checked,
-									reducPal1.Checked,
-									reducPal2.Checked,
-									newReduc.Checked,
-									sortPal.Checked,
-									renderMode.SelectedIndex);
+				param.lockState = lockState;
+				Conversion.Convert(image, bitmapCpc, param);
 				long t1 = System.Environment.TickCount;
 				lblTps.Text = (t1 - t0).ToString() + " ms";
 				Render();
@@ -227,55 +230,68 @@ namespace PJA {
 		}
 
 		private void radioFit_CheckedChanged(object sender, System.EventArgs e) {
+			param.sizeMode = radioKeepLarger.Checked ? Param.SizeMode.KeepLarger : radioKeepSmaller.Checked ? Param.SizeMode.KeepSmaller : Param.SizeMode.Fit;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
 		private void radioKeepSmaller_CheckedChanged(object sender, System.EventArgs e) {
+			param.sizeMode = radioKeepLarger.Checked ? Param.SizeMode.KeepLarger : radioKeepSmaller.Checked ? Param.SizeMode.KeepSmaller : Param.SizeMode.Fit;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
 		private void radioKeepLarger_CheckedChanged(object sender, System.EventArgs e) {
+			param.sizeMode = radioKeepLarger.Checked ? Param.SizeMode.KeepLarger : radioKeepSmaller.Checked ? Param.SizeMode.KeepSmaller : Param.SizeMode.Fit;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
 		private void pctTrame_ValueChanged(object sender, System.EventArgs e) {
+			param.pct = (int)pctTrame.Value;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
 		private void methode_SelectedIndexChanged(object sender, System.EventArgs e) {
+			param.methode = methode.SelectedIndex;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
 		private void matrice_SelectedIndexChanged(object sender, System.EventArgs e) {
+			param.matrice = matrice.SelectedIndex + 2;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
 		private void renderMode_SelectedIndexChanged(object sender, System.EventArgs e) {
+			param.pixMode = renderMode.SelectedIndex;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
 		private void lumi_ValueChanged(object sender, System.EventArgs e) {
+			param.pctLumi = (int)lumi.Value;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
 		private void sat_ValueChanged(object sender, System.EventArgs e) {
+			param.pctSat = nb.Checked ? 0 : (int)sat.Value;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
 		private void contrast_ValueChanged(object sender, System.EventArgs e) {
+			param.pctContrast = (int)contrast.Value;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
 		private void sortPal_CheckedChanged(object sender, System.EventArgs e) {
+			param.sortPal = sortPal.Checked;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
 		private void newMethode_CheckedChanged(object sender, System.EventArgs e) {
+			param.newMethode = newMethode.Checked;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
 		private void cpcPlus_CheckedChanged(object sender, System.EventArgs e) {
 			reducPal1.Enabled = reducPal2.Enabled = cpcPlus.Checked;
+			param.cpcPlus = cpcPlus.Checked;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
@@ -285,15 +301,18 @@ namespace PJA {
 
 		private void reducPal1_CheckedChanged(object sender, System.EventArgs e) {
 			newReduc.Enabled = reducPal1.Checked || reducPal2.Checked;
+			param.reductPal1 = reducPal1.Checked;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
 		private void reducPal2_CheckedChanged(object sender, System.EventArgs e) {
 			newReduc.Enabled = reducPal1.Checked || reducPal2.Checked;
+			param.reductPal2 = reducPal2.Checked;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
 		private void newReduc_CheckedChanged(object sender, System.EventArgs e) {
+			param.newReduct = newReduc.Checked;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 

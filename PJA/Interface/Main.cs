@@ -12,10 +12,13 @@ namespace PJA {
 		private SelectTexte editText;
 		//private const int maxLiCo = 2048;
 		private const int maxLiCo = 4096;
+		private ConvImgCpc.Param param = new ConvImgCpc.Param();
 
 		public Main() {
 			InitializeComponent();
 			bpNew_Click(null, null);
+			param.pctContrast = param.pctLumi = param.pctSat = 100;
+			param.matrice = 2;
 		}
 
 		private void SetEtatBp(bool etat) {
@@ -34,7 +37,7 @@ namespace PJA {
 		private void EditImgClick(object sender, EventArgs e) {
 			Point p = editImages != null ? editImages.Location : new Point(0, 0);
 			if (editImages == null || !editImages.Valid) // si pas déja visible
-				editImages = new EditImages(projet);
+				editImages = new EditImages(projet,param);
 
 			editImages.Location = p;
 			editImages.Show();
