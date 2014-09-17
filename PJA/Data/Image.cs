@@ -22,7 +22,11 @@ namespace PJA {
 
 		public Image(string n, int[] p, byte[] d, int x, int y) {
 			nom = n;
-			internalSize = (x * y) + 7 * 2048;
+			// #### A Améliorer...
+			internalSize = (x + 1) * (y + 1) * 8 - 512;
+			if (internalSize > 0x3FC0)
+				internalSize += 0x1800;
+
 			SetImage(d, p);
 		}
 
@@ -32,8 +36,8 @@ namespace PJA {
 		}
 
 		public void RepackImage(byte[] img, int l) {
-			if (data[0] == (byte)'P' && data[1] == (byte)'K' && data[2] == (byte)l && data[3] == (byte)(l >> 8)) 
-				 PackDepack.Depack(data, 4, img);
+			if (data[0] == (byte)'P' && data[1] == (byte)'K' && data[2] == (byte)l && data[3] == (byte)(l >> 8))
+				PackDepack.Depack(data, 4, img);
 
 			l = PackDepack.Pack(img, internalSize, data, 4);
 			data[0] = (byte)'P';
