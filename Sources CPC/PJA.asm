@@ -44,15 +44,21 @@ SetPal:
         LD      A,100
         LD      (Y),A
 Bcl
-        CALL    CurseurOn
+        LD      HL,0
+        LD      (DrawFleche1+1),HL
+        LD      (X1),HL                ; Forcer affichage
 WaitAction
 
         CALL    MovCursor
         LD      A,(Fipr)
         AND     A
         JR      Z,WaitAction
+		LD      A,(TypeFleche+1)
+		AND     A
+		JR      Z,WaitAction
+		PUSH    AF
         CALL    CurseurOff
-        LD      A,(TypeFleche+1)
+		POP     AF
         CP      2
         JR      NZ,Bcl
         LD      A,(ExecFct+1)

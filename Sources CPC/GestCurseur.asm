@@ -40,8 +40,23 @@ AffCurseur:
         CALL    CurseurOff              ; Restaurer image ancienne position
         POP     HL
         LD      (DrawFleche1+1),HL
-        CALL    SavScrCurseur           ; Sauvegarder image nouvelle position
-
+        ;
+        ; Sauvegarder la zone écran qui est sous le curseur
+        ;
+        LD      DE,BuffFleche
+        LD      A,15                    ; 15 lignes à sauvegarder
+SavScrCurseur2:
+        LDI
+        LDI
+        LDI
+        LD      BC,#7FD
+        ADD     HL,BC
+        JR      NC,SavScrCurseur3
+        LD      BC,#C050
+        ADD     HL,BC
+SavScrCurseur3:
+        DEC     A
+        JR      NZ,SavScrCurseur2
         ;
         ; Calculer Adresse de zone en fonction du numéro de vue
         ;
@@ -113,7 +128,55 @@ TypeFleche:
         LD      D,(HL)                  ; DE = buffer type de flèche (bitmap)
 DrawFleche1:
         LD      HL,0                    ; HL = adresse écrand d'affichage
-        CALL    AfficheCurseur           ; Affichage
+        ;
+        ; Afficher le curseur (15 lignes de 3 colonnes = 45 octets)
+        ;
+AfficheCurseur:
+        LD      A,(X)                   ; Faire ( X AND 3 ) * 45
+        AND     3
+        LD      B,A
+        ADD     A,A                     ; * 2
+        ADD     A,A                     ; * 4
+        ADD     A,A                     ; * 8
+        ADD     A,A                     ; * 16
+        LD      C,A
+        ADD     A,A                     ; * 32
+        ADD     A,C                     ; * 48
+        SUB     B
+        SUB     B
+        SUB     B                       ; * 45
+        LD      C,A                     ; C = ( X AND 3 ) * 45
+        LD      B,0
+        EX      DE,HL
+        ADD     HL,BC
+        EX      DE,HL
+        LD      B,15                    ; 15 lignes à afficher
+AfficheCurseur2:
+        PUSH    BC
+        LD      B,3                     ; 3 colonnes à afficher
+AfficheCurseur3:
+        LD      A,(DE)
+        LD      C,A
+        RRCA
+        RRCA
+        RRCA
+        RRCA
+        OR      C                       ; Bits 0-3 | Bits 4-7 dans tous les bits
+        CPL
+        AND     (HL)
+        OR      C
+        LD      (HL),A
+        INC     HL
+        INC     DE
+        DJNZ    AfficheCurseur3         ; Boucle pour les 3 colonnes
+        LD      BC,#7FD
+        ADD     HL,BC
+        JR      NC,AfficheCurseur4
+        LD      BC,#C050
+        ADD     HL,BC
+AfficheCurseur4:
+        POP     BC
+        DJNZ    AfficheCurseur2         ; Boucle pour les 15 lignes
 DeplHaut:
         LD      A,0
         LD      (OldDeplHaut+1),A
@@ -292,35 +355,6 @@ VitDeplDroite:
         RET
 
 ;
-; Forcer l'affichage du curseur
-;
-CurseurOn
-        LD      HL,0
-        LD      (DrawFleche1+1),HL
-        LD      (X1),HL                 ; Forcer affichage
-        RET
-
-;
-; Sauvegarder la zone écran qui est sous le curseur
-;
-SavScrCurseur:
-        LD      DE,BuffFleche
-        LD      A,15                    ; 15 lignes à sauvegarder
-SavScrCurseur2:
-        LDI
-        LDI
-        LDI
-        LD      BC,#7FD
-        ADD     HL,BC
-        JR      NC,SavScrCurseur3
-        LD      BC,#C050
-        ADD     HL,BC
-SavScrCurseur3:
-        DEC     A
-        JR      NZ,SavScrCurseur2
-        RET
-
-;
 ; Restaurer la zone écran qui était sous le curseur
 ;
 CurseurOff:
@@ -346,56 +380,6 @@ CurseurOff3:
         JR      NZ,CurseurOff2
         RET
 
-;
-; Afficher le curseur
-;
-AfficheCurseur:
-        LD      A,(X)                   ; Faire ( X AND 3 ) * 45
-        AND     3
-        LD      B,A
-        ADD     A,A                     ; * 2
-        ADD     A,A                     ; * 4
-        ADD     A,A                     ; * 8
-        ADD     A,A                     ; * 16
-        LD      C,A
-        ADD     A,A                     ; * 32
-        ADD     A,C                     ; * 48
-        SUB     B
-        SUB     B
-        SUB     B                       ; * 45
-        LD      C,A                     ; C = ( X AND 3 ) * 45
-        LD      B,0
-        EX      DE,HL
-        ADD     HL,BC
-        EX      DE,HL
-        LD      B,15                    ; 15 lignes à afficher
-AfficheCurseur2:
-        PUSH    BC
-        LD      B,3                     ; 3 colonnes à afficher
-AfficheCurseur3:
-        LD      A,(DE)
-        LD      C,A
-        RRCA
-        RRCA
-        RRCA
-        RRCA
-        OR      C                       ; Bits 0-3 | Bits 4-7 dans tous les bits
-        CPL
-        AND     (HL)
-        OR      C
-        LD      (HL),A
-        INC     HL
-        INC     DE
-        DJNZ    AfficheCurseur3         ; Boucle pour les 3 colonnes
-        LD      BC,#7FD
-        ADD     HL,BC
-        JR      NC,AfficheCurseur4
-        LD      BC,#C050
-        ADD     HL,BC
-AfficheCurseur4:
-        POP     BC
-        DJNZ    AfficheCurseur2         ; Boucle pour les 15 lignes
-        RET
 ExecFct:
 	DW	0
 ModeUtil:
