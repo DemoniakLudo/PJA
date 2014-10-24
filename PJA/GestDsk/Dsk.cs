@@ -37,7 +37,7 @@ namespace PJA {
 		public void WriteDatas(int t, int h, int s, byte[] data, int pos) {
 			trk[(t * NbHeads) + h].WriteDatas(s, data, pos);
 		}
-
+/*
 		public void Read(string name) {
 			FileStream fs = new FileStream(name, FileMode.Open, FileAccess.Read);
 			BinaryReader br = new BinaryReader(fs);
@@ -53,7 +53,7 @@ namespace PJA {
 
 			br.Close();
 		}
-
+*/
 		public void Save(string name) {
 			FileStream fs = new FileStream(name, FileMode.Create, FileAccess.Write);
 			BinaryWriter bw = new BinaryWriter(fs);

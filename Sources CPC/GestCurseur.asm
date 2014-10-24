@@ -29,11 +29,10 @@ TestMovCursor:
         ; Déplacement -> Affichage nouveau curseur
         ;
 AffCurseur:
-        LD      HL,(X)                  ; Anciennes coordonnées = nouvelles
-        LD      DE,(Y)
-        LD      (X1),HL
-        LD      (Y1),DE
-        EX      DE,HL                   ; DE = x, HL = y, calcule adresse dans HL
+        LD      DE,(X)                  ; Anciennes coordonnées = nouvelles
+        LD      HL,(Y)
+        LD      (X1),DE
+        LD      (Y1),HL
         CALL    #BC1D                   ; SCR GET POS
         PUSH    HL
         CALL    #BD19                   ; Attendre VBL
