@@ -73,6 +73,8 @@
 			this.reducPal1 = new System.Windows.Forms.CheckBox();
 			this.reducPal2 = new System.Windows.Forms.CheckBox();
 			this.newReduc = new System.Windows.Forms.CheckBox();
+			this.bpLoadParam = new System.Windows.Forms.Button();
+			this.bpSaveParam = new System.Windows.Forms.Button();
 			this.tramage.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pctTrame)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.sat)).BeginInit();
@@ -622,11 +624,33 @@
 			this.newReduc.UseVisualStyleBackColor = true;
 			this.newReduc.CheckedChanged += new System.EventHandler(this.newReduc_CheckedChanged);
 			// 
+			// bpLoadParam
+			// 
+			this.bpLoadParam.Location = new System.Drawing.Point(998, 98);
+			this.bpLoadParam.Name = "bpLoadParam";
+			this.bpLoadParam.Size = new System.Drawing.Size(58, 37);
+			this.bpLoadParam.TabIndex = 39;
+			this.bpLoadParam.Text = "Lire param.";
+			this.bpLoadParam.UseVisualStyleBackColor = true;
+			this.bpLoadParam.Click += new System.EventHandler(this.bpLoadParam_Click);
+			// 
+			// bpSaveParam
+			// 
+			this.bpSaveParam.Location = new System.Drawing.Point(998, 141);
+			this.bpSaveParam.Name = "bpSaveParam";
+			this.bpSaveParam.Size = new System.Drawing.Size(58, 37);
+			this.bpSaveParam.TabIndex = 39;
+			this.bpSaveParam.Text = "Sauve param.";
+			this.bpSaveParam.UseVisualStyleBackColor = true;
+			this.bpSaveParam.Click += new System.EventHandler(this.bpSaveParam_Click);
+			// 
 			// EditImages
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1056, 758);
+			this.Controls.Add(this.bpSaveParam);
+			this.Controls.Add(this.bpLoadParam);
 			this.Controls.Add(this.newReduc);
 			this.Controls.Add(this.reducPal2);
 			this.Controls.Add(this.reducPal1);
@@ -740,6 +764,8 @@
 		private System.Windows.Forms.CheckBox reducPal1;
 		private System.Windows.Forms.CheckBox reducPal2;
 		private System.Windows.Forms.CheckBox newReduc;
+		private System.Windows.Forms.Button bpLoadParam;
+		private System.Windows.Forms.Button bpSaveParam;
 
 	}
 }

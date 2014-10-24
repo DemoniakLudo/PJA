@@ -1,7 +1,9 @@
 ﻿using ConvImgCpc;
+using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace PJA {
 	public partial class EditImages: Form {
@@ -62,7 +64,7 @@ namespace PJA {
 			sortPal.Checked = param.sortPal;
 			renderMode.SelectedIndex = param.pixMode;
 
-			radioFit.Checked = param.sizeMode== Param.SizeMode.Fit;
+			radioFit.Checked = param.sizeMode == Param.SizeMode.Fit;
 			radioKeepLarger.Checked = param.sizeMode == Param.SizeMode.KeepLarger;
 			radioKeepSmaller.Checked = param.sizeMode == Param.SizeMode.KeepSmaller;
 
@@ -70,7 +72,7 @@ namespace PJA {
 			bpEditMode_CheckedChanged(null, null);
 			UpdateListe(-1);
 			Valid = true;
-			dlgImportImage.Filter = "Images (*.scr, *.bin, *.bmp, *.gif, *.png, *.jpg)|*.scr;*.bin;*.bmp;*.gif;*.png;*.jpg";
+			dlgImportImage.Filter = "Images (*.scr, *.bin, *.bmp, *.gif, *.png, *.jpg)|*.scr;*.bin;*.bmp;*.gif;*.png;*.jpg|Tous les fichiers (*.*)|*.*";
 			dlgLoadPal.Filter = "Fichier palette (*.pal)|*.pal";
 		}
 
@@ -93,14 +95,14 @@ namespace PJA {
 		}
 
 		// Click sur un "lock"
-		void ClickLock(object sender, System.EventArgs e) {
+		void ClickLock(object sender, EventArgs e) {
 			CheckBox colorLock = sender as CheckBox;
 			lockState[(int)colorLock.Tag] = colorLock.Checked ? 1 : 0;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
 		// Changement de la palette
-		void ClickColor(object sender, System.EventArgs e) {
+		void ClickColor(object sender, EventArgs e) {
 			Label colorClick = sender as Label;
 			numCol = colorClick.Tag != null ? (int)colorClick.Tag : 0;
 			if (!bpEditMode.Checked) {
@@ -130,7 +132,7 @@ namespace PJA {
 			UpdatePalette();
 		}
 
-		private void lockAllPal_CheckedChanged(object sender, System.EventArgs e) {
+		private void lockAllPal_CheckedChanged(object sender, EventArgs e) {
 			for (int i = 0; i < 16; i++) {
 				lockColors[i].Checked = lockAllPal.Checked;
 				lockState[i] = lockAllPal.Checked ? 1 : 0;
@@ -151,7 +153,7 @@ namespace PJA {
 				imageName.Text = "";
 		}
 
-		private void bpImport_Click(object sender, System.EventArgs e) {
+		private void bpImport_Click(object sender, EventArgs e) {
 			DialogResult result = dlgImportImage.ShowDialog();
 			if (result == DialogResult.OK) {
 				dlgImportImage.InitialDirectory = dlgImportImage.FileName.Substring(0, dlgImportImage.FileName.LastIndexOf("\\"));
@@ -171,14 +173,14 @@ namespace PJA {
 			}
 		}
 
-		private void bpAdd_Click(object sender, System.EventArgs e) {
+		private void bpAdd_Click(object sender, EventArgs e) {
 			if (imageName.Text.Length > 0) {
 				dataImage.AddImage(imageName.Text, bitmapCpc.Palette, bitmapCpc.bmpCpc, projet.Cx, projet.Cy);
 				UpdateListe(listImage.Items.Count);
 			}
 		}
 
-		private void bpEdit_Click(object sender, System.EventArgs e) {
+		private void bpEdit_Click(object sender, EventArgs e) {
 			Image img = listImage.SelectedItem as Image;
 			if (img != null && imageName.Text.Length > 0) {
 				img.nom = imageName.Text;
@@ -186,7 +188,7 @@ namespace PJA {
 			}
 		}
 
-		private void bpSuppr_Click(object sender, System.EventArgs e) {
+		private void bpSuppr_Click(object sender, EventArgs e) {
 			Image img = listImage.SelectedItem as Image;
 			if (img != null && MessageBox.Show("Etes-vous sur(e) de vouloir supprimer cette image", "Attention", MessageBoxButtons.YesNo) == DialogResult.Yes) {
 				dataImage.DeleteImage(img);
@@ -194,33 +196,33 @@ namespace PJA {
 			}
 		}
 
-		private void bpRazLumi_Click(object sender, System.EventArgs e) {
+		private void bpRazLumi_Click(object sender, EventArgs e) {
 			lumi.Value = 100;
 		}
 
-		private void bpRazSat_Click(object sender, System.EventArgs e) {
+		private void bpRazSat_Click(object sender, EventArgs e) {
 			sat.Value = 100;
 		}
 
-		private void bpRazContrast_Click(object sender, System.EventArgs e) {
+		private void bpRazContrast_Click(object sender, EventArgs e) {
 			contrast.Value = 100;
 		}
 
 		// Recalculer l'image CPC résultante
-		private void bpRecalc_Click(object sender, System.EventArgs e) {
+		private void bpRecalc_Click(object sender, EventArgs e) {
 			if (sender != null && image != null) {
 				bpRecalc.Enabled = false;
-				long t0 = System.Environment.TickCount;
+				long t0 = Environment.TickCount;
 				param.lockState = lockState;
-				Conversion.Convert(image, bitmapCpc, param);
-				long t1 = System.Environment.TickCount;
+				Conversion.Convert(image, bitmapCpc, param, false);
+				long t1 = Environment.TickCount;
 				lblTps.Text = (t1 - t0).ToString() + " ms";
 				Render();
 				bpRecalc.Enabled = true;
 			}
 		}
 
-		private void listImage_SelectedIndexChanged(object sender, System.EventArgs e) {
+		private void listImage_SelectedIndexChanged(object sender, EventArgs e) {
 			Image img = listImage.SelectedItem as Image;
 			if (img != null) {
 				imageName.Text = img.nom;
@@ -229,94 +231,94 @@ namespace PJA {
 			}
 		}
 
-		private void radioFit_CheckedChanged(object sender, System.EventArgs e) {
+		private void radioFit_CheckedChanged(object sender, EventArgs e) {
 			param.sizeMode = radioKeepLarger.Checked ? Param.SizeMode.KeepLarger : radioKeepSmaller.Checked ? Param.SizeMode.KeepSmaller : Param.SizeMode.Fit;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
-		private void radioKeepSmaller_CheckedChanged(object sender, System.EventArgs e) {
+		private void radioKeepSmaller_CheckedChanged(object sender, EventArgs e) {
 			param.sizeMode = radioKeepLarger.Checked ? Param.SizeMode.KeepLarger : radioKeepSmaller.Checked ? Param.SizeMode.KeepSmaller : Param.SizeMode.Fit;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
-		private void radioKeepLarger_CheckedChanged(object sender, System.EventArgs e) {
+		private void radioKeepLarger_CheckedChanged(object sender, EventArgs e) {
 			param.sizeMode = radioKeepLarger.Checked ? Param.SizeMode.KeepLarger : radioKeepSmaller.Checked ? Param.SizeMode.KeepSmaller : Param.SizeMode.Fit;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
-		private void pctTrame_ValueChanged(object sender, System.EventArgs e) {
+		private void pctTrame_ValueChanged(object sender, EventArgs e) {
 			param.pct = (int)pctTrame.Value;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
-		private void methode_SelectedIndexChanged(object sender, System.EventArgs e) {
+		private void methode_SelectedIndexChanged(object sender, EventArgs e) {
 			param.methode = methode.SelectedIndex;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
-		private void matrice_SelectedIndexChanged(object sender, System.EventArgs e) {
+		private void matrice_SelectedIndexChanged(object sender, EventArgs e) {
 			param.matrice = matrice.SelectedIndex + 2;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
-		private void renderMode_SelectedIndexChanged(object sender, System.EventArgs e) {
+		private void renderMode_SelectedIndexChanged(object sender, EventArgs e) {
 			param.pixMode = renderMode.SelectedIndex;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
-		private void lumi_ValueChanged(object sender, System.EventArgs e) {
+		private void lumi_ValueChanged(object sender, EventArgs e) {
 			param.pctLumi = (int)lumi.Value;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
-		private void sat_ValueChanged(object sender, System.EventArgs e) {
+		private void sat_ValueChanged(object sender, EventArgs e) {
 			param.pctSat = nb.Checked ? 0 : (int)sat.Value;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
-		private void contrast_ValueChanged(object sender, System.EventArgs e) {
+		private void contrast_ValueChanged(object sender, EventArgs e) {
 			param.pctContrast = (int)contrast.Value;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
-		private void sortPal_CheckedChanged(object sender, System.EventArgs e) {
+		private void sortPal_CheckedChanged(object sender, EventArgs e) {
 			param.sortPal = sortPal.Checked;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
-		private void newMethode_CheckedChanged(object sender, System.EventArgs e) {
+		private void newMethode_CheckedChanged(object sender, EventArgs e) {
 			param.newMethode = newMethode.Checked;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
-		private void cpcPlus_CheckedChanged(object sender, System.EventArgs e) {
+		private void cpcPlus_CheckedChanged(object sender, EventArgs e) {
 			reducPal1.Enabled = reducPal2.Enabled = cpcPlus.Checked;
 			param.cpcPlus = cpcPlus.Checked;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
-		private void nb_CheckedChanged(object sender, System.EventArgs e) {
+		private void nb_CheckedChanged(object sender, EventArgs e) {
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
-		private void reducPal1_CheckedChanged(object sender, System.EventArgs e) {
+		private void reducPal1_CheckedChanged(object sender, EventArgs e) {
 			newReduc.Enabled = reducPal1.Checked || reducPal2.Checked;
 			param.reductPal1 = reducPal1.Checked;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
-		private void reducPal2_CheckedChanged(object sender, System.EventArgs e) {
+		private void reducPal2_CheckedChanged(object sender, EventArgs e) {
 			newReduc.Enabled = reducPal1.Checked || reducPal2.Checked;
 			param.reductPal2 = reducPal2.Checked;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
-		private void newReduc_CheckedChanged(object sender, System.EventArgs e) {
+		private void newReduc_CheckedChanged(object sender, EventArgs e) {
 			param.newReduct = newReduc.Checked;
 			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
 		}
 
-		private void bpUp_Click(object sender, System.EventArgs e) {
+		private void bpUp_Click(object sender, EventArgs e) {
 			Image img = listImage.SelectedItem as Image;
 			if (img != null && listImage.SelectedIndex > 0) {
 				dataImage.Up(img);
@@ -324,7 +326,7 @@ namespace PJA {
 			}
 		}
 
-		private void bpDn_Click(object sender, System.EventArgs e) {
+		private void bpDn_Click(object sender, EventArgs e) {
 			Image img = listImage.SelectedItem as Image;
 			if (img != null && listImage.SelectedIndex < listImage.Items.Count - 1) {
 				dataImage.Down(img);
@@ -332,7 +334,7 @@ namespace PJA {
 			}
 		}
 
-		private void bpLoadPal_Click(object sender, System.EventArgs e) {
+		private void bpLoadPal_Click(object sender, EventArgs e) {
 			DialogResult result = dlgLoadPal.ShowDialog();
 			if (result == DialogResult.OK) {
 				dlgLoadPal.InitialDirectory = dlgLoadPal.FileName.Substring(0, dlgLoadPal.FileName.LastIndexOf("\\"));
@@ -363,7 +365,7 @@ namespace PJA {
 			}
 		}
 
-		private void bpSavePal_Click(object sender, System.EventArgs e) {
+		private void bpSavePal_Click(object sender, EventArgs e) {
 			SaveFileDialog dlg = new SaveFileDialog();
 			dlg.Filter = "Fichier palette PJA (*.pal)|*.pal";
 			DialogResult result = dlg.ShowDialog();
@@ -378,7 +380,7 @@ namespace PJA {
 			}
 		}
 
-		private void bpPredefPal_Click(object sender, System.EventArgs e) {
+		private void bpPredefPal_Click(object sender, EventArgs e) {
 			PredefPal pPal = new PredefPal(dataImage.listPal, bitmapCpc.Palette);
 			pPal.ShowDialog();
 			if (pPal.selPal != null) {
@@ -392,7 +394,7 @@ namespace PJA {
 			}
 		}
 
-		private void bpEditMode_CheckedChanged(object sender, System.EventArgs e) {
+		private void bpEditMode_CheckedChanged(object sender, EventArgs e) {
 			zoomLevel.Enabled = bpEditMode.Checked;
 			if (!bpEditMode.Checked)
 				zoomLevel.SelectedIndex = 0;
@@ -420,7 +422,7 @@ namespace PJA {
 			Render();
 		}
 
-		private void zoomLevel_SelectedIndexChanged(object sender, System.EventArgs e) {
+		private void zoomLevel_SelectedIndexChanged(object sender, EventArgs e) {
 			zoom = int.Parse(zoomLevel.SelectedItem.ToString());
 			vScrollBar.Enabled = hScrollBar.Enabled = zoom > 1;
 			hScrollBar.Maximum = hScrollBar.LargeChange + bmp.Width - (bmp.Width / zoom);
@@ -430,10 +432,57 @@ namespace PJA {
 			Render();
 		}
 
+		private void bpLoadParam_Click(object sender, EventArgs e) {
+			OpenFileDialog dlg = new OpenFileDialog();
+			dlg.Filter = "Paramètres ConvImagesCpc (*.xml)|*.xml";
+			DialogResult result = dlg.ShowDialog();
+			if (result == DialogResult.OK) {
+				FileStream file = File.Open(dlg.FileName, FileMode.Open);
+				try {
+					param = (Param)new XmlSerializer(typeof(Param)).Deserialize(file);
+					// Initialisation paramètres...
+					methode.SelectedIndex = param.methode;
+					matrice.SelectedIndex = param.matrice - 2;
+					pctTrame.Value = param.pct;
+					lockState = param.lockState;
+					lumi.Value = param.pctLumi;
+					sat.Value = param.pctSat;
+					contrast.Value = param.pctContrast;
+					cpcPlus.Checked = param.cpcPlus;
+					newMethode.Checked = param.newMethode;
+					reducPal1.Checked = param.reductPal1;
+					reducPal2.Checked = param.reductPal2;
+					newReduc.Checked = param.newReduct;
+					sortPal.Checked = param.sortPal;
+					renderMode.SelectedIndex = param.pixMode;
+					radioFit.Checked = param.sizeMode == Param.SizeMode.Fit;
+					radioKeepLarger.Checked = param.sizeMode == Param.SizeMode.KeepLarger;
+					radioKeepSmaller.Checked = param.sizeMode == Param.SizeMode.KeepSmaller;
+				}
+				catch (Exception ex) {
+				}
+				file.Close();
+			}
+		}
+
+		private void bpSaveParam_Click(object sender, EventArgs e) {
+			SaveFileDialog dlg = new SaveFileDialog();
+			dlg.Filter = "Paramètres ConvImagesCpc (*.xml)|*.xml";
+			DialogResult result = dlg.ShowDialog();
+			if (result == DialogResult.OK) {
+				FileStream file = File.Open(dlg.FileName, FileMode.Create);
+				try {
+					new XmlSerializer(typeof(Param)).Serialize(file, param);
+				}
+				catch (Exception ex) {
+				}
+				file.Close();
+			}
+		}
+
 		private void EditImages_FormClosed(object sender, FormClosedEventArgs e) {
 			Valid = false;
 		}
-
 
 		/*
 		private bool SauvePalette(string NomFic, int Mode, int[] Palette, bool CpcPlus) {
