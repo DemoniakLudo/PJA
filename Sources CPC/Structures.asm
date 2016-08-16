@@ -1,23 +1,7 @@
-
-;BuffCp              EQU     #C000       ; Buffer décompactage vues
-StartImgCmp         EQU     #C004       ; Début image compactée
-
-BuffSpt             EQU     #6C00       ; Buffer décompactage sprites
-
 BuffFleche          EQU     #C7D0       ; Buffer sauvegarde sprite sous flèche
                                         ; (45 octets nécessaires)
 
-MotSaisi            EQU     #CFD0       ; Buffer saisie mot au clavier
-
-TailleMot           EQU     36          ; Taille maxi. du mot saisi (caractères)
-
-CursorBlinkSpeed    EQU     20          ; Vitesse de clignottement du curseur
-                                        ; en 1/50e de secondes
-
-CroixBlinkSpeed     EQU     20          ; Vitesse de clignottement de la croix
-                                        ; (sur la carte) en 1/50e de secondes
-
-SeuilAcceleration   EQU     10          ; Seuil accélération curseur en nombre
+SeuilAcceleration   EQU     30          ; Seuil accélération curseur en nombre
                                         ; de déplacements simultanés
 
 ;

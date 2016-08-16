@@ -34,9 +34,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Pack">
-      <HintPath>dll\Pack.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -45,14 +42,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Action.cs" />
+    <Compile Include="Data\Cond.cs" />
+    <Compile Include="Data\Condition.cs" />
     <Compile Include="Data\DataImage.cs" />
     <Compile Include="Data\DataMap.cs" />
     <Compile Include="Data\DataTexte.cs" />
+    <Compile Include="Data\DataVariable.cs" />
     <Compile Include="Data\Image.cs" />
     <Compile Include="Data\Palette.cs" />
     <Compile Include="Data\Resultat.cs" />
     <Compile Include="Data\Texte.cs" />
+    <Compile Include="Data\TraitementConditionnel.cs" />
+    <Compile Include="Data\Variable.cs" />
     <Compile Include="Data\Zone.cs" />
+    <Compile Include="Interface\EditTC.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\EditTC.Designer.cs">
+      <DependentUpon>EditTC.cs</DependentUpon>
+    </Compile>
     <Compile Include="GestDsk\Amsdos.cs" />
     <Compile Include="GestDsk\CreateDsk.cs" />
     <Compile Include="GestDsk\DirEntry.cs" />
@@ -60,6 +68,12 @@
     <Compile Include="GestDsk\DskSect.cs" />
     <Compile Include="GestDsk\DskTrack.cs" />
     <Compile Include="GestDsk\GestDsk.cs" />
+    <Compile Include="Interface\AjouteZone.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\AjouteZone.Designer.cs">
+      <DependentUpon>AjouteZone.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface\ChoixAction.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -77,6 +91,12 @@
     </Compile>
     <Compile Include="Interface\EditMap.Designer.cs">
       <DependentUpon>EditMap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\EditVariables.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\EditVariables.Designer.cs">
+      <DependentUpon>EditVariables.cs</DependentUpon>
     </Compile>
     <Compile Include="Interface\Main.cs">
       <SubType>Form</SubType>
@@ -106,6 +126,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Data\Projet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Interface\AjouteZone.resx">
+      <DependentUpon>AjouteZone.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Interface\ChoixAction.resx">
       <DependentUpon>ChoixAction.cs</DependentUpon>
     </EmbeddedResource>
@@ -114,6 +137,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Interface\EditMap.resx">
       <DependentUpon>EditMap.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\EditTC.resx">
+      <DependentUpon>EditTC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\EditVariables.resx">
+      <DependentUpon>EditVariables.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Interface\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
@@ -164,12 +193,17 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Infos.txt" />
+    <None Include="Properties\Valider.png" />
     <None Include="Properties\Affecte.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DLL\ConvImgCpc\ConvImgCpc\ConvImgCpc.csproj">
       <Project>{38d06e94-903a-4414-96d5-fe3e36e8b6b6}</Project>
       <Name>ConvImgCpc</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DLL\Pack\Pack\Pack.csproj">
+      <Project>{8d64efde-9ce9-4eea-91d4-5e6cb46b8a19}</Project>
+      <Name>Pack</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

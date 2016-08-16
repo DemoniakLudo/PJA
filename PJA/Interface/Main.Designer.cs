@@ -38,6 +38,7 @@
 			this.bpRepack = new System.Windows.Forms.Button();
 			this.button1 = new System.Windows.Forms.Button();
 			this.bpEditTxt = new System.Windows.Forms.Button();
+			this.bpEditVar = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.nbCols)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nbLignes)).BeginInit();
 			this.SuspendLayout();
@@ -212,11 +213,22 @@
 			this.bpEditTxt.UseVisualStyleBackColor = true;
 			this.bpEditTxt.Click += new System.EventHandler(this.bpEditTxt_Click);
 			// 
+			// bpEditVar
+			// 
+			this.bpEditVar.Location = new System.Drawing.Point(384, 275);
+			this.bpEditVar.Name = "bpEditVar";
+			this.bpEditVar.Size = new System.Drawing.Size(75, 40);
+			this.bpEditVar.TabIndex = 15;
+			this.bpEditVar.Text = "Editeur de variables";
+			this.bpEditVar.UseVisualStyleBackColor = true;
+			this.bpEditVar.Click += new System.EventHandler(this.bpEditVar_Click);
+			// 
 			// Main
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(532, 398);
+			this.Controls.Add(this.bpEditVar);
 			this.Controls.Add(this.bpEditTxt);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.bpRepack);
@@ -260,6 +272,7 @@
 		private System.Windows.Forms.Button bpRepack;
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.Button bpEditTxt;
+		private System.Windows.Forms.Button bpEditVar;
 	}
 }
 

@@ -1,19 +1,21 @@
 ﻿namespace PJA {
 	class CreateDsk {
 		private Dsk dsk = new Dsk();
-		private DskSect[] tabSect = new DskSect[10];
+		private DskSect[] tabSect;
 		private Projet projet;
 		private byte nbTracks;
 		private byte nbHeads;
 		private byte nbSects;
 		private byte firstSect;
 
-		public CreateDsk(Projet prj, int t, int h, int nbs, int s) {
+		public CreateDsk(Projet prj, int t, int h, int nbs, int s, bool entrelac) {
 			projet = prj;
 			nbTracks = (byte)t;
 			nbHeads = (byte)h;
 			nbSects = (byte)nbs;
 			firstSect = (byte)s;
+			tabSect = new DskSect[nbs];
+			FormatDsk(entrelac);
 		}
 
 		public void Test() {
@@ -75,7 +77,6 @@
 		public void WriteSect(int trk, int hd, int sct, byte[] data, int pos) {
 			dsk.WriteDatas(trk, hd, firstSect + sct, data, pos);
 		}
-
 
 		public void SaveDsk(string name) {
 			dsk.Save(name);

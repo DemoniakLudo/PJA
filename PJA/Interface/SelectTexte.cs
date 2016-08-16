@@ -27,7 +27,8 @@ namespace PJA {
 		private void bpValide_Click(object sender, EventArgs e) {
 			if (action != null) {
 				Texte t = (Texte)listTexte.SelectedItem;
-				action.varAction = t.index;
+				if (t != null)
+					action.varAction = t.index;
 			}
 			Close();
 		}

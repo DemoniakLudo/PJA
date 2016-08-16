@@ -1,5 +1,5 @@
 ﻿namespace PJA {
-	partial class SelectLieu {
+	partial class AjouteZone {
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -23,67 +23,72 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			this.listLieu = new System.Windows.Forms.ListBox();
+			this.typeZone = new System.Windows.Forms.ComboBox();
+			this.label1 = new System.Windows.Forms.Label();
 			this.bpValide = new System.Windows.Forms.Button();
 			this.bpAnnule = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
-			// listLieu
+			// typeZone
 			// 
-			this.listLieu.FormattingEnabled = true;
-			this.listLieu.Location = new System.Drawing.Point(1, 1);
-			this.listLieu.Name = "listLieu";
-			this.listLieu.Size = new System.Drawing.Size(333, 329);
-			this.listLieu.TabIndex = 0;
-			this.listLieu.SelectedIndexChanged += new System.EventHandler(this.listLieu_SelectedIndexChanged);
+			this.typeZone.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.typeZone.FormattingEnabled = true;
+			this.typeZone.Location = new System.Drawing.Point(96, 6);
+			this.typeZone.Name = "typeZone";
+			this.typeZone.Size = new System.Drawing.Size(117, 21);
+			this.typeZone.TabIndex = 48;
+			this.typeZone.SelectedIndexChanged += new System.EventHandler(this.typeZone_SelectedIndexChanged);
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(12, 9);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(78, 13);
+			this.label1.TabIndex = 49;
+			this.label1.Text = "Type de zone :";
 			// 
 			// bpValide
 			// 
-			this.bpValide.Image = global::PJA.Properties.Resources.Valider;
-			this.bpValide.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.bpValide.Location = new System.Drawing.Point(1, 336);
+			this.bpValide.Location = new System.Drawing.Point(12, 50);
 			this.bpValide.Name = "bpValide";
-			this.bpValide.Size = new System.Drawing.Size(75, 35);
-			this.bpValide.TabIndex = 1;
+			this.bpValide.Size = new System.Drawing.Size(75, 23);
+			this.bpValide.TabIndex = 50;
 			this.bpValide.Text = "Valider";
-			this.bpValide.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.bpValide.UseVisualStyleBackColor = true;
 			this.bpValide.Click += new System.EventHandler(this.bpValide_Click);
 			// 
 			// bpAnnule
 			// 
-			this.bpAnnule.Image = global::PJA.Properties.Resources.Del;
-			this.bpAnnule.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.bpAnnule.Location = new System.Drawing.Point(259, 338);
+			this.bpAnnule.Location = new System.Drawing.Point(132, 50);
 			this.bpAnnule.Name = "bpAnnule";
-			this.bpAnnule.Size = new System.Drawing.Size(75, 33);
-			this.bpAnnule.TabIndex = 1;
+			this.bpAnnule.Size = new System.Drawing.Size(75, 23);
+			this.bpAnnule.TabIndex = 51;
 			this.bpAnnule.Text = "Annuler";
-			this.bpAnnule.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.bpAnnule.UseVisualStyleBackColor = true;
 			this.bpAnnule.Click += new System.EventHandler(this.bpAnnule_Click);
 			// 
-			// SelectLieu
+			// AjouteZone
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(335, 373);
-			this.ControlBox = false;
+			this.ClientSize = new System.Drawing.Size(219, 83);
 			this.Controls.Add(this.bpAnnule);
 			this.Controls.Add(this.bpValide);
-			this.Controls.Add(this.listLieu);
+			this.Controls.Add(this.label1);
+			this.Controls.Add(this.typeZone);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-			this.MaximizeBox = false;
-			this.MinimizeBox = false;
-			this.Name = "SelectLieu";
-			this.Text = "SelectLieu";
+			this.Name = "AjouteZone";
+			this.Text = "AjouteZone";
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
 		#endregion
 
-		private System.Windows.Forms.ListBox listLieu;
+		private System.Windows.Forms.ComboBox typeZone;
+		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Button bpValide;
 		private System.Windows.Forms.Button bpAnnule;
 	}

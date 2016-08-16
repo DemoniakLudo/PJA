@@ -67,7 +67,7 @@ ReadBitmap:
         LDIR
         LD      HL,InfoDisquette_Identite
         LD      DE,0
-        LD      C,#C0
+        LD      C,#C1
         CALL    LectSect
 RetryRead:
         LD      A,3

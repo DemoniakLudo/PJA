@@ -35,6 +35,11 @@ namespace PJA {
 			get { return lstZone; }
 			set { lstZone = value; }
 		}
+		private List<TraitementConditionnel> lstTC = new List<TraitementConditionnel>();
+		public List<TraitementConditionnel> LstTC {
+			get { return lstTC; }
+			set { lstTC = value; }
+		}
 
 		public Map() {
 			Init();

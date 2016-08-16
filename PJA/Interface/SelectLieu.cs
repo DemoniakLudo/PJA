@@ -6,10 +6,12 @@ namespace PJA {
 		private int mapSel = -1;
 		public int MapSel { get { return mapSel; } }
 
-		public SelectLieu(Projet prj) {
+		public SelectLieu(Projet prj, int indexSel) {
 			InitializeComponent();
-			foreach (Map m in prj.MapData.ListMap) 
+			foreach (Map m in prj.MapData.ListMap)
 				listLieu.Items.Add(m);
+
+			listLieu.SelectedIndex = indexSel;
 		}
 
 		private void listLieu_SelectedIndexChanged(object sender, EventArgs e) {

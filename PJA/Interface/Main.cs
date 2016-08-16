@@ -5,11 +5,12 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 
 namespace PJA {
-	public partial class Main: Form {
+	public partial class Main : Form {
 		private Projet projet = new Projet();
 		private EditImages editImages;
 		private EditMap editMap;
 		private SelectTexte editText;
+		private EditVariables editVar;
 		//private const int maxLiCo = 2048;
 		private const int maxLiCo = 4096;
 		private ConvImgCpc.Param param = new ConvImgCpc.Param();
@@ -37,7 +38,7 @@ namespace PJA {
 		private void EditImgClick(object sender, EventArgs e) {
 			Point p = editImages != null ? editImages.Location : new Point(0, 0);
 			if (editImages == null || !editImages.Valid) // si pas déja visible
-				editImages = new EditImages(projet,param);
+				editImages = new EditImages(projet, param);
 
 			editImages.Location = p;
 			editImages.Show();
@@ -50,7 +51,15 @@ namespace PJA {
 
 			editText.Location = p;
 			editText.Show();
+		}
 
+		private void bpEditVar_Click(object sender, EventArgs e) {
+			Point p = editVar != null ? editVar.Location : new Point(0, 0);
+			if (editVar == null || !editVar.Valid) // si pas déjà visible
+				editVar = new EditVariables(projet);
+
+			editVar.Location = p;
+			editVar.Show();
 		}
 
 		private void mode_SelectedIndexChanged(object sender, EventArgs e) {
@@ -138,7 +147,7 @@ namespace PJA {
 
 		private void bpRepack_Click(object sender, EventArgs e) {
 			SetEtatBp(false);
-			projet.ImageData.Repack();
+			projet.ImageData.Repack(projet.Cx,projet.Cy);
 			SetEtatBp(true);
 		}
 

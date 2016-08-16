@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 
 namespace PJA {
-	public partial class EditMap: Form {
+	public partial class EditMap : Form {
 		private DataMap dataMap;
 		public bool Valid;
 		private Projet projet;
@@ -14,9 +14,9 @@ namespace PJA {
 		private Map curMap = null;
 		private Zone newZone = null;
 		private bool zoneDown = false;
-		private Pen penWhite = new Pen(Color.White, 2);
+		private Pen penWhite = new Pen(Color.White, 1);
 		private Pen penRed = new Pen(Color.Red, 2);
-		private Pen penBlue = new Pen(Color.Blue, 2);
+		private Pen penBlue = new Pen(Color.Blue, 1);
 		private Image selImage;
 
 		public EditMap(Projet prj) {
@@ -34,7 +34,6 @@ namespace PJA {
 			bmpLock = new LockBitmap(pictureBox.Image as Bitmap);
 
 			penWhite.DashStyle = System.Drawing.Drawing2D.DashStyle.DashDotDot;
-			typeZone.DataSource = Enum.GetValues(typeof(Zone.TypeZone));
 			RefreshListLieu();
 		}
 
@@ -48,10 +47,14 @@ namespace PJA {
 		}
 
 		private void SetNewImage(int index) {
-			listImage.SelectedIndex = index;
-			imageAffect.Text = index > -1 ? (listImage.SelectedItem as Image).ToString() : "";
-			curMap.IndexImage = index;
-			bpDelLieu.Enabled = index > -1;
+			try {
+				listImage.SelectedIndex = index;
+				imageAffect.Text = index > -1 ? (listImage.SelectedItem as Image).ToString() : "";
+				curMap.IndexImage = index;
+				bpDelLieu.Enabled = index > -1;
+			}
+			catch {
+			}
 		}
 
 		private void listImage_SelectedIndexChanged(object sender, EventArgs e) {
@@ -80,11 +83,15 @@ namespace PJA {
 
 		private void listLieu_SelectedIndexChanged(object sender, EventArgs e) {
 			curMap = (Map)listLieu.SelectedItem;
-			newZone = null;
-			SetNewImage(curMap.IndexImage);
-			libelleMap.Text = curMap.Libelle;
-			if (curMap.IndexImage > -1)
+			if (curMap != null) {
+				listDetail.Items.Clear();
+				newZone = null;
 				SetNewImage(curMap.IndexImage);
+				libelleMap.Text = curMap.Libelle;
+				if (curMap.IndexImage > -1)
+					SetNewImage(curMap.IndexImage);
+			}
+			bpEditTC.Enabled = curMap != null;
 		}
 
 		private void bpEditLibelle_Click(object sender, EventArgs e) {
@@ -95,7 +102,7 @@ namespace PJA {
 		}
 
 		#region gestion des zones
-		private void RenderZone(Zone z, Pen pen) {
+		private void RenderZone(Zone z, Pen pen, bool detail = false) {
 			if (z.IsZone) {
 				int xd = z.xd;
 				int w = z.xa - z.xd;
@@ -111,17 +118,29 @@ namespace PJA {
 				}
 				Graphics.FromImage(pictureBox.Image).DrawRectangle(pen, xd << 3, yd << 1, w << 3, h << 1);
 				Graphics.FromImage(pictureBox.Image).DrawRectangle(penWhite, xd << 3, yd << 1, w << 3, h << 1);
+				if (detail) {
+					listDetail.Items.Clear();
+					switch (z.typeZone) {
+						case Zone.TypeZone.DEPLACEMENT:
+							listDetail.Items.Add(projet.MapData.ListMap[z.varAction].Libelle);
+							break;
+
+						case Zone.TypeZone.ACTION:
+						case Zone.TypeZone.RECHERCHE:
+							break;
+					}
+				}
 			}
 		}
 
-		private void RenderAllZones() {
+		private void RenderAllZones(bool detail = false) {
 			bitmapCPC.Render(bmpLock, bitmapCPC.ModeCPC, 1, 0, 0, false);
 			if (allZones.Checked && curMap != null)
 				foreach (Zone z in curMap.LstZone)
 					RenderZone(z, penBlue);
 
 			if (newZone != null)
-				RenderZone(newZone, penRed);
+				RenderZone(newZone, penRed, detail);
 
 			pictureBox.Refresh();
 		}
@@ -155,7 +174,7 @@ namespace PJA {
 			if (!zoneDown) {
 				newZone = new Zone(x, y);
 				zoneDown = true;
-				bpDelZone.Enabled = bpEditZone.Enabled = bpAddZone.Enabled = false;
+				bpDelZone.Enabled = bpEditZone.Enabled = false;
 			}
 			newZone.xa = x;
 			newZone.ya = y;
@@ -169,20 +188,14 @@ namespace PJA {
 
 		private void pictureBox_MouseUp(object sender, MouseEventArgs e) {
 			zoneDown = false;
-			bpAddZone.Enabled = newZone.IsZone && curMap != null;
-		}
-
-		private void bpAddZone_Click(object sender, EventArgs e) {
-			bpAddZone.Enabled = false;
-			newZone.typeZone = (Zone.TypeZone)typeZone.SelectedItem;
-			curMap.LstZone.Add(newZone);
-			RefreshListZone();
-			RenderAllZones();
-		}
-
-		private void bpDelZone_Click(object sender, EventArgs e) {
-			if (MessageBox.Show("Etes-vous sur(e) de vouloir supprimer cette zone", "Attention", MessageBoxButtons.YesNo) == DialogResult.Yes) {
-				curMap.LstZone.Remove(newZone);
+			if (newZone.IsZone && curMap != null) {
+				AjouteZone aj = new AjouteZone(newZone.typeZone);
+				aj.ShowDialog();
+				if (aj.Status) {
+					newZone.typeZone = aj.TypeZone;
+					curMap.LstZone.Add(newZone);
+					EditZone(newZone.typeZone);
+				}
 				RefreshListZone();
 				RenderAllZones();
 			}
@@ -190,9 +203,14 @@ namespace PJA {
 
 		private void listZone_SelectedIndexChanged(object sender, EventArgs e) {
 			newZone = listZone.SelectedItem as Zone;
-			typeZone.SelectedItem = newZone.typeZone;
-			bpEditZone.Enabled = bpDelZone.Enabled = true;
-			RenderAllZones();
+			if (newZone != null) {
+				bpEditZone.Enabled = bpDelZone.Enabled = true;
+				RenderAllZones(true);
+			}
+			else {
+				listDetail.Items.Clear();
+				bpDelZone.Enabled = bpEditZone.Enabled = false;
+			}
 		}
 
 		private void allZones_CheckedChanged(object sender, EventArgs e) {
@@ -203,9 +221,10 @@ namespace PJA {
 			newZone.typeZone = t;
 			switch (t) {
 				case Zone.TypeZone.DEPLACEMENT:
-					SelectLieu sl = new SelectLieu(projet);
+					SelectLieu sl = new SelectLieu(projet, newZone.varAction);
 					sl.ShowDialog();
-					newZone.varAction = sl.MapSel;
+					if (sl.MapSel != -1)
+						newZone.varAction = sl.MapSel;
 					break;
 
 				case Zone.TypeZone.ACTION:
@@ -217,22 +236,34 @@ namespace PJA {
 			RefreshListZone();
 		}
 
-		private void bpEditZone_Click(object sender, EventArgs e) {
-			EditZone((Zone.TypeZone)typeZone.SelectedItem);
+		private void bpDelZone_Click(object sender, EventArgs e) {
+			if (MessageBox.Show("Etes-vous sur(e) de vouloir supprimer cette zone", "Attention", MessageBoxButtons.YesNo) == DialogResult.Yes) {
+				curMap.LstZone.Remove(newZone);
+				RefreshListZone();
+				RenderAllZones();
+			}
 		}
 
-		private void typeZone_SelectedIndexChanged(object sender, EventArgs e) {
-			if (newZone != null) {
-				Zone.TypeZone t = (Zone.TypeZone)typeZone.SelectedItem;
-				if (newZone.typeZone != t) {
-					EditZone(t);
-				}
+		private void bpEditZone_Click(object sender, EventArgs e) {
+			AjouteZone aj = new AjouteZone(newZone.typeZone);
+			aj.ShowDialog();
+			if (aj.Status) {
+				newZone.typeZone = aj.TypeZone;
+				EditZone(newZone.typeZone);
+				RenderAllZones();
 			}
 		}
 		#endregion
 
 		private void EditMap_FormClosed(object sender, FormClosedEventArgs e) {
 			Valid = false;
+		}
+
+		private void bpEditTC_Click(object sender, EventArgs e) {
+			if (curMap != null) {
+				EditTC editTc = new EditTC(projet, curMap);
+				editTc.ShowDialog();
+			}
 		}
 	}
 }

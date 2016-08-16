@@ -64,7 +64,7 @@ SavScrCurseur3:
         LD      L,A
         LD      H,0
         LD      BC,PtrZone              ; Début des zones
-        ADD     HL,BC
+        ADD     HL,BC					; HL = zone de la vue en cours
         LD      E,(HL)
         INC     HL
         LD      D,(HL)
@@ -100,9 +100,8 @@ BclZone:
         JR      NC,NextZone
         LD      A,(IX+0)
         LD      (TypeFleche+1),A        ; Positionne type de curseur
-        LD      D,(IX+6)
-        LD      E,(IX+5)                ; DE = pointeur de fonction
-        EX      DE,HL
+        LD      H,(IX+6)
+        LD      L,(IX+5)                ; HL = variable de l'action à réaliser
         LD      (ExecFct+1),HL
         JR      DrawFleche              ; Inutile de continuer quand 1 zone trouvé
 NextZone:
@@ -303,9 +302,8 @@ HAUT:
 VitDeplHaut:
         ADD     A,1
         LD      (Y),A
-        LD      A,(DeplHaut+1)
-        INC     A                       ; Incrémente le nombre de déplacements
-        LD      (DeplHaut+1),A          ; en haut
+		LD      HL,DeplHaut+1
+        INC     (HL)                    ; Incrémente le nombre de déplacements en haut
         RET
 BAS:
         LD      A,(Y)
@@ -314,9 +312,8 @@ BAS:
 VitDeplBas:
         SUB     1
         LD      (Y),A
-        LD      A,(DeplBas+1)
-        INC     A                       ; Incrémente le nombre de déplacements
-        LD      (DeplBas+1),A           ; en bas
+        LD      HL,DeplBas+1
+        INC     (HL)                    ; Incrémente le nombre de déplacements en bas
         RET
 GAUCHE:
         LD      HL,(X)                  ; Position X
@@ -327,13 +324,11 @@ GAUCHE:
         CP      2                       ; X < 2 ?
         RET     C
 VitDeplGauche:
-        LD      C,1
-        LD      B,0
+        LD      BC,1
         SBC     HL,BC
         LD      (X),HL
-        LD      A,(DeplGauche+1)
-        INC     A                       ; Incrémente le nombre de déplacements
-        LD      (DeplGauche+1),A        ; à gauche
+        LD      HL,DeplGauche+1
+        INC     (HL)                    ; Incrémente le nombre de déplacements à gauche
         RET
 DROITE:
         LD      HL,(X)                  ; Position X
@@ -344,13 +339,11 @@ DROITE:
         CP      55                      ; X >= 311 ?
         RET     NC
 VitDeplDroite:
-        LD      C,1
-        LD      B,0
+        LD      BC,1
         ADD     HL,BC
         LD      (X),HL
-        LD      A,(DeplDroite+1)
-        INC     A                       ; Incrémente le nombre de déplacements
-        LD      (DeplDroite+1),A        ; à droite
+        LD      HL,DeplDroite+1
+        INC     (HL)                    ; Incrémente le nombre de déplacements à droite
         RET
 
 ;

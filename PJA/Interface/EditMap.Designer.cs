@@ -34,12 +34,12 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.bpEditLibelle = new System.Windows.Forms.Button();
 			this.bpDelZone = new System.Windows.Forms.Button();
-			this.typeZone = new System.Windows.Forms.ComboBox();
 			this.allZones = new System.Windows.Forms.CheckBox();
 			this.listZone = new System.Windows.Forms.ListBox();
-			this.bpAddZone = new System.Windows.Forms.Button();
 			this.pictureBox = new System.Windows.Forms.PictureBox();
 			this.bpEditZone = new System.Windows.Forms.Button();
+			this.listDetail = new System.Windows.Forms.ListBox();
+			this.bpEditTC = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -154,7 +154,7 @@
 			this.bpDelZone.Enabled = false;
 			this.bpDelZone.Image = global::PJA.Properties.Resources.Del;
 			this.bpDelZone.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.bpDelZone.Location = new System.Drawing.Point(648, 660);
+			this.bpDelZone.Location = new System.Drawing.Point(776, 593);
 			this.bpDelZone.Name = "bpDelZone";
 			this.bpDelZone.Size = new System.Drawing.Size(108, 34);
 			this.bpDelZone.TabIndex = 48;
@@ -163,20 +163,10 @@
 			this.bpDelZone.UseVisualStyleBackColor = true;
 			this.bpDelZone.Click += new System.EventHandler(this.bpDelZone_Click);
 			// 
-			// typeZone
-			// 
-			this.typeZone.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.typeZone.FormattingEnabled = true;
-			this.typeZone.Location = new System.Drawing.Point(648, 553);
-			this.typeZone.Name = "typeZone";
-			this.typeZone.Size = new System.Drawing.Size(117, 21);
-			this.typeZone.TabIndex = 47;
-			this.typeZone.SelectedIndexChanged += new System.EventHandler(this.typeZone_SelectedIndexChanged);
-			// 
 			// allZones
 			// 
 			this.allZones.AutoSize = true;
-			this.allZones.Location = new System.Drawing.Point(648, 705);
+			this.allZones.Location = new System.Drawing.Point(776, 633);
 			this.allZones.Name = "allZones";
 			this.allZones.Size = new System.Drawing.Size(141, 17);
 			this.allZones.TabIndex = 46;
@@ -187,31 +177,17 @@
 			// listZone
 			// 
 			this.listZone.FormattingEnabled = true;
-			this.listZone.Location = new System.Drawing.Point(648, 322);
+			this.listZone.Location = new System.Drawing.Point(776, 322);
 			this.listZone.Name = "listZone";
 			this.listZone.Size = new System.Drawing.Size(141, 225);
 			this.listZone.TabIndex = 45;
 			this.listZone.SelectedIndexChanged += new System.EventHandler(this.listZone_SelectedIndexChanged);
 			// 
-			// bpAddZone
-			// 
-			this.bpAddZone.Enabled = false;
-			this.bpAddZone.Image = global::PJA.Properties.Resources.Add;
-			this.bpAddZone.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.bpAddZone.Location = new System.Drawing.Point(648, 580);
-			this.bpAddZone.Name = "bpAddZone";
-			this.bpAddZone.Size = new System.Drawing.Size(108, 34);
-			this.bpAddZone.TabIndex = 44;
-			this.bpAddZone.Text = "Ajouter Zone";
-			this.bpAddZone.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.bpAddZone.UseVisualStyleBackColor = true;
-			this.bpAddZone.Click += new System.EventHandler(this.bpAddZone_Click);
-			// 
 			// pictureBox
 			// 
 			this.pictureBox.Location = new System.Drawing.Point(2, 322);
 			this.pictureBox.Name = "pictureBox";
-			this.pictureBox.Size = new System.Drawing.Size(640, 400);
+			this.pictureBox.Size = new System.Drawing.Size(768, 544);
 			this.pictureBox.TabIndex = 43;
 			this.pictureBox.TabStop = false;
 			this.pictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox_MouseDown);
@@ -223,7 +199,7 @@
 			this.bpEditZone.Enabled = false;
 			this.bpEditZone.Image = global::PJA.Properties.Resources.Edit;
 			this.bpEditZone.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.bpEditZone.Location = new System.Drawing.Point(648, 620);
+			this.bpEditZone.Location = new System.Drawing.Point(776, 553);
 			this.bpEditZone.Name = "bpEditZone";
 			this.bpEditZone.Size = new System.Drawing.Size(108, 34);
 			this.bpEditZone.TabIndex = 44;
@@ -232,18 +208,41 @@
 			this.bpEditZone.UseVisualStyleBackColor = true;
 			this.bpEditZone.Click += new System.EventHandler(this.bpEditZone_Click);
 			// 
+			// listDetail
+			// 
+			this.listDetail.FormattingEnabled = true;
+			this.listDetail.Location = new System.Drawing.Point(923, 322);
+			this.listDetail.Name = "listDetail";
+			this.listDetail.Size = new System.Drawing.Size(141, 225);
+			this.listDetail.TabIndex = 45;
+			this.listDetail.SelectedIndexChanged += new System.EventHandler(this.listZone_SelectedIndexChanged);
+			// 
+			// bpEditTC
+			// 
+			this.bpEditTC.Enabled = false;
+			this.bpEditTC.Image = global::PJA.Properties.Resources.Edit;
+			this.bpEditTC.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.bpEditTC.Location = new System.Drawing.Point(390, 155);
+			this.bpEditTC.Name = "bpEditTC";
+			this.bpEditTC.Size = new System.Drawing.Size(100, 62);
+			this.bpEditTC.TabIndex = 42;
+			this.bpEditTC.Text = "Edition Traitements Conditionnels";
+			this.bpEditTC.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.bpEditTC.UseVisualStyleBackColor = true;
+			this.bpEditTC.Click += new System.EventHandler(this.bpEditTC_Click);
+			// 
 			// EditMap
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(831, 725);
+			this.ClientSize = new System.Drawing.Size(1096, 868);
 			this.Controls.Add(this.bpDelZone);
-			this.Controls.Add(this.typeZone);
 			this.Controls.Add(this.allZones);
+			this.Controls.Add(this.listDetail);
 			this.Controls.Add(this.listZone);
 			this.Controls.Add(this.bpEditZone);
-			this.Controls.Add(this.bpAddZone);
 			this.Controls.Add(this.pictureBox);
+			this.Controls.Add(this.bpEditTC);
 			this.Controls.Add(this.bpEditLibelle);
 			this.Controls.Add(this.libelleMap);
 			this.Controls.Add(this.bpAddLieu);
@@ -280,11 +279,11 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Button bpEditLibelle;
 		private System.Windows.Forms.Button bpDelZone;
-		private System.Windows.Forms.ComboBox typeZone;
 		private System.Windows.Forms.CheckBox allZones;
 		private System.Windows.Forms.ListBox listZone;
-		private System.Windows.Forms.Button bpAddZone;
 		private System.Windows.Forms.PictureBox pictureBox;
 		private System.Windows.Forms.Button bpEditZone;
+		private System.Windows.Forms.ListBox listDetail;
+		private System.Windows.Forms.Button bpEditTC;
 	}
 }

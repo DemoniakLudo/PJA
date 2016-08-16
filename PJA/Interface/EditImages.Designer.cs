@@ -86,7 +86,7 @@
 			// lockAllPal
 			// 
 			this.lockAllPal.AutoSize = true;
-			this.lockAllPal.Location = new System.Drawing.Point(791, 600);
+			this.lockAllPal.Location = new System.Drawing.Point(792, 603);
 			this.lockAllPal.Name = "lockAllPal";
 			this.lockAllPal.Size = new System.Drawing.Size(93, 17);
 			this.lockAllPal.TabIndex = 1;
@@ -114,7 +114,7 @@
 			this.radioFit.TabStop = true;
 			this.radioFit.Text = "Fit";
 			this.radioFit.UseVisualStyleBackColor = true;
-			this.radioFit.CheckedChanged += new System.EventHandler(this.radioFit_CheckedChanged);
+			this.radioFit.CheckedChanged += new System.EventHandler(this.ChangeParam);
 			// 
 			// radioKeepSmaller
 			// 
@@ -126,7 +126,7 @@
 			this.radioKeepSmaller.TabStop = true;
 			this.radioKeepSmaller.Text = "KeepSmaller";
 			this.radioKeepSmaller.UseVisualStyleBackColor = true;
-			this.radioKeepSmaller.CheckedChanged += new System.EventHandler(this.radioKeepSmaller_CheckedChanged);
+			this.radioKeepSmaller.CheckedChanged += new System.EventHandler(this.ChangeParam);
 			// 
 			// radioKeepLarger
 			// 
@@ -138,7 +138,7 @@
 			this.radioKeepLarger.TabStop = true;
 			this.radioKeepLarger.Text = "KeepLarger";
 			this.radioKeepLarger.UseVisualStyleBackColor = true;
-			this.radioKeepLarger.CheckedChanged += new System.EventHandler(this.radioKeepLarger_CheckedChanged);
+			this.radioKeepLarger.CheckedChanged += new System.EventHandler(this.ChangeParam);
 			// 
 			// tramage
 			// 
@@ -179,7 +179,7 @@
 			this.methode.Name = "methode";
 			this.methode.Size = new System.Drawing.Size(72, 21);
 			this.methode.TabIndex = 8;
-			this.methode.SelectedIndexChanged += new System.EventHandler(this.methode_SelectedIndexChanged);
+			this.methode.SelectedIndexChanged += new System.EventHandler(this.ChangeParam);
 			// 
 			// label7
 			// 
@@ -201,7 +201,7 @@
 			this.matrice.Name = "matrice";
 			this.matrice.Size = new System.Drawing.Size(97, 21);
 			this.matrice.TabIndex = 8;
-			this.matrice.SelectedIndexChanged += new System.EventHandler(this.matrice_SelectedIndexChanged);
+			this.matrice.SelectedIndexChanged += new System.EventHandler(this.ChangeParam);
 			// 
 			// label5
 			// 
@@ -223,7 +223,7 @@
 			this.pctTrame.Name = "pctTrame";
 			this.pctTrame.Size = new System.Drawing.Size(50, 20);
 			this.pctTrame.TabIndex = 9;
-			this.pctTrame.ValueChanged += new System.EventHandler(this.pctTrame_ValueChanged);
+			this.pctTrame.ValueChanged += new System.EventHandler(this.ChangeParam);
 			// 
 			// label4
 			// 
@@ -247,7 +247,7 @@
 			this.renderMode.Name = "renderMode";
 			this.renderMode.Size = new System.Drawing.Size(97, 21);
 			this.renderMode.TabIndex = 10;
-			this.renderMode.SelectedIndexChanged += new System.EventHandler(this.renderMode_SelectedIndexChanged);
+			this.renderMode.SelectedIndexChanged += new System.EventHandler(this.ChangeParam);
 			// 
 			// listImage
 			// 
@@ -330,7 +330,7 @@
 			this.sat.Size = new System.Drawing.Size(928, 42);
 			this.sat.TabIndex = 17;
 			this.sat.Value = 100;
-			this.sat.ValueChanged += new System.EventHandler(this.sat_ValueChanged);
+			this.sat.ValueChanged += new System.EventHandler(this.ChangeParam);
 			// 
 			// lumi
 			// 
@@ -340,7 +340,7 @@
 			this.lumi.Size = new System.Drawing.Size(928, 42);
 			this.lumi.TabIndex = 18;
 			this.lumi.Value = 100;
-			this.lumi.ValueChanged += new System.EventHandler(this.lumi_ValueChanged);
+			this.lumi.ValueChanged += new System.EventHandler(this.ChangeParam);
 			// 
 			// autoRecalc
 			// 
@@ -355,13 +355,13 @@
 			// sortPal
 			// 
 			this.sortPal.AutoSize = true;
-			this.sortPal.Location = new System.Drawing.Point(894, 600);
+			this.sortPal.Location = new System.Drawing.Point(895, 603);
 			this.sortPal.Name = "sortPal";
 			this.sortPal.Size = new System.Drawing.Size(47, 17);
 			this.sortPal.TabIndex = 24;
 			this.sortPal.Text = "Trier";
 			this.sortPal.UseVisualStyleBackColor = true;
-			this.sortPal.CheckedChanged += new System.EventHandler(this.sortPal_CheckedChanged);
+			this.sortPal.CheckedChanged += new System.EventHandler(this.ChangeParam);
 			// 
 			// contrast
 			// 
@@ -371,7 +371,7 @@
 			this.contrast.Size = new System.Drawing.Size(928, 42);
 			this.contrast.TabIndex = 17;
 			this.contrast.Value = 100;
-			this.contrast.ValueChanged += new System.EventHandler(this.contrast_ValueChanged);
+			this.contrast.ValueChanged += new System.EventHandler(this.ChangeParam);
 			// 
 			// label2
 			// 
@@ -404,7 +404,7 @@
 			// 
 			// bpUp
 			// 
-			this.bpUp.Location = new System.Drawing.Point(1032, 232);
+			this.bpUp.Location = new System.Drawing.Point(1032, 218);
 			this.bpUp.Name = "bpUp";
 			this.bpUp.Size = new System.Drawing.Size(24, 23);
 			this.bpUp.TabIndex = 25;
@@ -441,7 +441,7 @@
 			this.newMethode.TabIndex = 27;
 			this.newMethode.Text = "newMethode";
 			this.newMethode.UseVisualStyleBackColor = true;
-			this.newMethode.CheckedChanged += new System.EventHandler(this.newMethode_CheckedChanged);
+			this.newMethode.CheckedChanged += new System.EventHandler(this.ChangeParam);
 			// 
 			// nb
 			// 
@@ -452,7 +452,7 @@
 			this.nb.TabIndex = 27;
 			this.nb.Text = "noir && blanc";
 			this.nb.UseVisualStyleBackColor = true;
-			this.nb.CheckedChanged += new System.EventHandler(this.nb_CheckedChanged);
+			this.nb.CheckedChanged += new System.EventHandler(this.ChangeParam);
 			// 
 			// bpPredefPal
 			// 
@@ -580,13 +580,13 @@
 			// cpcPlus
 			// 
 			this.cpcPlus.AutoSize = true;
-			this.cpcPlus.Location = new System.Drawing.Point(792, 579);
+			this.cpcPlus.Location = new System.Drawing.Point(792, 582);
 			this.cpcPlus.Name = "cpcPlus";
 			this.cpcPlus.Size = new System.Drawing.Size(70, 17);
 			this.cpcPlus.TabIndex = 35;
 			this.cpcPlus.Text = "CPC Plus";
 			this.cpcPlus.UseVisualStyleBackColor = true;
-			this.cpcPlus.CheckedChanged += new System.EventHandler(this.cpcPlus_CheckedChanged);
+			this.cpcPlus.CheckedChanged += new System.EventHandler(this.ChangeParam);
 			// 
 			// reducPal1
 			// 
@@ -598,7 +598,7 @@
 			this.reducPal1.TabIndex = 36;
 			this.reducPal1.Text = "reducPal1";
 			this.reducPal1.UseVisualStyleBackColor = true;
-			this.reducPal1.CheckedChanged += new System.EventHandler(this.reducPal1_CheckedChanged);
+			this.reducPal1.CheckedChanged += new System.EventHandler(this.ChangeParam);
 			// 
 			// reducPal2
 			// 
@@ -610,7 +610,7 @@
 			this.reducPal2.TabIndex = 37;
 			this.reducPal2.Text = "reducPal2";
 			this.reducPal2.UseVisualStyleBackColor = true;
-			this.reducPal2.CheckedChanged += new System.EventHandler(this.reducPal2_CheckedChanged);
+			this.reducPal2.CheckedChanged += new System.EventHandler(this.ChangeParam);
 			// 
 			// newReduc
 			// 
@@ -622,7 +622,7 @@
 			this.newReduc.TabIndex = 38;
 			this.newReduc.Text = "newReduc";
 			this.newReduc.UseVisualStyleBackColor = true;
-			this.newReduc.CheckedChanged += new System.EventHandler(this.newReduc_CheckedChanged);
+			this.newReduc.CheckedChanged += new System.EventHandler(this.ChangeParam);
 			// 
 			// bpLoadParam
 			// 

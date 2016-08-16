@@ -24,6 +24,7 @@ namespace PJA {
 		private OpenFileDialog dlgLoadPal = new OpenFileDialog();
 		private OpenFileDialog dlgImportImage = new OpenFileDialog();
 		private Param param;
+		private bool lockParam = false;
 
 		public EditImages(Projet prj, Param p) {
 			InitializeComponent();
@@ -32,14 +33,14 @@ namespace PJA {
 				// Générer les contrôles de "couleurs"
 				colors[i] = new Label();
 				colors[i].BorderStyle = BorderStyle.FixedSingle;
-				colors[i].Location = new Point(4 + i * 48, 564);
+				colors[i].Location = new Point(4 + i * 48, 584);
 				colors[i].Size = new Size(40, 32);
 				colors[i].Tag = i;
 				colors[i].Click += ClickColor;
 				Controls.Add(colors[i]);
 				// Générer les contrôles de "bloquage couleur"
 				lockColors[i] = new CheckBox();
-				lockColors[i].Location = new Point(16 + i * 48, 598);
+				lockColors[i].Location = new Point(16 + i * 48, 616);
 				lockColors[i].Size = new Size(20, 20);
 				lockColors[i].Tag = i;
 				lockColors[i].Click += ClickLock;
@@ -231,91 +232,26 @@ namespace PJA {
 			}
 		}
 
-		private void radioFit_CheckedChanged(object sender, EventArgs e) {
-			param.sizeMode = radioKeepLarger.Checked ? Param.SizeMode.KeepLarger : radioKeepSmaller.Checked ? Param.SizeMode.KeepSmaller : Param.SizeMode.Fit;
-			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
-		}
-
-		private void radioKeepSmaller_CheckedChanged(object sender, EventArgs e) {
-			param.sizeMode = radioKeepLarger.Checked ? Param.SizeMode.KeepLarger : radioKeepSmaller.Checked ? Param.SizeMode.KeepSmaller : Param.SizeMode.Fit;
-			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
-		}
-
-		private void radioKeepLarger_CheckedChanged(object sender, EventArgs e) {
-			param.sizeMode = radioKeepLarger.Checked ? Param.SizeMode.KeepLarger : radioKeepSmaller.Checked ? Param.SizeMode.KeepSmaller : Param.SizeMode.Fit;
-			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
-		}
-
-		private void pctTrame_ValueChanged(object sender, EventArgs e) {
-			param.pct = (int)pctTrame.Value;
-			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
-		}
-
-		private void methode_SelectedIndexChanged(object sender, EventArgs e) {
-			param.methode = methode.SelectedIndex;
-			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
-		}
-
-		private void matrice_SelectedIndexChanged(object sender, EventArgs e) {
-			param.matrice = matrice.SelectedIndex + 2;
-			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
-		}
-
-		private void renderMode_SelectedIndexChanged(object sender, EventArgs e) {
-			param.pixMode = renderMode.SelectedIndex;
-			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
-		}
-
-		private void lumi_ValueChanged(object sender, EventArgs e) {
-			param.pctLumi = (int)lumi.Value;
-			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
-		}
-
-		private void sat_ValueChanged(object sender, EventArgs e) {
-			param.pctSat = nb.Checked ? 0 : (int)sat.Value;
-			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
-		}
-
-		private void contrast_ValueChanged(object sender, EventArgs e) {
-			param.pctContrast = (int)contrast.Value;
-			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
-		}
-
-		private void sortPal_CheckedChanged(object sender, EventArgs e) {
-			param.sortPal = sortPal.Checked;
-			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
-		}
-
-		private void newMethode_CheckedChanged(object sender, EventArgs e) {
-			param.newMethode = newMethode.Checked;
-			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
-		}
-
-		private void cpcPlus_CheckedChanged(object sender, EventArgs e) {
-			reducPal1.Enabled = reducPal2.Enabled = cpcPlus.Checked;
-			param.cpcPlus = cpcPlus.Checked;
-			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
-		}
-
-		private void nb_CheckedChanged(object sender, EventArgs e) {
-			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
-		}
-
-		private void reducPal1_CheckedChanged(object sender, EventArgs e) {
-			newReduc.Enabled = reducPal1.Checked || reducPal2.Checked;
-			param.reductPal1 = reducPal1.Checked;
-			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
-		}
-
-		private void reducPal2_CheckedChanged(object sender, EventArgs e) {
-			newReduc.Enabled = reducPal1.Checked || reducPal2.Checked;
-			param.reductPal2 = reducPal2.Checked;
-			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
-		}
-
-		private void newReduc_CheckedChanged(object sender, EventArgs e) {
-			param.newReduct = newReduc.Checked;
-			bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
+		private void ChangeParam(object sender, EventArgs e) {
+			if (!lockParam) {
+				param.sizeMode = radioKeepLarger.Checked ? Param.SizeMode.KeepLarger : radioKeepSmaller.Checked ? Param.SizeMode.KeepSmaller : Param.SizeMode.Fit;
+				param.pct = (int)pctTrame.Value;
+				param.methode = methode.SelectedIndex;
+				param.matrice = matrice.SelectedIndex + 2;
+				param.pixMode = renderMode.SelectedIndex;
+				param.pctLumi = (int)lumi.Value;
+				param.pctSat = nb.Checked ? 0 : (int)sat.Value;
+				param.pctContrast = (int)contrast.Value;
+				param.sortPal = sortPal.Checked;
+				param.newMethode = newMethode.Checked;
+				reducPal1.Enabled = reducPal2.Enabled = param.cpcPlus = cpcPlus.Checked;
+				newReduc.Enabled = reducPal1.Checked || reducPal2.Checked;
+				newReduc.Enabled = reducPal1.Checked || reducPal2.Checked;
+				param.reductPal1 = reducPal1.Checked;
+				param.reductPal2 = reducPal2.Checked;
+				param.newReduct = newReduc.Checked;
+				bpRecalc_Click(autoRecalc.Checked ? sender : null, e);
+			}
 		}
 
 		private void bpUp_Click(object sender, EventArgs e) {
@@ -439,6 +375,7 @@ namespace PJA {
 			if (result == DialogResult.OK) {
 				FileStream file = File.Open(dlg.FileName, FileMode.Open);
 				try {
+					lockParam = true;
 					param = (Param)new XmlSerializer(typeof(Param)).Deserialize(file);
 					// Initialisation paramètres...
 					methode.SelectedIndex = param.methode;
@@ -458,6 +395,7 @@ namespace PJA {
 					radioFit.Checked = param.sizeMode == Param.SizeMode.Fit;
 					radioKeepLarger.Checked = param.sizeMode == Param.SizeMode.KeepLarger;
 					radioKeepSmaller.Checked = param.sizeMode == Param.SizeMode.KeepSmaller;
+					lockParam = false;
 				}
 				catch (Exception ex) {
 				}

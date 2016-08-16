@@ -52,9 +52,27 @@ namespace PJA {
 		}
 
 		private void bpAddAction_Click(object sender, EventArgs e) {
+			actSel.typeAction = (Action.TypeAction)typeAction.SelectedItem;
+			switch (actSel.typeAction) {
+				case Action.TypeAction.RIEN:
+					break;
+
+				case Action.TypeAction.AFF_MSG:
+					SelectTexte st = new SelectTexte(projet, actSel);
+					st.ShowDialog();
+					break;
+
+				case Action.TypeAction.PRISE_OBJ:
+					break;
+
+				case Action.TypeAction.DEPLACEMENT:
+					break;
+
+				case Action.TypeAction.MODIF_TYPE_ZONE:
+					break;
+			}
 			curZone.lstAction.Add(actSel);
 			AfficheActions();
-			typeAction.SelectedItem = Action.TypeAction.RIEN;
 		}
 
 		private void bpEditAction_Click(object sender, EventArgs e) {

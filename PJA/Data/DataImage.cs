@@ -39,11 +39,11 @@ namespace PJA {
 				}
 		}
 
-		public void Repack() {
-			byte[] tmp = new byte[0x8000];
+		public void Repack(int cx, int cy) {
+			byte[] tmp = new byte[0x8100];
 			foreach (Image i in listImg) {
 				Array.Copy(i.data, tmp, i.data.Length);
-				i.RepackImage(tmp, i.data.Length);
+				i.RepackImage(tmp, i.data.Length, cx, cy);
 			}
 		}
 	}

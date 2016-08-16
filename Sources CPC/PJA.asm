@@ -1,12 +1,12 @@
         ORG     #8000
         RUN     $
 
-BuffCp  EQU     #4000
-PtrZone EQU     #2000
+BuffCp  EQU     #200
+PtrZone EQU     #9000
 
         LD      HL,PtrZone
         LD      DE,#200
-        LD      BC,#10C0
+        LD      BC,#08C1
         CALL    ReadSectors
 
         XOR     A
@@ -36,8 +36,19 @@ SetPal:
         PUSH    HL
         CALL    #BC38
         POP     HL
-        LD      DE,#C000
+
+        LD      DE,#4000
         CALL    DepkLZW
+        LD      BC,#BC0C
+        OUT    (C),C
+        LD     BC,#BD10
+        OUT    (C),C
+        LD     HL,#4000
+        LD     DE,#C000
+        LD     BC,#3FD0
+        LDIR
+        LD     BC,#BD30
+        OUT    (C),C
 
         LD      HL,160                  ; Recentrer le curseur
         LD      (X),HL
@@ -53,10 +64,10 @@ WaitAction
         LD      A,(Fipr)
         AND     A
         JR      Z,WaitAction
-		LD      A,(TypeFleche+1)
-		AND     A
-		JR      Z,WaitAction
-		PUSH    AF
+        LD      A,(TypeFleche+1)
+        AND     A
+        JR      Z,WaitAction
+        PUSH    AF
         CALL    CurseurOff
 		POP     AF
         CP      2

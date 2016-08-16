@@ -48,6 +48,11 @@ namespace PJA {
 			get { return texteData; }
 			set { texteData = value; }
 		}
+		private DataVariable variableData;
+		public DataVariable VariableData {
+			get { return variableData; }
+			set { variableData = value; }
+		}
 		private bool modif;
 		public bool Modif { get { return modif | mapData.Modif | imageData.Modif; } }
 
@@ -68,6 +73,7 @@ namespace PJA {
 			mapData = new DataMap();
 			imageData = new DataImage();
 			texteData = new DataTexte();
+			variableData = new DataVariable();
 		}
 
 		public void Init() {
