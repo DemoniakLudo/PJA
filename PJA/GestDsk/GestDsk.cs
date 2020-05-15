@@ -5,10 +5,12 @@ namespace PJA {
 		private CreateDsk dsk;
 		private Projet projet;
 		private byte[] allData = new byte[0x8000];
+		private string fileName;
 
-		public GestDsk(Projet prj) {
+		public GestDsk(Projet prj, string f) {
 			projet = prj;
-			dsk = new CreateDsk(projet, 80, 2, 9, 0xC1, true);
+			fileName = f;
+			dsk = new CreateDsk(projet, 80, 2, 10, 0xC1, true);
 		}
 
 		public void WriteImages() {
@@ -29,7 +31,7 @@ namespace PJA {
 				dsk.SetDataDsk(ref t, ref h, ref s, allData, l);
 			}
 			dsk.WriteSect(0, 0, 0, bitmap, 0);
-			dsk.SaveDsk("test.dsk");
+			dsk.SaveDsk(fileName);
 		}
 
 		public void WriteZones() {

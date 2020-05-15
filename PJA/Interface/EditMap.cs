@@ -134,7 +134,11 @@ namespace PJA {
 		}
 
 		private void RenderAllZones(bool detail = false) {
-			bitmapCPC.Render(bmpLock, bitmapCPC.ModeCPC, 1, 0, 0, false);
+			for (int y = 0; y < bitmapCPC.TailleY; y += 2) {
+				int mode = (bitmapCPC.ModeCPC >= 3 ? (y & 2) == 0 ? bitmapCPC.ModeCPC - 2 : bitmapCPC.ModeCPC - 3 : bitmapCPC.ModeCPC);
+				bitmapCPC.Render(bmpLock, y, mode, 1, 0, 0);
+			}
+		
 			if (allZones.Checked && curMap != null)
 				foreach (Zone z in curMap.LstZone)
 					RenderZone(z, penBlue);

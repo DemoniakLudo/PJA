@@ -147,14 +147,24 @@ namespace PJA {
 
 		private void bpRepack_Click(object sender, EventArgs e) {
 			SetEtatBp(false);
-			projet.ImageData.Repack(projet.Cx,projet.Cy);
+			projet.ImageData.Repack(projet.Cx, projet.Cy);
 			SetEtatBp(true);
 		}
 
 		private void button1_Click(object sender, EventArgs e) {
-			GestDsk d = new GestDsk(projet);
-			d.WriteZones();
-			d.WriteImages();
+			SaveFileDialog dlg = new SaveFileDialog();
+			dlg.Filter = "Fichier Dsk (*.dsk)|*.dsk";
+			DialogResult result = dlg.ShowDialog();
+			if (result == DialogResult.OK) {
+				try {
+					GestDsk d = new GestDsk(projet, dlg.FileName);
+					d.WriteZones();
+					d.WriteImages();
+				}
+				catch (Exception ex) {
+					ShowException(ex);
+				}
+			}
 		}
 	}
 }

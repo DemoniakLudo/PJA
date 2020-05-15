@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 
 namespace PJA {
-	public partial class EditImages: Form {
+	public partial class EditImages : Form {
 		private Bitmap bmp, image;
 		private LockBitmap bmpLock;
 		public BitmapCpc bitmapCpc;
@@ -128,7 +128,12 @@ namespace PJA {
 
 		private void Render() {
 			bitmapCpc.cpcPlus = cpcPlus.Checked;
-			bitmapCpc.Render(bmpLock, bitmapCpc.ModeCPC, zoom, offsetX, offsetY, false);
+			for (int y = 0; y < bitmapCpc.TailleY; y += 2) {
+				int mode = (bitmapCpc.ModeCPC >= 3 ? (y & 2) == 0 ? bitmapCpc.ModeCPC - 2 : bitmapCpc.ModeCPC - 3 : bitmapCpc.ModeCPC);
+				bitmapCpc.Render(bmpLock, y, mode, zoom, offsetX, offsetY);
+			}
+			pictureBox.Refresh();
+			UpdatePalette();
 			pictureBox.Refresh();
 			UpdatePalette();
 		}
@@ -215,7 +220,7 @@ namespace PJA {
 				bpRecalc.Enabled = false;
 				long t0 = Environment.TickCount;
 				param.lockState = lockState;
-				Conversion.Convert(image, bitmapCpc, param, false);
+				Conversion.Convert(image, bitmapCpc, param);
 				long t1 = Environment.TickCount;
 				lblTps.Text = (t1 - t0).ToString() + " ms";
 				Render();
@@ -338,7 +343,7 @@ namespace PJA {
 
 		private void pictureBox_MouseDown(object sender, MouseEventArgs e) {
 			if (bpEditMode.Checked) {
-				bitmapCpc.SetPixelCpc(offsetX + (e.X / zoom), offsetY + (e.Y / zoom), numCol);
+				bitmapCpc.SetPixelCpc(offsetX + (e.X / zoom), offsetY + (e.Y / zoom), numCol, bitmapCpc.ModeCPC);
 				Render();
 			}
 		}

@@ -36,7 +36,7 @@
 			this.bpNew = new System.Windows.Forms.Button();
 			this.nomProjet = new System.Windows.Forms.Label();
 			this.bpRepack = new System.Windows.Forms.Button();
-			this.button1 = new System.Windows.Forms.Button();
+			this.bpGenereDsk = new System.Windows.Forms.Button();
 			this.bpEditTxt = new System.Windows.Forms.Button();
 			this.bpEditVar = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.nbCols)).BeginInit();
@@ -193,15 +193,15 @@
 			this.bpRepack.UseVisualStyleBackColor = true;
 			this.bpRepack.Click += new System.EventHandler(this.bpRepack_Click);
 			// 
-			// button1
+			// bpGenereDsk
 			// 
-			this.button1.Location = new System.Drawing.Point(371, 58);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(75, 23);
-			this.button1.TabIndex = 14;
-			this.button1.Text = "button1";
-			this.button1.UseVisualStyleBackColor = true;
-			this.button1.Click += new System.EventHandler(this.button1_Click);
+			this.bpGenereDsk.Location = new System.Drawing.Point(171, 350);
+			this.bpGenereDsk.Name = "bpGenereDsk";
+			this.bpGenereDsk.Size = new System.Drawing.Size(173, 36);
+			this.bpGenereDsk.TabIndex = 14;
+			this.bpGenereDsk.Text = "Générér DSK";
+			this.bpGenereDsk.UseVisualStyleBackColor = true;
+			this.bpGenereDsk.Click += new System.EventHandler(this.button1_Click);
 			// 
 			// bpEditTxt
 			// 
@@ -230,7 +230,7 @@
 			this.ClientSize = new System.Drawing.Size(532, 398);
 			this.Controls.Add(this.bpEditVar);
 			this.Controls.Add(this.bpEditTxt);
-			this.Controls.Add(this.button1);
+			this.Controls.Add(this.bpGenereDsk);
 			this.Controls.Add(this.bpRepack);
 			this.Controls.Add(this.nomProjet);
 			this.Controls.Add(this.label1);
@@ -270,7 +270,7 @@
 		private System.Windows.Forms.Button bpNew;
 		private System.Windows.Forms.Label nomProjet;
 		private System.Windows.Forms.Button bpRepack;
-		private System.Windows.Forms.Button button1;
+		private System.Windows.Forms.Button bpGenereDsk;
 		private System.Windows.Forms.Button bpEditTxt;
 		private System.Windows.Forms.Button bpEditVar;
 	}

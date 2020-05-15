@@ -57,7 +57,7 @@
 
 		public void SetDataDsk(ref int strtTrk, ref int strtHd, ref int strtSect, byte[] data, int longueur) {
 			int pos = 0;
-			for (int l = 0; l < longueur; l += 0x200) {
+			for (int l = 0; l < (longueur + 511); l += 0x200) {
 				WriteSect(strtTrk, strtHd, strtSect, data, pos);
 				pos += 0x200;
 				if (++strtSect == nbSects) {

@@ -17,9 +17,9 @@ ReadSectors:
         INC     H
         INC     C
         LD      A,C
-        CP      #CA
+        CP      #CB
         JR      C,ReadNextSector
-        LD      C,#C0
+        LD      C,#C1
         INC     E
         LD      A,E
         CP      2
