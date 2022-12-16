@@ -44,8 +44,8 @@ namespace PJA {
 					dataZone[posData++] = (byte)z.typeZone;
 					dataZone[posData++] = (byte)z.xd;
 					dataZone[posData++] = (byte)z.xa;
-					dataZone[posData++] = (byte)(200 - z.ya);
 					dataZone[posData++] = (byte)(200 - z.yd);
+					dataZone[posData++] = (byte)(200 - z.ya);
 					dataZone[posData++] = (byte)(z.varAction & 0xFF);
 					dataZone[posData++] = (byte)(z.varAction >> 8);
 				}
