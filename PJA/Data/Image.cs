@@ -1,5 +1,4 @@
-﻿using Pack;
-using System;
+﻿using System;
 
 namespace PJA {
 	[Serializable]
@@ -18,7 +17,7 @@ namespace PJA {
 
 		public Image(string n, int[] p, byte[] d, int x, int y) {
 			nom = n;
-			SetInternal(x,y);
+			SetInternal(x, y);
 			SetImage(d, p, x, y);
 		}
 
@@ -37,12 +36,12 @@ namespace PJA {
 
 		public void RepackImage(byte[] img, int l, int cx, int cy) {
 			if (data[0] == (byte)'P' && data[1] == (byte)'K' && data[2] == (byte)l && data[3] == (byte)(l >> 8))
-				PackDepack.Depack(data, 4, img);
+				PackDepack.Depack(data, 4, img, PackDepack.PackMethode.Standard);
 
 			SetInternal(cx, cy);
-			l = PackDepack.Pack(img, internalSize, data, 4);
-			data[0] = (byte)'P';
-			data[1] = (byte)'K';
+			l = PackDepack.Pack(img, internalSize, data, 4, PackDepack.PackMethode.ZX0);
+			data[0] = (byte)'Z';
+			data[1] = (byte)'0';
 			data[2] = (byte)l;
 			data[3] = (byte)(l >> 8);
 			Array.Resize(ref data, l);
@@ -51,7 +50,10 @@ namespace PJA {
 		public void GetImage(byte[] dest, int[] p) {
 			int l = data.Length;
 			if (data[0] == (byte)'P' && data[1] == (byte)'K' && data[2] == (byte)l && data[3] == (byte)(l >> 8))
-				PackDepack.Depack(data, 4, dest);
+				PackDepack.Depack(data, 4, dest, PackDepack.PackMethode.Standard);
+			else
+			if (data[0] == (byte)'Z' && data[1] == (byte)'0' && data[2] == (byte)l && data[3] == (byte)(l >> 8))
+				PackDepack.Depack(data, 4, dest, PackDepack.PackMethode.ZX0);
 			else
 				Array.Copy(data, dest, data.Length);
 

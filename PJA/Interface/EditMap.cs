@@ -53,7 +53,8 @@ namespace PJA {
 				curMap.IndexImage = index;
 				bpDelLieu.Enabled = index > -1;
 			}
-			catch {
+			catch (Exception ex) {
+				Console.WriteLine(ex.Message);
 			}
 		}
 

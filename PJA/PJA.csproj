@@ -37,9 +37,6 @@
     <Reference Include="ConvImgCpc">
       <HintPath>dll\ConvImgCpc.dll</HintPath>
     </Reference>
-    <Reference Include="Pack">
-      <HintPath>dll\Pack.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -47,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PackDepack.cs" />
     <Compile Include="Data\Action.cs" />
     <Compile Include="Data\Cond.cs" />
     <Compile Include="Data\Condition.cs" />
